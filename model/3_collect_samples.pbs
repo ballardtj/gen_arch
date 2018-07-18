@@ -1,0 +1,9 @@
+#!/bin/bash
+
+#PBS -A UQ-SBS-Psy
+
+#PBS -l nodes=1:ppn=1:intel,walltime=100:00:00,mem=20GB
+
+#PBS -J 1-8
+
+bash cmdstan/model/4_collect_samples.sh ${FRAME} $PBS_ARRAY_INDEX
