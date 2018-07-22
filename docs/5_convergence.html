@@ -347,7 +347,7 @@ div.section {
 </li>
 <li>
 <details>
-<p><summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/ballardtj/gen_arch/tree/b7460f7ca99d6abc1afb1185ff9323f3aab18ee8" target="_blank">b7460f7</a> </summary></p>
+<p><summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/ballardtj/gen_arch/tree/b30c5e72009c0f7a7f474ac1344559ace6aa8634" target="_blank">b30c5e7</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -361,10 +361,6 @@ Ignored files:
     Ignored:    data/raw/.DS_Store
     Ignored:    data/raw/exp2/.DS_Store
     Ignored:    model/.DS_Store
-
-Untracked files:
-    Untracked:  model/ap_fit.RData
-    Untracked:  model/av_fit.RData
 
 Unstaged changes:
     Modified:   analysis/5_convergence.Rmd
@@ -403,6 +399,40 @@ Message
 Rmd
 </td>
 <td style="text-align:left;">
+<a href="https://github.com/ballardtj/gen_arch/blob/b30c5e72009c0f7a7f474ac1344559ace6aa8634/analysis/5_convergence.Rmd" target="_blank">b30c5e7</a>
+</td>
+<td style="text-align:left;">
+ballardtj
+</td>
+<td style="text-align:left;">
+2018-07-22
+</td>
+<td style="text-align:left;">
+adding fits
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/ballardtj/gen_arch/b30c5e72009c0f7a7f474ac1344559ace6aa8634/docs/5_convergence.html" target="_blank">b30c5e7</a>
+</td>
+<td style="text-align:left;">
+ballardtj
+</td>
+<td style="text-align:left;">
+2018-07-22
+</td>
+<td style="text-align:left;">
+adding fits
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
 <a href="https://github.com/ballardtj/gen_arch/blob/b7460f7ca99d6abc1afb1185ff9323f3aab18ee8/analysis/5_convergence.Rmd" target="_blank">b7460f7</a>
 </td>
 <td style="text-align:left;">
@@ -420,8 +450,10 @@ initial
 </ul>
 </details>
 <hr />
-<div id="approach-condition-observed-decisions" class="section level1">
-<h1>Approach Condition, Observed Decisions</h1>
+<div id="observed-decisions" class="section level1">
+<h1>Observed Decisions</h1>
+<div id="approach-condition" class="section level2">
+<h2>Approach Condition</h2>
 <pre><code>Loading required package: ggplot2</code></pre>
 <pre><code>Loading required package: StanHeaders</code></pre>
 <pre><code>rstan (Version 2.17.3, GitRev: 2e1f913d3ca3)</code></pre>
@@ -429,6 +461,12 @@ initial
 options(mc.cores = parallel::detectCores()).
 To avoid recompilation of unchanged Stan programs, we recommend calling
 rstan_options(auto_write = TRUE)</code></pre>
+<pre><code>
+Attaching package: &#39;coda&#39;</code></pre>
+<pre><code>The following object is masked from &#39;package:rstan&#39;:
+
+    traceplot</code></pre>
+<p>RStan output</p>
 <pre><code>              mean      se_mean         sd       2.5%        25%
 w1_mean -4.5647905 0.0080445978 0.36967369 -5.3013472 -4.8176725
 w1_sd    3.5113457 0.0213980277 0.26868389  3.0129345  3.3262050
@@ -455,7 +493,77 @@ tau_a    0.8195800  0.9068655  1.0904603 7685.73227 1.0007082
 tau_b    1.1894050  1.3425800  1.6815875 7784.37401 0.9999544
 alpha_a  0.5477685  0.5868077  0.6667816   72.84266 1.0447947
 alpha_b  0.4582220  0.4885970  0.5480201  393.75219 1.0240037</code></pre>
-<p><img src="figure/5_convergence.Rmd/unnamed-chunk-1-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/5_convergence.Rmd/unnamed-chunk-1-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Coda output</p>
+<pre><code> w1_mean    w1_sd  w2_mean    w2_sd  w3_mean    w3_sd  delta_a  delta_b 
+7176.800 7331.874 6739.168 7843.737 3075.329 7125.114 6975.776 6337.991 
+   tau_a    tau_b  alpha_a  alpha_b 
+8569.692 8687.566 3679.292 3044.142 </code></pre>
+<pre><code>        Point est. Upper C.I.
+w1_mean  1.0102770  1.0243853
+w1_sd    1.0269419  1.0611024
+w2_mean  1.0006821  1.0022320
+w2_sd    0.9993339  0.9995162
+w3_mean  1.0371910  1.0828491
+w3_sd    1.0144514  1.0336112
+delta_a  1.0049318  1.0121263
+delta_b  1.0049283  1.0119918
+tau_a    1.0019088  1.0050760
+tau_b    1.0012527  1.0034112
+alpha_a  1.0516797  1.1150957
+alpha_b  1.0330897  1.0744202</code></pre>
+<p>Plots</p>
+<p><img src="figure/5_convergence.Rmd/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/5_convergence.Rmd/unnamed-chunk-4-2.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="avoidance-condition" class="section level2">
+<h2>Avoidance Condition</h2>
+<p>RStan output</p>
+<pre><code>              mean      se_mean         sd        2.5%        25%
+w1_mean -7.6012014 0.0077555421 0.59222865 -8.79070900 -7.9896675
+w1_sd    3.4941212 0.0054182234 0.37394294  2.79160125  3.2384050
+w2_mean -2.7570432 0.0125393155 1.12155047 -5.34020750 -3.3744800
+w2_sd    0.7058693 0.0060959605 0.53665195  0.02783302  0.2776418
+w3_mean  0.1842672 0.0013402685 0.09286733  0.01878775  0.1172932
+w3_sd    1.6720578 0.0013371004 0.11411765  1.45643700  1.5928400
+delta_a  0.4809268 0.0011162026 0.08025446  0.34386890  0.4249590
+delta_b  1.2422824 0.0042047315 0.30082458  0.76693702  1.0281950
+tau_a    0.1969954 0.0007524751 0.04943139  0.12258787  0.1617915
+tau_b    8.2678442 0.0341242637 2.95452606  3.26619150  6.1212250
+alpha_a  0.5289706 0.0036938224 0.07358253  0.39644157  0.4767635
+alpha_b  1.2626784 0.0373344855 0.20501075  0.89217595  1.1198950
+               50%        75%      97.5%      n_eff      Rhat
+w1_mean -7.5881750 -7.1975500 -6.4728343 5831.15388 1.0015154
+w1_sd    3.4813200  3.7380125  4.2670892 4763.17841 1.0041173
+w2_mean -2.6295500 -2.0098625 -0.9162083 8000.00000 1.0006378
+w2_sd    0.5879880  1.0167875  1.9761257 7749.98990 0.9999685
+w3_mean  0.1799905  0.2486955  0.3734117 4801.11702 1.0020689
+w3_sd    1.6700950  1.7471600  1.9066905 7284.12921 0.9998808
+delta_a  0.4751880  0.5299067  0.6533880 5169.54438 1.0064749
+delta_b  1.2078000  1.4183425  1.9250485 5118.58708 1.0051491
+tau_a    0.1893565  0.2237348  0.3133098 4315.40295 1.0009315
+tau_b    7.9750550 10.0730500 14.7855075 7496.33647 1.0005257
+alpha_a  0.5242670  0.5756525  0.6850437  396.82348 1.0209716
+alpha_b  1.2526300  1.3915600  1.7016587   30.15317 1.0715883</code></pre>
+<p>Coda output</p>
+<pre><code> w1_mean    w1_sd  w2_mean    w2_sd  w3_mean    w3_sd  delta_a  delta_b 
+6439.821 5740.172 8152.622 8078.791 5354.364 7408.559 7475.427 7025.157 
+   tau_a    tau_b  alpha_a  alpha_b 
+4825.283 7903.675 4418.541 4460.728 </code></pre>
+<pre><code>        Point est. Upper C.I.
+w1_mean  1.0014494   1.004337
+w1_sd    1.0032877   1.008622
+w2_mean  1.0013398   1.003972
+w2_sd    0.9998047   1.000651
+w3_mean  1.0044002   1.010825
+w3_sd    1.0002666   1.001630
+delta_a  1.0079800   1.018764
+delta_b  1.0054738   1.013079
+tau_a    1.0014290   1.004029
+tau_b    1.0002154   1.001508
+alpha_a  1.0318437   1.072333
+alpha_b  1.0916075   1.198478</code></pre>
+<p>Plots</p>
+<p><img src="figure/5_convergence.Rmd/unnamed-chunk-8-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/5_convergence.Rmd/unnamed-chunk-8-2.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
 <pre class="r"><code>sessionInfo()</code></pre>
@@ -474,25 +582,26 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
-[1] rstan_2.17.3       StanHeaders_2.17.2 ggplot2_3.0.0     
+[1] coda_0.19-1        rstan_2.17.3       StanHeaders_2.17.2
+[4] ggplot2_3.0.0     
 
 loaded via a namespace (and not attached):
  [1] Rcpp_0.12.17       compiler_3.5.1     pillar_1.3.0      
  [4] git2r_0.22.1       plyr_1.8.4         workflowr_1.1.1   
  [7] bindr_0.1.1        R.methodsS3_1.7.1  R.utils_2.6.0     
-[10] tools_3.5.1        digest_0.6.15      evaluate_0.10.1   
-[13] tibble_1.4.2       gtable_0.2.0       pkgconfig_2.0.1   
-[16] rlang_0.2.1        yaml_2.1.19        bindrcpp_0.2.2    
-[19] gridExtra_2.3      withr_2.1.2        stringr_1.3.1     
-[22] dplyr_0.7.6        knitr_1.20         stats4_3.5.1      
-[25] rprojroot_1.3-2    grid_3.5.1         tidyselect_0.2.4  
-[28] inline_0.3.15      glue_1.2.0         R6_2.2.2          
-[31] rmarkdown_1.10     purrr_0.2.5        magrittr_1.5      
-[34] whisker_0.3-2      backports_1.1.2    scales_0.5.0      
-[37] htmltools_0.3.6    assertthat_0.2.0   colorspace_1.3-2  
-[40] labeling_0.3       KernSmooth_2.23-15 stringi_1.2.3     
-[43] lazyeval_0.2.1     munsell_0.5.0      crayon_1.3.4      
-[46] R.oo_1.22.0       </code></pre>
+[10] tools_3.5.1        digest_0.6.15      lattice_0.20-35   
+[13] evaluate_0.10.1    tibble_1.4.2       gtable_0.2.0      
+[16] pkgconfig_2.0.1    rlang_0.2.1        yaml_2.1.19       
+[19] bindrcpp_0.2.2     gridExtra_2.3      withr_2.1.2       
+[22] stringr_1.3.1      dplyr_0.7.6        knitr_1.20        
+[25] stats4_3.5.1       rprojroot_1.3-2    grid_3.5.1        
+[28] tidyselect_0.2.4   inline_0.3.15      glue_1.2.0        
+[31] R6_2.2.2           rmarkdown_1.10     purrr_0.2.5       
+[34] magrittr_1.5       whisker_0.3-2      backports_1.1.2   
+[37] scales_0.5.0       htmltools_0.3.6    assertthat_0.2.0  
+[40] colorspace_1.3-2   labeling_0.3       KernSmooth_2.23-15
+[43] stringi_1.2.3      lazyeval_0.2.1     munsell_0.5.0     
+[46] crayon_1.3.4       R.oo_1.22.0       </code></pre>
 </div>
 </div>
 

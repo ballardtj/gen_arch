@@ -6,4 +6,4 @@
 
 #PBS -J 1-8
 
-bash cmdstan/model/4_collect_samples.sh ${FRAME} $PBS_ARRAY_INDEX
+bash cmdstan/model/4_collect_samples.sh ${FRAME} ${SOURCE} $PBS_ARRAY_INDEX
