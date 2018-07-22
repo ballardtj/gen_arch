@@ -1,19 +1,42 @@
 ---
 title: "R Notebook"
-output: html_notebook
+output:
+  html_document:
+    df_print: paged
 ---
 
-This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+# Observed Decisions
 
-Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Cmd+Shift+Enter*. 
+## Approach Condition
 
-```{r}
-plot(cars)
+```{r,echo=FALSE}
+library(rstan)
+
+hypers=c('w1_mean','w1_sd','w2_mean','w2_sd','w3_mean','w3_sd',
+         'delta_a','delta_b','tau_a','tau_b','alpha_a','alpha_b')
+
+load("model/ap_fit.RData")
+
+smrystan = summary(fit)
+smrystan[[1]][hypers,]
+
+rstan::traceplot(fit,par=hypers)
+pairs(fit,pars=hypers)
 ```
 
-Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Cmd+Option+I*.
+## Avoidance Condition
 
-When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Cmd+Shift+K* to preview the HTML file). 
+```{r,echo=FALSE}
+library(rstan)
 
-The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
+hypers=c('w1_mean','w1_sd','w2_mean','w2_sd','w3_mean','w3_sd',
+         'delta_a','delta_b','tau_a','tau_b','alpha_a','alpha_b')
 
+load("model/av_fit.RData")
+
+smrystan = summary(fit)
+smrystan[[1]][hypers,]
+
+rstan::traceplot(fit,par=hypers)
+pairs(fit,pars=hypers)
+```
