@@ -6,6 +6,7 @@ output:
 ---
 
 Run details: 
+
 * Chains: 8
 * Burnin: 4000
 * Post-burnin: 10000
