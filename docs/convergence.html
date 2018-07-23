@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+
+<title>R Notebook</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.0.13/css/fa-svg-with-js.css" rel="stylesheet" />
+<script src="site_libs/font-awesome-5.0.13/js/fontawesome-all.min.js"></script>
+<script src="site_libs/font-awesome-5.0.13/js/fa-v4-shims.min.js"></script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">gen_arch</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/jdblischak/workflowr">
+    <span class="fa fa-github"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">R Notebook</h1>
+
+</div>
+
+
+<p><strong>Last updated:</strong> 2018-07-23</p>
+<strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
+<ul>
+<li>
+<details>
+<p><summary> <strong style="color:blue;">✔</strong> <strong>R Markdown file:</strong> up-to-date </summary></p>
+<p>Great! Since the R Markdown file has been committed to the Git repository, you know the exact version of the code that produced these results.</p>
+</details>
+</li>
+<li>
+<details>
+<p><summary> <strong style="color:blue;">✔</strong> <strong>Environment:</strong> empty </summary></p>
+<p>Great job! The global environment was empty. Objects defined in the global environment can affect the analysis in your R Markdown file in unknown ways. For reproduciblity it’s best to always run the code in an empty environment.</p>
+</details>
+</li>
+<li>
+<details>
+<p><summary> <strong style="color:blue;">✔</strong> <strong>Seed:</strong> <code>set.seed(20180715)</code> </summary></p>
+<p>The command <code>set.seed(20180715)</code> was run prior to running the code in the R Markdown file. Setting a seed ensures that any results that rely on randomness, e.g. subsampling or permutations, are reproducible.</p>
+</details>
+</li>
+<li>
+<details>
+<p><summary> <strong style="color:blue;">✔</strong> <strong>Session information:</strong> recorded </summary></p>
+<p>Great job! Recording the operating system, R version, and package versions is critical for reproducibility.</p>
+</details>
+</li>
+<li>
+<details>
+<p><summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/ballardtj/gen_arch/tree/e43597488dc980bc178518524ff35588e08b60a0" target="_blank">e435974</a> </summary></p>
+Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
+<pre><code>
+Ignored files:
+    Ignored:    .DS_Store
+    Ignored:    .Rproj.user/
+    Ignored:    model/.DS_Store
+
+Untracked files:
+    Untracked:  data/derived/ap_obs_fit.RData
+    Untracked:  data/derived/av_obs_fit.RData
+
+Unstaged changes:
+    Deleted:    analysis/5_convergence.Rmd
+    Deleted:    data/derived/ap_fit.RData
+    Deleted:    data/derived/av_fit.RData
+    Modified:   model/1_send_to_cluster.sh
+    Modified:   model/2_make_goal.sh
+    Modified:   model/4_collect_samples.sh
+    Modified:   model/5_compile_samples.pbs
+    Modified:   model/6_compile_samples.R
+
+</code></pre>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes.
+</details>
+</li>
+</ul>
+<details>
+<summary> <small><strong>Expand here to see past versions:</strong></small> </summary>
+<ul>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+File
+</th>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+<th style="text-align:left;">
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/ballardtj/gen_arch/blob/e43597488dc980bc178518524ff35588e08b60a0/analysis/convergence.Rmd" target="_blank">e435974</a>
+</td>
+<td style="text-align:left;">
+ballardtj
+</td>
+<td style="text-align:left;">
+2018-07-23
+</td>
+<td style="text-align:left;">
+wflow_publish(&quot;analysis/*Rmd&quot;)
+</td>
+</tr>
+</tbody>
+</table>
+</ul>
+</details>
+<hr />
+<div id="observed-decisions" class="section level1">
+<h1>Observed Decisions</h1>
+<div id="approach-condition" class="section level2">
+<h2>Approach Condition</h2>
+<pre><code>Loading required package: ggplot2</code></pre>
+<pre><code>Loading required package: StanHeaders</code></pre>
+<pre><code>rstan (Version 2.17.3, GitRev: 2e1f913d3ca3)</code></pre>
+<pre><code>For execution on a local, multicore CPU with excess RAM we recommend calling
+options(mc.cores = parallel::detectCores()).
+To avoid recompilation of unchanged Stan programs, we recommend calling
+rstan_options(auto_write = TRUE)</code></pre>
+<pre><code>
+Attaching package: &#39;coda&#39;</code></pre>
+<pre><code>The following object is masked from &#39;package:rstan&#39;:
+
+    traceplot</code></pre>
+<div id="rstan-output" class="section level3">
+<h3>RStan output</h3>
+<pre><code>              mean      se_mean         sd       2.5%        25%
+w1_mean -4.5647905 0.0080445978 0.36967369 -5.3013472 -4.8176725
+w1_sd    3.5113457 0.0213980277 0.26868389  3.0129345  3.3262050
+w2_mean -3.6996282 0.0036446918 0.29284126 -4.2628625 -3.8999300
+w2_sd    6.7075316 0.0050298518 0.44988362  5.8594168  6.3978200
+w3_mean  0.8372364 0.0049408688 0.11218309  0.6106308  0.7626175
+w3_sd    2.7911193 0.0030943066 0.17008425  2.4720955  2.6741200
+delta_a  0.4951376 0.0013557006 0.10654758  0.3195728  0.4194360
+delta_b  0.1625358 0.0004097419 0.03161729  0.1114817  0.1401668
+tau_a    0.8277381 0.0014028267 0.12298345  0.6059755  0.7427847
+tau_b    1.2050430 0.0024939211 0.22003641  0.8186584  1.0490650
+alpha_a  0.5500598 0.0065516892 0.05591730  0.4466350  0.5113080
+alpha_b  0.4599020 0.0021581523 0.04282463  0.3807134  0.4298493
+               50%        75%      97.5%      n_eff      Rhat
+w1_mean -4.5594800 -4.3136675 -3.8467170 2111.68153 1.0102649
+w1_sd    3.4994750  3.6890450  4.0718600  157.66517 1.0205570
+w2_mean -3.7076200 -3.5035150 -3.1164518 6455.69354 1.0000292
+w2_sd    6.6979200  7.0053375  7.6160715 8000.00000 0.9997962
+w3_mean  0.8402770  0.9141238  1.0524890  515.52311 1.0187189
+w3_sd    2.7855700  2.9018050  3.1317205 3021.35313 1.0063720
+delta_a  0.4841820  0.5591575  0.7372401 6176.74329 1.0039506
+delta_b  0.1587420  0.1814005  0.2352845 5954.26922 1.0048793
+tau_a    0.8195800  0.9068655  1.0904603 7685.73227 1.0007082
+tau_b    1.1894050  1.3425800  1.6815875 7784.37401 0.9999544
+alpha_a  0.5477685  0.5868077  0.6667816   72.84266 1.0447947
+alpha_b  0.4582220  0.4885970  0.5480201  393.75219 1.0240037</code></pre>
+</div>
+<div id="coda-output" class="section level3">
+<h3>Coda output</h3>
+<p>Effective sample size</p>
+<pre><code> w1_mean    w1_sd  w2_mean    w2_sd  w3_mean    w3_sd  delta_a  delta_b 
+7176.800 7331.874 6739.168 7843.737 3075.329 7125.114 6975.776 6337.991 
+   tau_a    tau_b  alpha_a  alpha_b 
+8569.692 8687.566 3679.292 3044.142 </code></pre>
+<p>Gelman’s Rhat</p>
+<pre><code>        Point est. Upper C.I.
+w1_mean  1.0102770  1.0243853
+w1_sd    1.0269419  1.0611024
+w2_mean  1.0006821  1.0022320
+w2_sd    0.9993339  0.9995162
+w3_mean  1.0371910  1.0828491
+w3_sd    1.0144514  1.0336112
+delta_a  1.0049318  1.0121263
+delta_b  1.0049283  1.0119918
+tau_a    1.0019088  1.0050760
+tau_b    1.0012527  1.0034112
+alpha_a  1.0516797  1.1150957
+alpha_b  1.0330897  1.0744202</code></pre>
+</div>
+<div id="plots" class="section level3">
+<h3>Plots</h3>
+<p><img src="figure/convergence.Rmd/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/convergence.Rmd/unnamed-chunk-5-2.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+</div>
+<div id="avoidance-condition" class="section level2">
+<h2>Avoidance Condition</h2>
+<div id="rstan-output-1" class="section level3">
+<h3>RStan output</h3>
+<pre><code>              mean      se_mean         sd        2.5%        25%
+w1_mean -7.6012014 0.0077555421 0.59222865 -8.79070900 -7.9896675
+w1_sd    3.4941212 0.0054182234 0.37394294  2.79160125  3.2384050
+w2_mean -2.7570432 0.0125393155 1.12155047 -5.34020750 -3.3744800
+w2_sd    0.7058693 0.0060959605 0.53665195  0.02783302  0.2776418
+w3_mean  0.1842672 0.0013402685 0.09286733  0.01878775  0.1172932
+w3_sd    1.6720578 0.0013371004 0.11411765  1.45643700  1.5928400
+delta_a  0.4809268 0.0011162026 0.08025446  0.34386890  0.4249590
+delta_b  1.2422824 0.0042047315 0.30082458  0.76693702  1.0281950
+tau_a    0.1969954 0.0007524751 0.04943139  0.12258787  0.1617915
+tau_b    8.2678442 0.0341242637 2.95452606  3.26619150  6.1212250
+alpha_a  0.5289706 0.0036938224 0.07358253  0.39644157  0.4767635
+alpha_b  1.2626784 0.0373344855 0.20501075  0.89217595  1.1198950
+               50%        75%      97.5%      n_eff      Rhat
+w1_mean -7.5881750 -7.1975500 -6.4728343 5831.15388 1.0015154
+w1_sd    3.4813200  3.7380125  4.2670892 4763.17841 1.0041173
+w2_mean -2.6295500 -2.0098625 -0.9162083 8000.00000 1.0006378
+w2_sd    0.5879880  1.0167875  1.9761257 7749.98990 0.9999685
+w3_mean  0.1799905  0.2486955  0.3734117 4801.11702 1.0020689
+w3_sd    1.6700950  1.7471600  1.9066905 7284.12921 0.9998808
+delta_a  0.4751880  0.5299067  0.6533880 5169.54438 1.0064749
+delta_b  1.2078000  1.4183425  1.9250485 5118.58708 1.0051491
+tau_a    0.1893565  0.2237348  0.3133098 4315.40295 1.0009315
+tau_b    7.9750550 10.0730500 14.7855075 7496.33647 1.0005257
+alpha_a  0.5242670  0.5756525  0.6850437  396.82348 1.0209716
+alpha_b  1.2526300  1.3915600  1.7016587   30.15317 1.0715883</code></pre>
+</div>
+<div id="coda-output-1" class="section level3">
+<h3>Coda output</h3>
+<p>Effective sample size</p>
+<pre><code> w1_mean    w1_sd  w2_mean    w2_sd  w3_mean    w3_sd  delta_a  delta_b 
+6439.821 5740.172 8152.622 8078.791 5354.364 7408.559 7475.427 7025.157 
+   tau_a    tau_b  alpha_a  alpha_b 
+4825.283 7903.675 4418.541 4460.728 </code></pre>
+<p>Gelman’s Rhat</p>
+<pre><code>        Point est. Upper C.I.
+w1_mean  1.0014494   1.004337
+w1_sd    1.0032877   1.008622
+w2_mean  1.0013398   1.003972
+w2_sd    0.9998047   1.000651
+w3_mean  1.0044002   1.010825
+w3_sd    1.0002666   1.001630
+delta_a  1.0079800   1.018764
+delta_b  1.0054738   1.013079
+tau_a    1.0014290   1.004029
+tau_b    1.0002154   1.001508
+alpha_a  1.0318437   1.072333
+alpha_b  1.0916075   1.198478</code></pre>
+</div>
+<div id="plots-1" class="section level3">
+<h3>Plots</h3>
+<p><img src="figure/convergence.Rmd/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/convergence.Rmd/unnamed-chunk-10-2.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+</div>
+<div id="session-information" class="section level2">
+<h2>Session information</h2>
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 3.5.1 (2018-07-02)
+Platform: x86_64-apple-darwin15.6.0 (64-bit)
+Running under: macOS High Sierra 10.13.3
+
+Matrix products: default
+BLAS: /Library/Frameworks/R.framework/Versions/3.5/Resources/lib/libRblas.0.dylib
+LAPACK: /Library/Frameworks/R.framework/Versions/3.5/Resources/lib/libRlapack.dylib
+
+locale:
+[1] en_AU.UTF-8/en_AU.UTF-8/en_AU.UTF-8/C/en_AU.UTF-8/en_AU.UTF-8
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+[1] coda_0.19-1        rstan_2.17.3       StanHeaders_2.17.2
+[4] ggplot2_3.0.0     
+
+loaded via a namespace (and not attached):
+ [1] Rcpp_0.12.17       compiler_3.5.1     pillar_1.3.0      
+ [4] git2r_0.22.1       plyr_1.8.4         workflowr_1.1.1   
+ [7] bindr_0.1.1        R.methodsS3_1.7.1  R.utils_2.6.0     
+[10] tools_3.5.1        digest_0.6.15      lattice_0.20-35   
+[13] evaluate_0.10.1    tibble_1.4.2       gtable_0.2.0      
+[16] pkgconfig_2.0.1    rlang_0.2.1        yaml_2.1.19       
+[19] bindrcpp_0.2.2     gridExtra_2.3      withr_2.1.2       
+[22] stringr_1.3.1      dplyr_0.7.6        knitr_1.20        
+[25] stats4_3.5.1       rprojroot_1.3-2    grid_3.5.1        
+[28] tidyselect_0.2.4   inline_0.3.15      glue_1.2.0        
+[31] R6_2.2.2           rmarkdown_1.10     purrr_0.2.5       
+[34] magrittr_1.5       whisker_0.3-2      backports_1.1.2   
+[37] scales_0.5.0       htmltools_0.3.6    assertthat_0.2.0  
+[40] colorspace_1.3-2   labeling_0.3       KernSmooth_2.23-15
+[43] stringi_1.2.3      lazyeval_0.2.1     munsell_0.5.0     
+[46] crayon_1.3.4       R.oo_1.22.0       </code></pre>
+</div>
+</div>
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+http://docs.mathjax.org/en/latest/configuration.html.  This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+<hr>
+<p>
+  This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a>
+  analysis was created with
+  <a href="https://github.com/jdblischak/workflowr">workflowr</a> 1.1.1
+</p>
+<hr>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
