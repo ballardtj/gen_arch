@@ -351,7 +351,7 @@ div.section {
 </li>
 <li>
 <details>
-<p><summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/ballardtj/gen_arch/tree/c2f086a64b85ad1c59bb1fc872cc32d79a4ffba7" target="_blank">c2f086a</a> </summary></p>
+<p><summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/ballardtj/gen_arch/tree/87ace090e6c02da0e7cf0927fcdbcef3dcb6a480" target="_blank">87ace09</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -388,6 +388,57 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/ballardtj/gen_arch/blob/87ace090e6c02da0e7cf0927fcdbcef3dcb6a480/analysis/convergence.Rmd" target="_blank">87ace09</a>
+</td>
+<td style="text-align:left;">
+ballardtj
+</td>
+<td style="text-align:left;">
+2018-07-23
+</td>
+<td style="text-align:left;">
+wflow_publish(files = c(“analysis/index.Rmd”, “analysis/license.Rmd”, “analysis/about.Rmd”,
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/ballardtj/gen_arch/blob/50274500fc79021b1eb207ad14200e4be5ee392b/analysis/convergence.Rmd" target="_blank">5027450</a>
+</td>
+<td style="text-align:left;">
+ballardtj
+</td>
+<td style="text-align:left;">
+2018-07-23
+</td>
+<td style="text-align:left;">
+changed alpha to exclude 0 and 1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/ballardtj/gen_arch/35618960f9dacde3cb0fd6b25f64cbf45d59eee4/docs/convergence.html" target="_blank">3561896</a>
+</td>
+<td style="text-align:left;">
+ballardtj
+</td>
+<td style="text-align:left;">
+2018-07-23
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -495,6 +546,12 @@ wflow_publish(&quot;analysis/*Rmd&quot;)
 </ul>
 </details>
 <hr />
+<p>Model description:</p>
+<ul>
+<li>Hierarchical</li>
+<li>Weight parameters normally distributed, non-centered.</li>
+<li>Gradient parameters beta distributed.</li>
+</ul>
 <p>Run details:</p>
 <ul>
 <li>Chains: 8</li>
@@ -503,6 +560,8 @@ wflow_publish(&quot;analysis/*Rmd&quot;)
 <li>Thinning: 10</li>
 <li>Total samples: 8000</li>
 </ul>
+<p>Current issues with model:</p>
+<p>1 Somewhat low ESS for alpha parameters. Likely due to the fact that allowable values 0 and 1 produce NAs. Next step is to run model with lower bound of 0.0001 and upper bound of 0.9999 to avoid NAs. 2 Hyper parms on gradients parameters are highly correlated. Worth running a model where gradient parms are normals with explicit truncation. Reparamterizing from beta to normal could help with this, as the correlation seems to only happen when gradients are betas.</p>
 <div id="observed-decisions" class="section level1">
 <h1>Observed Decisions</h1>
 <div id="approach-condition" class="section level2">
