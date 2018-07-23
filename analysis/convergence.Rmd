@@ -5,11 +5,18 @@ output:
     df_print: paged
 ---
 
+Run details: 
+* Chains: 8
+* Burnin: 4000
+* Post-burnin: 10000
+* Thinning: 10
+* Total samples: 8000
+
 # Observed Decisions
 
 ## Approach Condition
 
-```{r,echo=FALSE}
+```{r,echo=FALSE,include=FALSE}
 library(rstan)
 library(coda)
 
