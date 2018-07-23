@@ -83,7 +83,6 @@ functions {
 
     //matrix multiplication to calculate the logit for each observation for that subject
     p_a_logit = weights * dat;
-
     return p_a_logit;
   }
 }
@@ -134,7 +133,7 @@ parameters {
 
   real<lower=0> alpha_a;
   real<lower=0> alpha_b;
-  real<lower=0,upper=1> alpha[Nsubj];
+  real<lower=0.0001,upper=0.9999> alpha[Nsubj];
 
 }
 

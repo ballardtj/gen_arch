@@ -6,12 +6,15 @@ output:
 ---
 
 Run details: 
-
 * Chains: 8
 * Burnin: 4000
 * Post-burnin: 10000
 * Thinning: 10
 * Total samples: 8000
+
+Current issues with model:
+Need to rerun with alpha declared to have bounds that exclude 0 and 1.
+
 
 # Observed Decisions
 
