@@ -1,5 +1,3 @@
-//same as version 19 in 11-faster folder
-
 functions {
   row_vector goal_sub(real w1_mean,
                       real w1_sd,
@@ -133,7 +131,7 @@ parameters {
 
   real<lower=0> alpha_a;
   real<lower=0> alpha_b;
-  real<lower=0.0001,upper=0.9999> alpha[Nsubj];
+  real<lower=0.01,upper=0.99> alpha[Nsubj];
 
 }
 
@@ -161,11 +159,12 @@ model {
 
   delta ~ beta(delta_a,delta_b);
   tau ~ beta(tau_a,tau_b);
-  alpha ~ beta(alpha_a,alpha_b);
 
   //loop through subjects evaluating likelihood for each one
   for(subj in 1:Nsubj){
     row_vector[Nobs[subj]] p_a_logit;
+
+    alpha[subj] ~ beta(alpha_a,alpha_b) T[0.01,0.99];
 
     p_a_logit = goal_sub(w1_mean,w1_sd,w1,
                          w2_mean,w2_sd,w2,
@@ -175,10 +174,8 @@ model {
                          a_logd,b_logd,a_logt,b_logt,
                          a_dot,b_dot,a_tod,b_tod);
 
-    //for(obs in 1:Nobs[subj]){
-      y[1:Nobs[subj],subj] ~ bernoulli_logit(p_a_logit);
-    //}
 
+    y[1:Nobs[subj],subj] ~ bernoulli_logit(p_a_logit);
   }
 }
 
