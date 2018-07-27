@@ -69,7 +69,7 @@ functions {
     }
 
     //the 3rd and 4th columns of data and weights are the same for all subjects.
-    alpha_sub = alpha[subj];
+    alpha_sub = 0.001 + 0.998*alpha[subj];
     one_m_alpha_sub = 1-alpha_sub;
     weights[2] = (w3_mean + w3[subj]*w3_sd)*2*one_m_alpha_sub*sqrt(alpha_sub/one_m_alpha_sub);
 
@@ -131,7 +131,7 @@ parameters {
 
   real<lower=0> alpha_a;
   real<lower=0> alpha_b;
-  real<lower=0.01,upper=0.99> alpha[Nsubj];
+  real<lower=0,upper=1> alpha[Nsubj];
 
 }
 
@@ -159,12 +159,11 @@ model {
 
   delta ~ beta(delta_a,delta_b);
   tau ~ beta(tau_a,tau_b);
+  alpha ~ beta(alpha_a,alpha_b);
 
   //loop through subjects evaluating likelihood for each one
   for(subj in 1:Nsubj){
     row_vector[Nobs[subj]] p_a_logit;
-
-    alpha[subj] ~ beta(alpha_a,alpha_b) T[0.01,0.99];
 
     p_a_logit = goal_sub(w1_mean,w1_sd,w1,
                          w2_mean,w2_sd,w2,
