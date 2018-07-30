@@ -11,7 +11,7 @@
 
 
 
-<title>About</title>
+<title>R Notebook</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -19,6 +19,9 @@
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
@@ -169,6 +172,101 @@ $(document).ready(function () {
 
 
 
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
 
 
 <div class="navbar navbar-default  navbar-fixed-top" role="navigation">
@@ -219,7 +317,7 @@ div.section {
 
 
 
-<h1 class="title toc-ignore">About</h1>
+<h1 class="title toc-ignore">R Notebook</h1>
 
 </div>
 
@@ -231,6 +329,24 @@ div.section {
 <details>
 <p><summary> <strong style="color:blue;">✔</strong> <strong>R Markdown file:</strong> up-to-date </summary></p>
 <p>Great! Since the R Markdown file has been committed to the Git repository, you know the exact version of the code that produced these results.</p>
+</details>
+</li>
+<li>
+<details>
+<p><summary> <strong style="color:blue;">✔</strong> <strong>Environment:</strong> empty </summary></p>
+<p>Great job! The global environment was empty. Objects defined in the global environment can affect the analysis in your R Markdown file in unknown ways. For reproduciblity it’s best to always run the code in an empty environment.</p>
+</details>
+</li>
+<li>
+<details>
+<p><summary> <strong style="color:blue;">✔</strong> <strong>Seed:</strong> <code>set.seed(20180715)</code> </summary></p>
+<p>The command <code>set.seed(20180715)</code> was run prior to running the code in the R Markdown file. Setting a seed ensures that any results that rely on randomness, e.g. subsampling or permutations, are reproducible.</p>
+</details>
+</li>
+<li>
+<details>
+<p><summary> <strong style="color:blue;">✔</strong> <strong>Session information:</strong> recorded </summary></p>
+<p>Great job! Recording the operating system, R version, and package versions is critical for reproducibility.</p>
 </details>
 </li>
 <li>
@@ -278,104 +394,19 @@ Message
 <tbody>
 <tr>
 <td style="text-align:left;">
-html
+Rmd
 </td>
 <td style="text-align:left;">
-<a href="https://cdn.rawgit.com/ballardtj/gen_arch/f24153e2bfbb79b575ef0a1c22616cd0d9ffbb53/docs/about.html" target="_blank">f24153e</a>
-</td>
-<td style="text-align:left;">
-ballardtj
-</td>
-<td style="text-align:left;">
-2018-07-23
-</td>
-<td style="text-align:left;">
-Build site.
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-html
-</td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/ballardtj/gen_arch/35618960f9dacde3cb0fd6b25f64cbf45d59eee4/docs/about.html" target="_blank">3561896</a>
+<a href="https://github.com/ballardtj/gen_arch/blob/9742160e6048e084d80604b51acc55459b4c8fb2/analysis/predictives.Rmd" target="_blank">9742160</a>
 </td>
 <td style="text-align:left;">
 ballardtj
 </td>
 <td style="text-align:left;">
-2018-07-23
+2018-07-31
 </td>
 <td style="text-align:left;">
-Build site.
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-html
-</td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/ballardtj/gen_arch/631b361ceaf83e602ceb56f9660b5cd98f617af5/docs/about.html" target="_blank">631b361</a>
-</td>
-<td style="text-align:left;">
-ballardtj
-</td>
-<td style="text-align:left;">
-2018-07-23
-</td>
-<td style="text-align:left;">
-Build site.
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-html
-</td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/ballardtj/gen_arch/b5ce4f623f318f829f85d0d58df925a7bccadea3/docs/about.html" target="_blank">b5ce4f6</a>
-</td>
-<td style="text-align:left;">
-ballardtj
-</td>
-<td style="text-align:left;">
-2018-07-23
-</td>
-<td style="text-align:left;">
-Build site.
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-html
-</td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/ballardtj/gen_arch/3543c2a560290c7bd46dddfbd7131ca60fce05d2/docs/about.html" target="_blank">3543c2a</a>
-</td>
-<td style="text-align:left;">
-ballardtj
-</td>
-<td style="text-align:left;">
-2018-07-23
-</td>
-<td style="text-align:left;">
-Build site.
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-html
-</td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/ballardtj/gen_arch/b7460f7ca99d6abc1afb1185ff9323f3aab18ee8/docs/about.html" target="_blank">b7460f7</a>
-</td>
-<td style="text-align:left;">
-ballardtj
-</td>
-<td style="text-align:left;">
-2018-07-18
-</td>
-<td style="text-align:left;">
-initial
+wflow_publish(&quot;analysis/*md&quot;)
 </td>
 </tr>
 <tr>
@@ -383,16 +414,16 @@ initial
 Rmd
 </td>
 <td style="text-align:left;">
-<a href="https://github.com/ballardtj/gen_arch/blob/8c08b82316228684d93058c9e997560fbac7f330/analysis/about.Rmd" target="_blank">8c08b82</a>
+<a href="https://github.com/ballardtj/gen_arch/blob/50274500fc79021b1eb207ad14200e4be5ee392b/analysis/predictives.Rmd" target="_blank">5027450</a>
 </td>
 <td style="text-align:left;">
 ballardtj
 </td>
 <td style="text-align:left;">
-2018-07-15
+2018-07-23
 </td>
 <td style="text-align:left;">
-Start workflowr project.
+changed alpha to exclude 0 and 1
 </td>
 </tr>
 </tbody>
@@ -400,7 +431,35 @@ Start workflowr project.
 </ul>
 </details>
 <hr />
-<p>Describe your project.</p>
+<div id="observed-decisions" class="section level1">
+<h1>Observed Decisions</h1>
+<div id="session-information" class="section level2">
+<h2>Session information</h2>
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 3.5.1 (2018-07-02)
+Platform: x86_64-apple-darwin15.6.0 (64-bit)
+Running under: macOS High Sierra 10.13.3
+
+Matrix products: default
+BLAS: /Library/Frameworks/R.framework/Versions/3.5/Resources/lib/libRblas.0.dylib
+LAPACK: /Library/Frameworks/R.framework/Versions/3.5/Resources/lib/libRlapack.dylib
+
+locale:
+[1] en_AU.UTF-8/en_AU.UTF-8/en_AU.UTF-8/C/en_AU.UTF-8/en_AU.UTF-8
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+loaded via a namespace (and not attached):
+ [1] workflowr_1.1.1   Rcpp_0.12.17      digest_0.6.15    
+ [4] rprojroot_1.3-2   R.methodsS3_1.7.1 backports_1.1.2  
+ [7] git2r_0.22.1      magrittr_1.5      evaluate_0.10.1  
+[10] stringi_1.2.3     whisker_0.3-2     R.oo_1.22.0      
+[13] R.utils_2.6.0     rmarkdown_1.10    tools_3.5.1      
+[16] stringr_1.3.1     yaml_2.1.19       compiler_3.5.1   
+[19] htmltools_0.3.6   knitr_1.20       </code></pre>
+</div>
+</div>
 
 <!-- Adjust MathJax settings so that all math formulae are shown using
 TeX fonts only; see
@@ -423,6 +482,8 @@ footer is added to webpages before the MathJax javascript. -->
 <hr>
 
 
+</div>
+</div>
 
 </div>
 

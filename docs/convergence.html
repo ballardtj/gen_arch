@@ -322,7 +322,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2018-07-23</p>
+<p><strong>Last updated:</strong> 2018-07-31</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -351,13 +351,17 @@ div.section {
 </li>
 <li>
 <details>
-<p><summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/ballardtj/gen_arch/tree/87ace090e6c02da0e7cf0927fcdbcef3dcb6a480" target="_blank">87ace09</a> </summary></p>
+<p><summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/ballardtj/gen_arch/tree/9742160e6048e084d80604b51acc55459b4c8fb2" target="_blank">9742160</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
     Ignored:    .DS_Store
+    Ignored:    .Rhistory
     Ignored:    .Rproj.user/
     Ignored:    model/.DS_Store
+
+Unstaged changes:
+    Modified:   data/derived/ap_obs_fit.RData
 
 </code></pre>
 Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes.
@@ -388,6 +392,23 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/ballardtj/gen_arch/f24153e2bfbb79b575ef0a1c22616cd0d9ffbb53/docs/convergence.html" target="_blank">f24153e</a>
+</td>
+<td style="text-align:left;">
+ballardtj
+</td>
+<td style="text-align:left;">
+2018-07-23
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -550,7 +571,7 @@ wflow_publish(&quot;analysis/*Rmd&quot;)
 <ul>
 <li>Hierarchical</li>
 <li>Weight parameters normally distributed, non-centered.</li>
-<li>Gradient parameters beta distributed.</li>
+<li>Gradient parameters beta distributed, with alpha pushed away from 0 and 1 with alpha = 0.001 + 0.998*alpha_raw.</li>
 </ul>
 <p>Run details:</p>
 <ul>
@@ -569,53 +590,53 @@ wflow_publish(&quot;analysis/*Rmd&quot;)
 <div id="rstan-output" class="section level3">
 <h3>RStan output</h3>
 <pre><code>              mean      se_mean         sd       2.5%        25%
-w1_mean -4.5647905 0.0080445978 0.36967369 -5.3013472 -4.8176725
-w1_sd    3.5113457 0.0213980277 0.26868389  3.0129345  3.3262050
-w2_mean -3.6996282 0.0036446918 0.29284126 -4.2628625 -3.8999300
-w2_sd    6.7075316 0.0050298518 0.44988362  5.8594168  6.3978200
-w3_mean  0.8372364 0.0049408688 0.11218309  0.6106308  0.7626175
-w3_sd    2.7911193 0.0030943066 0.17008425  2.4720955  2.6741200
-delta_a  0.4951376 0.0013557006 0.10654758  0.3195728  0.4194360
-delta_b  0.1625358 0.0004097419 0.03161729  0.1114817  0.1401668
-tau_a    0.8277381 0.0014028267 0.12298345  0.6059755  0.7427847
-tau_b    1.2050430 0.0024939211 0.22003641  0.8186584  1.0490650
-alpha_a  0.5500598 0.0065516892 0.05591730  0.4466350  0.5113080
-alpha_b  0.4599020 0.0021581523 0.04282463  0.3807134  0.4298493
+w1_mean -4.6247317 0.0222700199 0.37419375 -5.3803142 -4.8711450
+w1_sd    3.5484476 0.0339142369 0.27684640  3.0399397  3.3527400
+w2_mean -3.6858339 0.0033252769 0.29343852 -4.2626497 -3.8815225
+w2_sd    6.6958413 0.0051662339 0.45378361  5.8326407  6.3914525
+w3_mean  0.7146000 0.0014103589 0.10200212  0.5065727  0.6485225
+w3_sd    2.8784507 0.0021035497 0.16650550  2.5673195  2.7627225
+delta_a  0.4899383 0.0013967911 0.10538497  0.3175263  0.4145423
+delta_b  0.1631099 0.0003971397 0.03175162  0.1114550  0.1408437
+tau_a    0.8444774 0.0014050477 0.12567128  0.6229329  0.7561928
+tau_b    1.2246778 0.0024996957 0.22357958  0.8393986  1.0670025
+alpha_a  0.5716375 0.0053174910 0.05506899  0.4689113  0.5336190
+alpha_b  0.4823820 0.0005962479 0.04228505  0.4038795  0.4527757
                50%        75%      97.5%      n_eff      Rhat
-w1_mean -4.5594800 -4.3136675 -3.8467170 2111.68153 1.0102649
-w1_sd    3.4994750  3.6890450  4.0718600  157.66517 1.0205570
-w2_mean -3.7076200 -3.5035150 -3.1164518 6455.69354 1.0000292
-w2_sd    6.6979200  7.0053375  7.6160715 8000.00000 0.9997962
-w3_mean  0.8402770  0.9141238  1.0524890  515.52311 1.0187189
-w3_sd    2.7855700  2.9018050  3.1317205 3021.35313 1.0063720
-delta_a  0.4841820  0.5591575  0.7372401 6176.74329 1.0039506
-delta_b  0.1587420  0.1814005  0.2352845 5954.26922 1.0048793
-tau_a    0.8195800  0.9068655  1.0904603 7685.73227 1.0007082
-tau_b    1.1894050  1.3425800  1.6815875 7784.37401 0.9999544
-alpha_a  0.5477685  0.5868077  0.6667816   72.84266 1.0447947
-alpha_b  0.4582220  0.4885970  0.5480201  393.75219 1.0240037</code></pre>
+w1_mean -4.6215900 -4.3701950 -3.8984642  282.32663 1.0202559
+w1_sd    3.5366900  3.7301125  4.1234532   66.63673 1.0377047
+w2_mean -3.6881750 -3.4835250 -3.1168365 7787.15139 0.9997334
+w2_sd    6.6814050  6.9956375  7.6172283 7715.24088 1.0006366
+w3_mean  0.7165865  0.7846107  0.9070489 5230.69119 1.0042504
+w3_sd    2.8745050  2.9886500  3.2166012 6265.44107 1.0014797
+delta_a  0.4785200  0.5540793  0.7232923 5692.38719 1.0038016
+delta_b  0.1592285  0.1817337  0.2349188 6392.12441 1.0031331
+tau_a    0.8355415  0.9233567  1.1169805 8000.00000 0.9999402
+tau_b    1.2068200  1.3654975  1.7084222 8000.00000 0.9997462
+alpha_a  0.5691645  0.6078175  0.6856878  107.25083 1.0282951
+alpha_b  0.4805815  0.5099280  0.5703224 5029.44368 1.0030585</code></pre>
 </div>
 <div id="coda-output" class="section level3">
 <h3>Coda output</h3>
 <p>Effective sample size</p>
 <pre><code> w1_mean    w1_sd  w2_mean    w2_sd  w3_mean    w3_sd  delta_a  delta_b 
-7176.800 7331.874 6739.168 7843.737 3075.329 7125.114 6975.776 6337.991 
+7082.677 6593.635 8541.067 7570.652 7040.938 8055.239 7193.602 6421.822 
    tau_a    tau_b  alpha_a  alpha_b 
-8569.692 8687.566 3679.292 3044.142 </code></pre>
+7724.885 8635.700 6574.615 7554.653 </code></pre>
 <p>Gelman’s Rhat</p>
 <pre><code>        Point est. Upper C.I.
-w1_mean  1.0102770  1.0243853
-w1_sd    1.0269419  1.0611024
-w2_mean  1.0006821  1.0022320
-w2_sd    0.9993339  0.9995162
-w3_mean  1.0371910  1.0828491
-w3_sd    1.0144514  1.0336112
-delta_a  1.0049318  1.0121263
-delta_b  1.0049283  1.0119918
-tau_a    1.0019088  1.0050760
-tau_b    1.0012527  1.0034112
-alpha_a  1.0516797  1.1150957
-alpha_b  1.0330897  1.0744202</code></pre>
+w1_mean  1.0309059   1.070004
+w1_sd    1.0495773   1.110205
+w2_mean  1.0001363   1.001346
+w2_sd    1.0019762   1.005684
+w3_mean  1.0055747   1.013367
+w3_sd    1.0022647   1.005880
+delta_a  1.0050535   1.012633
+delta_b  1.0036242   1.009156
+tau_a    1.0005600   1.002262
+tau_b    0.9999937   1.001182
+alpha_a  1.0222662   1.051047
+alpha_b  1.0022429   1.006206</code></pre>
 </div>
 <div id="plots" class="section level3">
 <h3>Plots</h3>
@@ -689,54 +710,54 @@ ballardtj
 <h2>Avoidance Condition</h2>
 <div id="rstan-output-1" class="section level3">
 <h3>RStan output</h3>
-<pre><code>              mean      se_mean         sd        2.5%        25%
-w1_mean -7.6012014 0.0077555421 0.59222865 -8.79070900 -7.9896675
-w1_sd    3.4941212 0.0054182234 0.37394294  2.79160125  3.2384050
-w2_mean -2.7570432 0.0125393155 1.12155047 -5.34020750 -3.3744800
-w2_sd    0.7058693 0.0060959605 0.53665195  0.02783302  0.2776418
-w3_mean  0.1842672 0.0013402685 0.09286733  0.01878775  0.1172932
-w3_sd    1.6720578 0.0013371004 0.11411765  1.45643700  1.5928400
-delta_a  0.4809268 0.0011162026 0.08025446  0.34386890  0.4249590
-delta_b  1.2422824 0.0042047315 0.30082458  0.76693702  1.0281950
-tau_a    0.1969954 0.0007524751 0.04943139  0.12258787  0.1617915
-tau_b    8.2678442 0.0341242637 2.95452606  3.26619150  6.1212250
-alpha_a  0.5289706 0.0036938224 0.07358253  0.39644157  0.4767635
-alpha_b  1.2626784 0.0373344855 0.20501075  0.89217595  1.1198950
-               50%        75%      97.5%      n_eff      Rhat
-w1_mean -7.5881750 -7.1975500 -6.4728343 5831.15388 1.0015154
-w1_sd    3.4813200  3.7380125  4.2670892 4763.17841 1.0041173
-w2_mean -2.6295500 -2.0098625 -0.9162083 8000.00000 1.0006378
-w2_sd    0.5879880  1.0167875  1.9761257 7749.98990 0.9999685
-w3_mean  0.1799905  0.2486955  0.3734117 4801.11702 1.0020689
-w3_sd    1.6700950  1.7471600  1.9066905 7284.12921 0.9998808
-delta_a  0.4751880  0.5299067  0.6533880 5169.54438 1.0064749
-delta_b  1.2078000  1.4183425  1.9250485 5118.58708 1.0051491
-tau_a    0.1893565  0.2237348  0.3133098 4315.40295 1.0009315
-tau_b    7.9750550 10.0730500 14.7855075 7496.33647 1.0005257
-alpha_a  0.5242670  0.5756525  0.6850437  396.82348 1.0209716
-alpha_b  1.2526300  1.3915600  1.7016587   30.15317 1.0715883</code></pre>
+<pre><code>              mean      se_mean         sd         2.5%         25%
+w1_mean -7.5949438 0.0075940859 0.58697185 -8.779010500 -7.98235750
+w1_sd    3.4940882 0.0050786744 0.37103220  2.795687000  3.23671250
+w2_mean -2.7883368 0.0127338314 1.13269001 -5.510525250 -3.43570500
+w2_sd    0.7084894 0.0061806224 0.54151670  0.027865412  0.28072075
+w3_mean  0.1290748 0.0008912175 0.07555628  0.009564661  0.06993605
+w3_sd    1.6950197 0.0012082004 0.10691894  1.493133500  1.62009250
+delta_a  0.4801768 0.0009609763 0.07883335  0.343679300  0.42522375
+delta_b  1.2408810 0.0038396051 0.29482558  0.759941175  1.02994750
+tau_a    0.1963295 0.0007456130 0.04944183  0.123234350  0.16105775
+tau_b    8.3004901 0.0341848017 2.94843001  3.483468000  6.14643000
+alpha_a  0.5615286 0.0016385048 0.07253860  0.432909400  0.51149400
+alpha_b  1.3125363 0.0202651523 0.20123598  0.951432600  1.16902500
+               50%        75%      97.5%      n_eff     Rhat
+w1_mean -7.5845700 -7.1960100 -6.4832548 5974.25199 1.000143
+w1_sd    3.4875700  3.7323625  4.2473047 5337.31052 1.000937
+w2_mean -2.6496300 -2.0136675 -0.9665622 7912.32192 1.000478
+w2_sd    0.5831355  1.0234000  2.0295072 7676.42972 0.999637
+w3_mean  0.1227590  0.1813805  0.2892483 7187.43205 1.001065
+w3_sd    1.6935400  1.7665250  1.9082553 7831.25545 1.000663
+delta_a  0.4731700  0.5288655  0.6510825 6729.68287 1.002264
+delta_b  1.2055200  1.4158875  1.9035915 5895.99636 1.002387
+tau_a    0.1888870  0.2235035  0.3132991 4397.05662 1.001411
+tau_b    7.9689600 10.1447500 14.8303425 7439.01642 0.999796
+alpha_a  0.5564965  0.6065677  0.7169682 1959.94039 1.010686
+alpha_b  1.3018850  1.4434775  1.7364022   98.60786 1.031198</code></pre>
 </div>
 <div id="coda-output-1" class="section level3">
 <h3>Coda output</h3>
 <p>Effective sample size</p>
 <pre><code> w1_mean    w1_sd  w2_mean    w2_sd  w3_mean    w3_sd  delta_a  delta_b 
-6439.821 5740.172 8152.622 8078.791 5354.364 7408.559 7475.427 7025.157 
+6842.150 5930.446 7946.479 8068.960 7627.894 7706.409 7424.896 6748.194 
    tau_a    tau_b  alpha_a  alpha_b 
-4825.283 7903.675 4418.541 4460.728 </code></pre>
+4632.224 7690.841 6555.675 4973.052 </code></pre>
 <p>Gelman’s Rhat</p>
 <pre><code>        Point est. Upper C.I.
-w1_mean  1.0014494   1.004337
-w1_sd    1.0032877   1.008622
-w2_mean  1.0013398   1.003972
-w2_sd    0.9998047   1.000651
-w3_mean  1.0044002   1.010825
-w3_sd    1.0002666   1.001630
-delta_a  1.0079800   1.018764
-delta_b  1.0054738   1.013079
-tau_a    1.0014290   1.004029
-tau_b    1.0002154   1.001508
-alpha_a  1.0318437   1.072333
-alpha_b  1.0916075   1.198478</code></pre>
+w1_mean  1.0011709   1.003513
+w1_sd    1.0001271   1.001439
+w2_mean  1.0013623   1.003611
+w2_sd    0.9997087   1.000279
+w3_mean  1.0023098   1.006036
+w3_sd    1.0021959   1.005977
+delta_a  0.9998429   1.000700
+delta_b  1.0001209   1.001295
+tau_a    1.0019572   1.005191
+tau_b    1.0003090   1.001602
+alpha_a  1.0087108   1.020771
+alpha_b  1.0219701   1.050133</code></pre>
 </div>
 <div id="plots-1" class="section level3">
 <h3>Plots</h3>
