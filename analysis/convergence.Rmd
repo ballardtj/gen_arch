@@ -21,8 +21,7 @@ Run details:
 
 Current issues with model:
 
-1 Somewhat low ESS for alpha parameters. Likely due to the fact that allowable values 0 and 1 produce NAs. Next step is to run model with lower bound of 0.0001 and upper bound of 0.9999 to avoid NAs.
-2 Hyper parms on gradients parameters are highly correlated. Worth running a model where gradient parms are normals with explicit truncation. Reparamterizing from beta to normal could help with this, as the correlation seems to only happen when gradients are betas.
+* 1 Hyper parms on gradients parameters are highly correlated. Worth running a model where gradient parms are normals with explicit truncation. Reparamterizing from beta to normal could help with this, as the correlation seems to only happen when gradients are betas.
 
 # Observed Decisions
 
