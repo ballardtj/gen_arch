@@ -9,7 +9,7 @@ Model description:
 
 * Hierarchical
 * Weight parameters normally distributed, non-centered.
-* Gradient parameters beta distributed.
+* Gradient parameters beta distributed, with alpha pushed away from 0 and 1 with alpha = 0.001 + 0.998*alpha_raw.
 
 Run details: 
 

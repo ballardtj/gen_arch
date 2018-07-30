@@ -6,7 +6,7 @@ output:
 ---
 
 
-```{r,echo=FALSE,include=FALSE}
+```{r,eval=FALSE, include=FALSE, r,echo=FALSE}
 setwd("..")
 library(rstan)
 library(tidyverse)
@@ -172,7 +172,7 @@ generate_pp_plot=function(pp_data){
 
 # Observed Decisions
 
-```{r,echo=FALSE}
+```{r,eval=FALSE, include=FALSE, echo=FALSE}
 #Approach
 setwd("..")
 dataList=read_rdump('data/clean/obs_ap_rdump.R')
