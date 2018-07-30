@@ -121,8 +121,8 @@ parameters {
   real<lower=0> w3_sd;
   real<lower=0> w3[Nsubj];
 
-  real<lower=0,upper=0> delta_mean;
-  real<lower=0,upper=0> delta_sd;
+  real<lower=0,upper=1> delta_mean;
+  real<lower=0,upper=1> delta_sd;
   real<lower=0,upper=1> delta[Nsubj1];
 
   real<lower=0,upper=1> tau_mean;
