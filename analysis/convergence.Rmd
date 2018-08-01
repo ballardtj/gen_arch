@@ -9,7 +9,7 @@ Model description:
 
 * Hierarchical
 * Weight parameters normally distributed, non-centered.
-* Gradient parameters beta distributed, with alpha pushed away from 0 and 1 with alpha = 0.001 + 0.998*alpha_raw.
+* Gradient parameters normally distributed, and explicitly truncated. Delta and Tau between 0 and 1. Alpha between 0.01 and 0.99.
 
 Run details: 
 
@@ -21,7 +21,7 @@ Run details:
 
 Current issues with model:
 
-* 1 Hyper parms on gradients parameters are highly correlated. Worth running a model where gradient parms are normals with explicit truncation. Reparamterizing from beta to normal could help with this, as the correlation seems to only happen when gradients are betas.
+?
 
 # Observed Decisions
 
@@ -32,7 +32,7 @@ library(rstan)
 library(coda)
 
 hypers=c('w1_mean','w1_sd','w2_mean','w2_sd','w3_mean','w3_sd',
-         'delta_a','delta_b','tau_a','tau_b','alpha_a','alpha_b')
+         'delta_mean','delta_sd','tau_mean','tau_sd','alpha_mean','alpha_sd')
 
 load("data/derived/ap_obs_fit.RData")
 ```
