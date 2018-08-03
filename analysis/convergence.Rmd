@@ -100,3 +100,72 @@ gelman.diag(stan2coda(fit))[[1]][hypers,]
 rstan::traceplot(fit,par=hypers)
 pairs(fit,pars=hypers)
 ```
+
+# Optimal Decisions
+
+## Approach Condition
+
+```{r,echo=FALSE}
+load("data/derived/ap_opt_fit.RData")
+```
+
+### RStan output
+
+```{r,echo=FALSE}
+smrystan = summary(fit)
+smrystan[[1]][hypers,]
+```
+
+### Coda output
+
+Effective sample size
+```{r,echo=FALSE}
+effectiveSize(stan2coda(fit))[hypers]
+```
+
+Gelman's Rhat
+
+```{r,echo=FALSE}
+gelman.diag(stan2coda(fit))[[1]][hypers,]
+```
+
+### Plots
+
+```{r,echo=FALSE}
+rstan::traceplot(fit,par=hypers)
+pairs(fit,pars=hypers)
+```
+
+
+## Avoidance Condition
+
+```{r,echo=FALSE}
+load("data/derived/av_opt_fit.RData")
+```
+
+### RStan output
+
+```{r,echo=FALSE}
+smrystan = summary(fit)
+smrystan[[1]][hypers,]
+```
+
+### Coda output
+
+Effective sample size
+```{r,echo=FALSE}
+effectiveSize(stan2coda(fit))[hypers]
+```
+
+Gelman's Rhat
+
+```{r,echo=FALSE}
+gelman.diag(stan2coda(fit))[[1]][hypers,]
+```
+
+### Plots
+
+```{r,echo=FALSE}
+rstan::traceplot(fit,par=hypers)
+pairs(fit,pars=hypers)
+```
