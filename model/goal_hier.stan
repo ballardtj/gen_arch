@@ -69,7 +69,7 @@ functions {
     }
 
     //the 3rd and 4th columns of data and weights are the same for all subjects.
-    alpha_sub = 0.001 + 0.998*alpha[subj];
+    alpha_sub = alpha[subj];
     one_m_alpha_sub = 1-alpha_sub;
     weights[2] = (w3_mean + w3[subj]*w3_sd)*2*one_m_alpha_sub*sqrt(alpha_sub/one_m_alpha_sub);
 
@@ -121,17 +121,17 @@ parameters {
   real<lower=0> w3_sd;
   real<lower=0> w3[Nsubj];
 
-  real<lower=0> delta_a;
-  real<lower=0> delta_b;
+  real<lower=0,upper=1> delta_mean;
+  real<lower=0,upper=1> delta_sd;
   real<lower=0,upper=1> delta[Nsubj1];
 
-  real<lower=0> tau_a;
-  real<lower=0> tau_b;
+  real<lower=0,upper=1> tau_mean;
+  real<lower=0,upper=1> tau_sd;
   real<lower=0,upper=1> tau[Nsubj2];
 
-  real<lower=0> alpha_a;
-  real<lower=0> alpha_b;
-  real<lower=0,upper=1> alpha[Nsubj];
+  real<lower=0,upper=1> alpha_mean;
+  real<lower=0,upper=1> alpha_sd;
+  real<lower=0.01,upper=0.99> alpha[Nsubj];
 
 }
 
@@ -145,25 +145,23 @@ model {
   w3_mean ~ normal(0,5);
   w3_sd ~ normal(0,1);
 
-  delta_a ~ normal(0,5); //approximately uniform participant level parameter
-  delta_b ~ normal(0,5);
-  tau_a ~ normal(0,5);
-  tau_b ~ normal(0,5);
-  alpha_a ~ normal(0,5);
-  alpha_b ~ normal(0,5);
-
   //set priors
   w1 ~ normal(0,1);  //implies actual w1 ~ normal ( w1_mean, w1_sd)
   w2 ~ normal(0,1);
   w3 ~ normal(0,1);
 
-  delta ~ beta(delta_a,delta_b);
-  tau ~ beta(tau_a,tau_b);
-  alpha ~ beta(alpha_a,alpha_b);
+ for(subj1 in 1:Nsubj1){
+   delta[subj1] ~ normal(delta_mean,delta_sd) T[0,1];
+ }
+ for(subj2 in 1:Nsubj2){
+   tau[subj2] ~ normal(tau_mean,tau_sd) T[0,1];
+ }
 
   //loop through subjects evaluating likelihood for each one
   for(subj in 1:Nsubj){
     row_vector[Nobs[subj]] p_a_logit;
+
+    alpha[subj] ~ normal(alpha_mean,alpha_sd) T[0.01,0.99];
 
     p_a_logit = goal_sub(w1_mean,w1_sd,w1,
                          w2_mean,w2_sd,w2,

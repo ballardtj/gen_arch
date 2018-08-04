@@ -1,12 +1,6 @@
 functions {
-  row_vector goal_sub(real w1_mean,
-                      real w1_sd,
-                      real[] w1,
-                      real w2_mean,
-                      real w2_sd,
+  row_vector goal_sub(real[] w1,
                       real[] w2,
-                      real w3_mean,
-                      real w3_sd,
                       real[] w3,
                       real[] delta,
                       real[] tau,
@@ -49,7 +43,7 @@ functions {
     ///The data in the first column and the first weight are conditional on a subject-level variable (expt).
     //If expt == 1, w1 is used as the weights and the data is calculated based on logd and delta.
     if(expt[subj] == 1){
-      weights[1] = w1_mean + w1[s1[subj]]*w1_sd;
+      weights[1] = w1[s1[subj]];
       delta_sub = delta[s1[subj]];
       for(obs in 1:Nobs[subj]){
         a_sg = exp(a_logd[obs,subj]*delta_sub);
@@ -59,7 +53,7 @@ functions {
     }
     //If expt == 2, w2 is used as the weights and the data is calculated based on logt and tau.
     if(expt[subj] == 2){
-      weights[1] = w2_mean + w2[s2[subj]]*w2_sd;
+      weights[1] = w2[s2[subj]];
       tau_sub = tau[s2[subj]];
       for(obs in 1:Nobs[subj]){
         a_tg = exp(a_logt[obs,subj]*tau_sub);
@@ -71,7 +65,7 @@ functions {
     //the 3rd and 4th columns of data and weights are the same for all subjects.
     alpha_sub = alpha[subj];
     one_m_alpha_sub = 1-alpha_sub;
-    weights[2] = (w3_mean + w3[subj]*w3_sd)*2*one_m_alpha_sub*sqrt(alpha_sub/one_m_alpha_sub);
+    weights[2] = 2*one_m_alpha_sub*sqrt(alpha_sub/one_m_alpha_sub);
 
     for(obs in 1:Nobs[subj]){
       a_stg = 1  / (alpha_sub * a_tod[obs,subj] + one_m_alpha_sub * a_dot[obs,subj]);
@@ -109,63 +103,29 @@ data {
 
 parameters {
 
-  real w1_mean;
-  real<lower=0> w1_sd;
   real w1[Nsubj1];
-
-  real<upper=0> w2_mean;
-  real<lower=0> w2_sd;
   real<upper=0> w2[Nsubj2];
-
-  real<lower=0> w3_mean;
-  real<lower=0> w3_sd;
   real<lower=0> w3[Nsubj];
-
-  real<lower=0,upper=1> delta_mean;
-  real<lower=0,upper=1> delta_sd;
   real<lower=0,upper=1> delta[Nsubj1];
-
-  real<lower=0,upper=1> tau_mean;
-  real<lower=0,upper=1> tau_sd;
   real<lower=0,upper=1> tau[Nsubj2];
-
-  real<lower=0,upper=1> alpha_mean;
-  real<lower=0,upper=1> alpha_sd;
   real<lower=0.01,upper=0.99> alpha[Nsubj];
 
 }
 
 model {
 
-  //set hyperpriors
-  w1_mean ~ normal(0,5);
-  w1_sd ~ normal(0,1);
-  w2_mean ~ normal(0,5);
-  w2_sd ~ normal(0,1);
-  w3_mean ~ normal(0,5);
-  w3_sd ~ normal(0,1);
-
   //set priors
-  w1 ~ normal(0,1);  //implies actual w1 ~ normal ( w1_mean, w1_sd)
-  w2 ~ normal(0,1);
-  w3 ~ normal(0,1);
+  w1 ~ normal(0,5);  
+  w2 ~ normal(0,5);
+  w3 ~ normal(0,5);
 
- for(subj1 in 1:Nsubj1){
-   delta[subj1] ~ normal(delta_mean,delta_sd) T[0,1];
- }
- for(subj2 in 1:Nsubj2){
-   tau[subj2] ~ normal(tau_mean,tau_sd) T[0,1];
- }
+  //gradient priors assumed to be uniform
 
   //loop through subjects evaluating likelihood for each one
   for(subj in 1:Nsubj){
     row_vector[Nobs[subj]] p_a_logit;
 
-    alpha[subj] ~ normal(alpha_mean,alpha_sd) T[0.01,0.99];
-
-    p_a_logit = goal_sub(w1_mean,w1_sd,w1,
-                         w2_mean,w2_sd,w2,
-                         w3_mean,w3_sd,w3,
+    p_a_logit = goal_sub(w1,w2,w3,
                          delta,tau,alpha,
                          Nobs,subj,expt,s1,s2,
                          a_logd,b_logd,a_logt,b_logt,
