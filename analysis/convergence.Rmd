@@ -5,11 +5,15 @@ output:
     df_print: paged
 ---
 
-Model description:
+Observed Model description:
 
 * Hierarchical
 * Weight parameters normally distributed, non-centered.
 * Gradient parameters normally distributed, and explicitly truncated. Delta and Tau between 0 and 1. Alpha between 0.01 and 0.99.
+
+Optimal Model description:
+
+* Same as above
 
 Run details: 
 
