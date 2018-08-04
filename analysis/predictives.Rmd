@@ -6,8 +6,8 @@ output:
 ---
 
 
-```{r,eval=FALSE, include=FALSE, r,echo=FALSE}
-setwd("..")
+```{r include=FALSE, r,echo=FALSE}
+#setwd("..")
 library(rstan)
 library(tidyverse)
 library(gridExtra)
@@ -16,39 +16,41 @@ library(doMC)
 registerDoMC(cores=7)
 
 #load stan function for generating predictions
+expose_stan_functions("model/goal_hier.stan")
+goal_sub_obs = goal_sub
+
 expose_stan_functions("model/goal.stan")
+goal_sub_opt = goal_sub
 
 #function to generate posterior predictives
-generate_pp=function(fit_psy,fit_opt,dataList,Nsamp){
+generate_pp=function(fit,dataList,Nsamp,source){
   
-  posts_psy=rstan::extract(fit_psy)
+  #get indicies of samples
+  posts=rstan::extract(fit)
   #posts_obs=rstan:extract(fit_opt)
-  Npost=length(posts_psy[[1]])
+  Npost=length(posts[[1]])
   samples=sample(x=1:Npost,size=Nsamp)
   
-  #pb <- txtProgressBar(min = 0, max = Nsamp*dataList$Nsubj, style = 3)
-  #ctr=0
-  #pp_list=list()
-  #for(i in 1:Nsamp){
   pp_data <- foreach(i = 1:Nsamp,.combine='rbind') %dopar% {
     pp_list=list()
     ctr=0
     for(subj in 1:dataList$Nsubj){
       ctr=ctr+1
       
+      if(source=="obs"){
       #observed model run on observed decision points
-      p_a_logit=goal_sub(posts_psy$w1_mean[samples[i]],
-                         posts_psy$w1_sd[samples[i]],
-                         posts_psy$w1[samples[i],], 
-                         posts_psy$w2_mean[samples[i]],
-                         posts_psy$w2_sd[samples[i]],
-                         posts_psy$w2[samples[i],], 
-                         posts_psy$w3_mean[samples[i]],
-                         posts_psy$w3_sd[samples[i]],
-                         posts_psy$w3[samples[i],], 
-                         posts_psy$delta[samples[i],],
-                         posts_psy$tau[samples[i],] , 
-                         posts_psy$alpha[samples[i],],
+      p_a_logit=goal_sub_obs(posts$w1_mean[samples[i]],
+                         posts$w1_sd[samples[i]],
+                         posts$w1[samples[i],], 
+                         posts$w2_mean[samples[i]],
+                         posts$w2_sd[samples[i]],
+                         posts$w2[samples[i],], 
+                         posts$w3_mean[samples[i]],
+                         posts$w3_sd[samples[i]],
+                         posts$w3[samples[i],], 
+                         posts$delta[samples[i],],
+                         posts$tau[samples[i],] , 
+                         posts$alpha[samples[i],],
                          dataList$Nobs,
                          subj,
                          dataList$expt,
@@ -62,8 +64,32 @@ generate_pp=function(fit_psy,fit_opt,dataList,Nsamp){
                          dataList$b_dot,
                          dataList$a_tod,
                          dataList$b_tod)
+      }
       
-      pp_data_tmp = data.frame(y_pred_psy=rep(NA,dataList$Nobs[subj]),
+       if(source=="opt"){
+      #observed model run on observed decision points
+      p_a_logit=goal_sub_opt(posts$w1[samples[i],], 
+                         posts$w2[samples[i],], 
+                         posts$w3[samples[i],], 
+                         posts$delta[samples[i],],
+                         posts$tau[samples[i],] , 
+                         posts$alpha[samples[i],],
+                         dataList$Nobs,
+                         subj,
+                         dataList$expt,
+                         dataList$s1,
+                         dataList$s2,
+                         dataList$a_logd,
+                         dataList$b_logd,
+                         dataList$a_logt,
+                         dataList$b_logt,
+                         dataList$a_dot,
+                         dataList$b_dot,
+                         dataList$a_tod,
+                         dataList$b_tod)
+      }
+      
+      pp_data_tmp = data.frame(y_pred=rep(NA,dataList$Nobs[subj]),
                                y_obs=NA,
                                a_d0=NA,
                                b_d0=NA,
@@ -73,46 +99,12 @@ generate_pp=function(fit_psy,fit_opt,dataList,Nsamp){
                                expt = dataList$expt[subj],
                                sample=samples[i])
       
-      pp_data_tmp$y_pred_psy = as.vector(1/(1+exp(-p_a_logit)))
+      pp_data_tmp$y_pred = as.vector(1/(1+exp(-p_a_logit)))
       pp_data_tmp$y_obs = dataList$y[1:dataList$Nobs[subj],subj]
       pp_data_tmp$a_d0 = dataList$a_d0[1:dataList$Nobs[subj],subj]
       pp_data_tmp$b_d0 = dataList$b_d0[1:dataList$Nobs[subj],subj]
       pp_data_tmp$a_t0 = dataList$a_t0[1:dataList$Nobs[subj],subj]
       pp_data_tmp$b_t0 = dataList$b_t0[1:dataList$Nobs[subj],subj]
-      
-      #optimal model run on observed decision points
-      # p_a_logit=goal_sub(posts_opt$w1_mean[samples[i]],
-      #                    posts_opt$w1_sd[samples[i]],
-      #                    posts_opt$w1[samples[i],], 
-      #                    posts_opt$w2_mean[samples[i]],
-      #                    posts_opt$w2_sd[samples[i]],
-      #                    posts_opt$w2[samples[i],], 
-      #                    posts_opt$w3_mean[samples[i]],
-      #                    posts_opt$w3_sd[samples[i]],
-      #                    posts_opt$w3[samples[i],], 
-      #                    posts_opt$delta[samples[i],],
-      #                    posts_opt$tau[samples[i],] , 
-      #                    posts_opt$alpha[samples[i],],
-      #                    dataList$Nobs,
-      #                    subj,
-      #                    dataList$expt,
-      #                    dataList$s1,
-      #                    dataList$s2,
-      #                    dataList$a_logd,
-      #                    dataList$b_logd,
-      #                    dataList$a_logt,
-      #                    dataList$b_logt,
-      #                    dataList$a_dot,
-      #                    dataList$b_dot,
-      #                    dataList$a_tod,
-      #                    dataList$b_tod)
-      # 
-      # pp_data_tmp$y_pred_opt = as.vector(1/(1+exp(-p_a_logit)))
-      # 
-      
-      if(any(is.na(pp_data_tmp$y_pred_psy))){
-        stop(paste("NAN!, subj =",subj,"sample =",samples[i]))
-      }
       
       pp_list[[ctr]]=pp_data_tmp
       #setTxtProgressBar(pb, ctr)
@@ -172,13 +164,13 @@ generate_pp_plot=function(pp_data){
 
 # Observed Decisions
 
-```{r,eval=FALSE, include=FALSE, echo=FALSE}
+```{r observed_fits, echo=FALSE, fig.align="center", fig.height=12, fig.width=10}
 #Approach
-setwd("..")
+#setwd("..")
 dataList=read_rdump('data/clean/obs_ap_rdump.R')
 
 load("data/derived/ap_obs_fit.RData")
-pp_data=generate_pp(fit_psy=fit,fit_opt=fit,dataList=dataList,Nsamp=100)
+pp_data=generate_pp(fit=fit,dataList=dataList,Nsamp=100,source="obs")
 ap_obs_pp_plot= generate_pp_plot(pp_data)
   
   
@@ -186,7 +178,7 @@ ap_obs_pp_plot= generate_pp_plot(pp_data)
 dataList=read_rdump('data/clean/obs_av_rdump.R')
 
 load("data/derived/av_obs_fit.RData")
-pp_data=generate_pp(fit_psy=fit,fit_opt=fit,dataList=dataList,Nsamp=100)
+pp_data=generate_pp(fit=fit,dataList=dataList,Nsamp=100,source="obs")
 av_obs_pp_plot= generate_pp_plot(pp_data)
 
 #Posterior predictives
@@ -203,3 +195,36 @@ grid.arrange(
 )
 ```
 
+# Optimal Decisions
+
+```{r optimal_fits, echo=FALSE, fig.align="center", fig.height=12, fig.width=10}
+
+#Approach
+#setwd("..")
+dataList=read_rdump('data/clean/opt_ap_rdump.R')
+
+load("data/derived/ap_opt_fit.RData")
+pp_data=generate_pp(fit=fit,dataList=dataList,Nsamp=100,source="opt")
+ap_opt_pp_plot= generate_pp_plot(pp_data)
+  
+  
+#Avoidance
+dataList=read_rdump('data/clean/opt_av_rdump.R')
+
+load("data/derived/av_opt_fit.RData")
+pp_data=generate_pp(fit=fit,dataList=dataList,Nsamp=100,source="opt")
+av_opt_pp_plot= generate_pp_plot(pp_data)
+
+#Posterior predictives
+grid.arrange(
+  arrangeGrob(ap_opt_pp_plot[[1]] + theme(axis.text.x = element_text(size=6)) ,
+              top="Distance Experiment, Approach Condition"),
+  arrangeGrob(av_opt_pp_plot[[1]]  + theme(axis.text.x = element_text(size=6)) ,
+              top="Distance Experiment, Avoidance Condition"),
+  arrangeGrob(ap_opt_pp_plot[[2]]  + theme(axis.text.x = element_text(size=6)) ,
+              top="Deadline Experiment, Approach Condition"),
+  arrangeGrob(av_opt_pp_plot[[2]]  + theme(axis.text.x = element_text(size=6)) ,
+              top="Deadline Experiment, Avoidance Condition"),
+  nrow=4
+)
+```
