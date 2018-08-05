@@ -7,6 +7,10 @@ navbar:
       href: index.html
     - text: "Convergence"
       href: convergence.html
+    - text: "Predictives"
+      href: predictives.html
+    - text: "Parameters"
+      href: parameters.html
     - text: "About"
       href: about.html
     - text: "License"

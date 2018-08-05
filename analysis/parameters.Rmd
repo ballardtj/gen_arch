@@ -1,0 +1,112 @@
+---
+title: "R Notebook"
+output:
+  html_document:
+    df_print: paged
+---
+
+
+```{r include=FALSE, echo=FALSE}
+
+#load packages
+library(rstan)
+library(tidyverse)
+library(tidybayes)
+
+get_posts= function(fit){
+  posts = tidy_draws(fit) %>%
+    gather_variables() %>%
+    mutate(subject = gsub(".*\\.","",as.character(.variable)),
+           parameter = gsub("\\..*","",as.character(.variable))) %>%
+    filter(parameter %in% c('w1','w2','w3','delta','tau','alpha')) %>%
+    ungroup() %>%
+    select(subject,.draw,parameter,.value) %>%
+    spread(key=parameter,value=.value) %>%
+    mutate(delta = if_else( w1 >= 0, delta, -delta),
+           tau = -tau,
+           w1 = abs(w1),
+           w2 = abs(w2)) %>%
+    gather(key=parameter,value=estimate,alpha:w3) %>%
+    mutate(parameter = factor(parameter,levels=c('w1','w2','w3','delta','tau','alpha'))) %>%
+    filter(!is.na(estimate))
+  return(posts)
+}
+
+load("data/derived/ap_obs_fit.RData")
+posts_ap_obs = get_posts(fit)
+posts_ap_obs$frame = 'approach'
+posts_ap_obs$source = 'observed'
+
+load("data/derived/av_obs_fit.RData")
+posts_av_obs = get_posts(fit)
+posts_av_obs$frame = 'avoidance'
+posts_av_obs$source = 'observed'
+
+load("data/derived/ap_opt_fit.RData")
+posts_ap_opt = get_posts(fit)
+posts_ap_opt$frame = 'approach'
+posts_ap_opt$source = 'optimal'
+
+load("data/derived/av_opt_fit.RData")
+posts_av_opt = get_posts(fit)
+posts_av_opt$frame = 'avoidance'
+posts_av_opt$source = 'optimal'
+
+posts = bind_rows(posts_ap_obs,
+                  posts_av_obs,
+                  posts_ap_opt,
+                  posts_av_opt)
+
+```
+
+# Mean across participants of parameters from model of observed decisions
+
+```{r echo=FALSE , fig.align="center", fig.height=6, fig.width=10}
+
+pd1 = posts %>%
+  filter(source=="observed") %>%
+  group_by(.draw,parameter,frame) %>%
+  summarise(estimate = mean(estimate))
+
+#Mean parameters across conditions
+ggplot(data=pd1) +
+  geom_density(aes(x=estimate,fill=frame),alpha=0.5) +
+  facet_grid(.~parameter,scale="free")
+
+
+```
+
+# Mean across participants of parameters from models of observed and optimal decisions
+
+```{r echo=FALSE , fig.align="center", fig.height=8, fig.width=10}
+
+pd2 = posts %>%
+  group_by(.draw,parameter,frame,source) %>%
+  summarise(estimate = mean(estimate))
+
+#Mean parameters across conditions
+ggplot(data=pd2) +
+  geom_density(aes(x=estimate,fill=source),alpha=0.5) +
+  facet_grid(frame~parameter,scale="free")
+
+```
+
+
+# 95% CI for each participant of parameters of model of observed decisions
+
+```{r echo=FALSE , fig.align="center", fig.height=8, fig.width=10}
+
+pd3=posts %>%
+  filter(source=="observed") %>%
+  group_by(parameter,subject,frame) %>%
+  point_interval(estimate) %>%
+  group_by(parameter,frame) %>%
+  arrange(estimate) %>%
+  mutate(order = 1:n())
+
+ggplot(data=pd3) +
+  geom_pointintervalh(aes(y=order,x=estimate),size=0.1,alpha=0.2) +
+  facet_grid(frame~parameter,scale="free")
+
+
+```
