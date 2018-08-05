@@ -111,6 +111,9 @@ pairs(fit,pars=hypers)
 
 ```{r,echo=FALSE}
 load("data/derived/ap_opt_fit.RData")
+
+hypers=c('w1[1]','w1[2]','w2[1]','w2[2]','w3[1]','w3[2]',
+         'delta[1]','delta[2]','tau[1]','tau[2]','alpha[1]','alpha[2]')
 ```
 
 ### RStan output

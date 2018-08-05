@@ -28,7 +28,7 @@ generate_pp=function(fit,dataList,Nsamp,source){
   #get indicies of samples
   posts=rstan::extract(fit)
   #posts_obs=rstan:extract(fit_opt)
-  Npost=length(posts[[1]])
+  Npost=dim(posts$w1)[1]
   samples=sample(x=1:Npost,size=Nsamp)
   
   pp_data <- foreach(i = 1:Nsamp,.combine='rbind') %dopar% {
