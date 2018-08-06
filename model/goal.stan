@@ -115,9 +115,9 @@ parameters {
 model {
 
   //set priors
-  w1 ~ normal(0,5);  
-  w2 ~ normal(0,5);
-  w3 ~ normal(0,5);
+  w1 ~ normal(0,1);
+  w2 ~ normal(0,1);
+  w3 ~ normal(0,1);
 
   //gradient priors assumed to be uniform
 

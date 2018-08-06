@@ -110,3 +110,83 @@ ggplot(data=pd3) +
 
 
 ```
+
+# Gradients
+
+```{r echo=FALSE , fig.align="center", fig.height=8, fig.width=10}
+
+sg=posts %>%
+  filter(source=="observed",parameter %in% c('w1','delta'),!is.na(parameter)) %>%
+  group_by(parameter,frame,subject) %>%
+  mutate(estimate = mean(estimate),
+         d = .draw/100) %>%
+  filter(d < 1) %>%
+  select(subject,frame,d,parameter,estimate) %>%
+  spread(key=parameter,value=estimate) %>%
+  mutate( sg = (delta>=0)*w1*d^delta + (delta<0)*w1*(1-d^-delta))
+
+ggplot(data=sg) +
+  geom_line(aes(x=d,y=sg,group=subject),alpha=0.2) +
+  facet_wrap(~frame) + labs(x='distance',y='spatial gradient')
+
+tg=posts %>%
+  filter(source=="observed",parameter %in% c('w2','tau'),!is.na(parameter)) %>%
+  group_by(parameter,frame,subject) %>%
+  mutate(estimate = mean(estimate),
+         t = .draw/100) %>%
+  filter(t < 1) %>%
+  select(subject,frame,t,parameter,estimate) %>%
+  spread(key=parameter,value=estimate) %>%
+  mutate( tg = (tau>=0)*w2*t^tau + (tau<0)*w2*(1-t^-tau))
+
+ggplot(data=tg) +
+  geom_line(aes(x=t,y=tg,group=subject),alpha=0.2) +
+  facet_wrap(~frame) + labs(x='time to deadline',y='temporal gradient')
+
+stg=posts %>%
+  filter(source=="observed",parameter %in% c('w3','alpha'),!is.na(parameter)) %>%
+  group_by(parameter,frame,subject) %>%
+  mutate(estimate = mean(estimate),
+         tod = .draw/100) %>%
+  filter(tod < 3) %>%
+  select(subject,frame,tod,parameter,estimate) %>%
+  spread(key=parameter,value=estimate) %>%
+  mutate( max = 2*(1-alpha)*sqrt(alpha/(1-alpha)),
+          stg = w3*max / (alpha*tod + (1-alpha)/tod ) )
+          
+ggplot(data=stg) +
+  geom_line(aes(x=tod,y=stg,group=subject),alpha=0.2) +
+  facet_wrap(~frame) + labs(x='time to deadline / distance to goal',y='spatiotemporal gradient')
+
+# tod: 1 = distance = deadline
+# tod: if function peaks at less than 1, mostly decreases with expectancy
+# tod: if function peaks at greater than 1, mostly increases with expectancy
+
+
+# -w1*(d1^delta - d2^delta)
+# -w1*d1^delta - -w1*d2^delta
+# w1*d2^delta - w2*d1^delta
+
+# w1*(1-d1^delta) - w1*(1-d2^delta)
+# w1 - w1*d1^delta - w1 - w1
+
+d = seq(0.01,0.99,0.01)
+w1=1
+delta = -0.5
+sg = w1*(1-d)^-delta
+plot(d,sg)
+
+
+
+%>%
+  point_interval(estimate) %>%
+  group_by(parameter,frame) %>%
+  arrange(estimate) %>%
+  mutate(order = 1:n())
+
+ggplot(data=pd3) +
+  geom_pointintervalh(aes(y=order,x=estimate),size=0.1,alpha=0.2) +
+  facet_grid(frame~parameter,scale="free")
+
+
+```
