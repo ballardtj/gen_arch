@@ -328,7 +328,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2018-08-05</p>
+<p><strong>Last updated:</strong> 2018-08-07</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -357,7 +357,7 @@ div.section {
 </li>
 <li>
 <details>
-<p><summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/ballardtj/gen_arch/tree/42c1bfc10825a75378a4e01482e480d57ba16ae5" target="_blank">42c1bfc</a> </summary></p>
+<p><summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/ballardtj/gen_arch/tree/e12ccf7c86604e8cefef62bbb0aca6b7717d8dc2" target="_blank">e12ccf7</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -365,6 +365,11 @@ Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
     Ignored:    data/.DS_Store
+    Ignored:    data/derived/.DS_Store
+
+Unstaged changes:
+    Modified:   data/derived/ap_opt_fit.RData
+    Modified:   data/derived/av_opt_fit.RData
 
 </code></pre>
 Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes.
@@ -395,6 +400,23 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/ballardtj/gen_arch/6bee1a137ad4ce9488334527c7787db0903e1f94/docs/convergence.html" target="_blank">6bee1a1</a>
+</td>
+<td style="text-align:left;">
+ballardtj
+</td>
+<td style="text-align:left;">
+2018-08-05
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 html
@@ -1143,54 +1165,54 @@ ballardtj
 <h2>Approach Condition</h2>
 <div id="rstan-output-2" class="section level3">
 <h3>RStan output</h3>
-<pre><code>                mean      se_mean         sd          2.5%          25%
-w1[1]     -0.3051504 0.0181467808 1.62309742  -3.960466250  -0.67691875
-w1[2]      3.4026862 0.0274516333 2.45534872   0.336914350   1.62547500
-w2[1]    -13.1314708 0.0178740174 1.59870071 -16.509790000 -14.17112500
-w2[2]    -18.5512094 0.0266312991 2.35047994 -23.458557500 -20.06400000
-w3[1]      4.0162563 0.0335660174 3.00223587   0.166994100   1.60734500
-w3[2]      4.0197208 0.0343938827 3.04161567   0.169870325   1.63032500
-delta[1]   0.4499657 0.0040225093 0.34661066   0.004029929   0.08664470
-delta[2]   0.1360118 0.0014527226 0.12993546   0.019029642   0.05268267
-tau[1]     0.8804203 0.0010925811 0.09772343   0.638391825   0.82635400
-tau[2]     0.7855185 0.0013944867 0.12273733   0.525280450   0.70278300
-alpha[1]   0.6176190 0.0009636147 0.08455499   0.438334800   0.56513425
-alpha[2]   0.7416955 0.0008586083 0.07679626   0.569546300   0.69579775
-                 50%           75%       97.5%    n_eff      Rhat
-w1[1]     -0.3342875   0.006425785   3.4995427 8000.000 1.0002788
-w1[2]      2.8044550   4.618675000   9.4919670 8000.000 0.9993319
-w2[1]    -13.0407000 -12.017225000 -10.2423225 8000.000 0.9998962
-w2[2]    -18.4162500 -16.892950000 -14.2563950 7789.837 1.0003166
-w3[1]      3.4615350   5.763582500  11.1460250 8000.000 0.9997067
-w3[2]      3.3906450   5.749622500  11.2862150 7820.711 0.9997310
-delta[1]   0.4349240   0.785557500   0.9824492 7424.885 0.9996370
-delta[2]   0.0942014   0.169144750   0.4985918 8000.000 1.0000185
-tau[1]     0.9034385   0.958503000   0.9958373 8000.000 0.9997359
-tau[2]     0.7950530   0.882340750   0.9827158 7746.840 1.0001393
-alpha[1]   0.6240605   0.676225000   0.7646113 7699.662 0.9999993
-alpha[2]   0.7502610   0.796420250   0.8678331 8000.000 1.0002292</code></pre>
+<pre><code>               mean      se_mean         sd        2.5%        25%
+w1[1]    -0.2632891 0.0054211666 0.48335758 -1.08227800 -0.5488897
+w1[2]     1.0099701 0.0073265942 0.64231769 -0.12254617  0.5689182
+w2[1]    -6.3860498 0.0064729475 0.57895802 -7.51396300 -6.7771950
+w2[2]    -6.2442796 0.0073892397 0.65866595 -7.57697975 -6.6801125
+w3[1]     0.7945204 0.0068019763 0.60838725  0.03069940  0.3124473
+w3[2]     0.8019729 0.0068346580 0.61131040  0.03162776  0.3104660
+delta[1]  0.5274194 0.0036209625 0.32036561  0.01580876  0.2211385
+delta[2]  0.2880013 0.0021994748 0.19672701  0.04197013  0.1518355
+tau[1]    0.7844890 0.0011699082 0.10357837  0.58122310  0.7110453
+tau[2]    0.6792101 0.0011516436 0.10300614  0.49222288  0.6066893
+alpha[1]  0.6436243 0.0008757709 0.07833133  0.47522525  0.5938380
+alpha[2]  0.8399727 0.0005242397 0.04688943  0.73653395  0.8108660
+                50%        75%      97.5%    n_eff      Rhat
+w1[1]    -0.2927855 -0.0277236  0.8623827 7949.715 0.9996693
+w1[2]     0.9754670  1.4072625  2.3896325 7685.913 0.9997108
+w2[1]    -6.3831150 -5.9888150 -5.2826095 8000.000 0.9997874
+w2[2]    -6.2274950 -5.7883050 -4.9869670 7945.677 0.9997180
+w3[1]     0.6659010  1.1433500  2.2917075 8000.000 1.0001740
+w3[2]     0.6749215  1.1580875  2.2450702 8000.000 1.0001178
+delta[1]  0.5601065  0.8220565  0.9860600 7827.872 0.9998694
+delta[2]  0.2375395  0.3675625  0.8453910 8000.000 1.0001688
+tau[1]    0.7855015  0.8599437  0.9751287 7838.529 0.9994915
+tau[2]    0.6718090  0.7469823  0.8974692 8000.000 0.9996085
+alpha[1]  0.6500125  0.6998215  0.7809377 8000.000 0.9998947
+alpha[2]  0.8446000  0.8737643  0.9181826 8000.000 0.9993981</code></pre>
 </div>
 <div id="coda-output-2" class="section level3">
 <h3>Coda output</h3>
 <p>Effective sample size</p>
 <pre><code>   w1[1]    w1[2]    w2[1]    w2[2]    w3[1]    w3[2] delta[1] delta[2] 
-8279.490 8000.000 7686.282 7943.867 8373.965 8054.760 7630.576 7982.359 
+8023.264 7951.201 8681.272 7558.531 7839.307 8000.000 8000.000 8224.779 
   tau[1]   tau[2] alpha[1] alpha[2] 
-7799.095 8010.253 7701.352 7651.279 </code></pre>
+8068.701 7837.350 7978.185 9312.430 </code></pre>
 <p>Gelman’s Rhat</p>
 <pre><code>         Point est. Upper C.I.
-w1[1]     1.0024991  1.0053260
-w1[2]     0.9998995  1.0003998
-w2[1]     1.0004779  1.0021054
-w2[2]     1.0007067  1.0026742
-w3[1]     1.0006417  1.0023909
-w3[2]     1.0004056  1.0016267
-delta[1]  0.9993250  0.9997081
-delta[2]  1.0021302  1.0037723
-tau[1]    1.0007868  1.0023499
-tau[2]    1.0011175  1.0034728
-alpha[1]  1.0003014  1.0013717
-alpha[2]  1.0004226  1.0019288</code></pre>
+w1[1]     1.0005170  1.0017487
+w1[2]     1.0004000  1.0020337
+w2[1]     0.9998166  1.0006358
+w2[2]     1.0003001  1.0015239
+w3[1]     1.0002173  1.0014153
+w3[2]     1.0000737  1.0010488
+delta[1]  0.9999752  1.0011899
+delta[2]  1.0017260  1.0046539
+tau[1]    0.9999453  1.0008831
+tau[2]    0.9998175  1.0003712
+alpha[1]  1.0004320  1.0018856
+alpha[2]  0.9994184  0.9994937</code></pre>
 </div>
 <div id="plots-2" class="section level3">
 <h3>Plots</h3>
@@ -1212,6 +1234,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/ballardtj/gen_arch/blob/6bee1a137ad4ce9488334527c7787db0903e1f94/docs/figure/convergence.Rmd/unnamed-chunk-15-1.png" target="_blank">6bee1a1</a>
+</td>
+<td style="text-align:left;">
+ballardtj
+</td>
+<td style="text-align:left;">
+2018-08-05
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 <a href="https://github.com/ballardtj/gen_arch/blob/87aeca80677468a1346815df2258e3d454b19588/docs/figure/convergence.Rmd/unnamed-chunk-15-1.png" target="_blank">87aeca8</a>
@@ -1246,6 +1279,17 @@ Date
 <tbody>
 <tr>
 <td style="text-align:left;">
+<a href="https://github.com/ballardtj/gen_arch/blob/6bee1a137ad4ce9488334527c7787db0903e1f94/docs/figure/convergence.Rmd/unnamed-chunk-15-2.png" target="_blank">6bee1a1</a>
+</td>
+<td style="text-align:left;">
+ballardtj
+</td>
+<td style="text-align:left;">
+2018-08-05
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
 <a href="https://github.com/ballardtj/gen_arch/blob/87aeca80677468a1346815df2258e3d454b19588/docs/figure/convergence.Rmd/unnamed-chunk-15-2.png" target="_blank">87aeca8</a>
 </td>
 <td style="text-align:left;">
@@ -1264,54 +1308,54 @@ ballardtj
 <h2>Avoidance Condition</h2>
 <div id="rstan-output-3" class="section level3">
 <h3>RStan output</h3>
-<pre><code>               mean      se_mean         sd         2.5%         25%
-w1[1]    -5.8104408 0.0067877793 0.60003026  -7.00912975 -6.20235250
-w1[2]    -5.7334286 0.0063918762 0.57170679  -6.87625250 -6.11998000
-w2[1]    -5.7975689 0.0270248069 2.41717222 -11.67123750 -7.09112000
-w2[2]    -2.1386470 0.0041888130 0.37465883  -2.85143925 -2.34027500
-w3[1]     3.9296793 0.0345299065 2.97700900   0.14138400  1.58374250
-w3[2]     3.9330557 0.0332986803 2.97832451   0.15052472  1.56517250
-delta[1]  0.9692138 0.0003393692 0.02973139   0.89170508  0.95686125
-delta[2]  0.9647206 0.0003780760 0.03381615   0.87615898  0.94971300
-tau[1]    0.1597899 0.0010071777 0.08746023   0.05441335  0.09739545
-tau[2]    0.7757821 0.0018655933 0.16686374   0.39040275  0.67130425
-alpha[1]  0.4033498 0.0006808938 0.06090100   0.28778945  0.36164200
-alpha[2]  0.3406996 0.0006969041 0.06148035   0.22652740  0.29667450
+<pre><code>               mean      se_mean         sd        2.5%        25%
+w1[1]    -4.4405816 0.0053455996 0.47246178 -5.39421825 -4.7531000
+w1[2]    -4.4491207 0.0052206710 0.46695101 -5.37987875 -4.7651600
+w2[1]    -2.4527592 0.0059933603 0.52036279 -3.58069325 -2.7797075
+w2[2]    -1.9273843 0.0033107659 0.29612391 -2.51522625 -2.1225425
+w3[1]     0.7954690 0.0067857850 0.60693907  0.02838670  0.3122162
+w3[2]     0.7972272 0.0067739646 0.60588181  0.03111187  0.3241803
+delta[1]  0.9576975 0.0004409690 0.03944147  0.85366948  0.9402715
+delta[2]  0.9526534 0.0005054183 0.04427374  0.83644470  0.9330407
+tau[1]    0.3853697 0.0015139428 0.13347147  0.19116420  0.2901140
+tau[2]    0.7991192 0.0016473786 0.14734602  0.45862915  0.7043683
+alpha[1]  0.4188077 0.0006922893 0.06192024  0.29972045  0.3763728
+alpha[2]  0.3543403 0.0006880757 0.06088891  0.23841198  0.3124157
                 50%        75%      97.5%    n_eff      Rhat
-w1[1]    -5.7980200 -5.4067025 -4.6526845 7814.314 0.9999489
-w1[2]    -5.7230800 -5.3394675 -4.6436360 8000.000 1.0001813
-w2[1]    -5.3209750 -3.9884475 -2.4979735 8000.000 1.0006682
-w2[2]    -2.1187150 -1.9057950 -1.5134363 8000.000 0.9999461
-w3[1]     3.3211600  5.6686700 11.1715675 7433.092 0.9999951
-w3[2]     3.3466750  5.6443700 11.0247575 8000.000 0.9994713
-delta[1]  0.9782885  0.9909533  0.9992671 7675.128 0.9997576
-delta[2]  0.9750955  0.9894405  0.9991000 8000.000 0.9998043
-tau[1]    0.1386025  0.1996558  0.3861437 7540.654 1.0001867
-tau[2]    0.8123900  0.9096240  0.9908406 8000.000 1.0000393
-alpha[1]  0.4012665  0.4445817  0.5247577 8000.000 1.0000228
-alpha[2]  0.3393135  0.3811362  0.4627393 7782.632 0.9998613</code></pre>
+w1[1]    -4.4352950 -4.1287400 -3.5386260 7811.610 0.9999569
+w1[2]    -4.4412550 -4.1274525 -3.5606205 8000.000 0.9997985
+w2[1]    -2.4185550 -2.0802825 -1.5450590 7538.270 0.9999475
+w2[2]    -1.9226750 -1.7251900 -1.3645595 8000.000 1.0001377
+w3[1]     0.6742545  1.1410900  2.2461197 8000.000 0.9996128
+w3[2]     0.6749490  1.1435625  2.2468385 8000.000 0.9994338
+delta[1]  0.9691265  0.9869020  0.9989072 8000.000 1.0005113
+delta[2]  0.9653580  0.9856590  0.9986672 7673.447 1.0014628
+tau[1]    0.3620965  0.4553885  0.7241066 7772.450 0.9993264
+tau[2]    0.8260050  0.9203598  0.9922090 8000.000 0.9996995
+alpha[1]  0.4178680  0.4600168  0.5417553 8000.000 0.9998800
+alpha[2]  0.3527400  0.3957225  0.4763685 7830.760 1.0004733</code></pre>
 </div>
 <div id="coda-output-3" class="section level3">
 <h3>Coda output</h3>
 <p>Effective sample size</p>
 <pre><code>   w1[1]    w1[2]    w2[1]    w2[2]    w3[1]    w3[2] delta[1] delta[2] 
-8174.825 8377.029 7887.191 8303.413 7748.157 8144.274 7748.921 8297.148 
+7998.152 7807.861 7912.568 8269.823 8375.645 8685.993 8295.854 7875.253 
   tau[1]   tau[2] alpha[1] alpha[2] 
-7536.971 8000.000 7979.370 8374.631 </code></pre>
+7962.677 7971.626 8092.897 8143.073 </code></pre>
 <p>Gelman’s Rhat</p>
 <pre><code>         Point est. Upper C.I.
-w1[1]     0.9999319   1.000986
-w1[2]     1.0013053   1.003859
-w2[1]     1.0013762   1.003317
-w2[2]     1.0126489   1.014559
-w3[1]     1.0000820   1.000967
-w3[2]     0.9999529   1.000806
-delta[1]  1.0002277   1.000914
-delta[2]  0.9998436   1.000234
-tau[1]    1.0003107   1.001128
-tau[2]    1.0010426   1.002943
-alpha[1]  1.0002310   1.001544
-alpha[2]  1.0006490   1.002500</code></pre>
+w1[1]     0.9997203   1.000534
+w1[2]     1.0000341   1.001113
+w2[1]     1.0011189   1.003415
+w2[2]     0.9998036   1.000594
+w3[1]     0.9997402   1.000244
+w3[2]     0.9996177   0.999946
+delta[1]  1.0024338   1.005024
+delta[2]  1.0033462   1.007336
+tau[1]    1.0001316   1.001024
+tau[2]    0.9996388   1.000265
+alpha[1]  1.0001786   1.001519
+alpha[2]  1.0014458   1.004229</code></pre>
 </div>
 <div id="plots-3" class="section level3">
 <h3>Plots</h3>
@@ -1333,6 +1377,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/ballardtj/gen_arch/blob/6bee1a137ad4ce9488334527c7787db0903e1f94/docs/figure/convergence.Rmd/unnamed-chunk-20-1.png" target="_blank">6bee1a1</a>
+</td>
+<td style="text-align:left;">
+ballardtj
+</td>
+<td style="text-align:left;">
+2018-08-05
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 <a href="https://github.com/ballardtj/gen_arch/blob/87aeca80677468a1346815df2258e3d454b19588/docs/figure/convergence.Rmd/unnamed-chunk-20-1.png" target="_blank">87aeca8</a>
@@ -1365,6 +1420,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/ballardtj/gen_arch/blob/6bee1a137ad4ce9488334527c7787db0903e1f94/docs/figure/convergence.Rmd/unnamed-chunk-20-2.png" target="_blank">6bee1a1</a>
+</td>
+<td style="text-align:left;">
+ballardtj
+</td>
+<td style="text-align:left;">
+2018-08-05
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 <a href="https://github.com/ballardtj/gen_arch/blob/87aeca80677468a1346815df2258e3d454b19588/docs/figure/convergence.Rmd/unnamed-chunk-20-2.png" target="_blank">87aeca8</a>
