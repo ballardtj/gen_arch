@@ -65,7 +65,7 @@ functions {
     //the 3rd and 4th columns of data and weights are the same for all subjects.
     alpha_sub = alpha[subj];
     one_m_alpha_sub = 1-alpha_sub;
-    weights[2] = 2*one_m_alpha_sub*sqrt(alpha_sub/one_m_alpha_sub);
+    weights[2] = w3[subj]*2*one_m_alpha_sub*sqrt(alpha_sub/one_m_alpha_sub);
 
     for(obs in 1:Nobs[subj]){
       a_stg = 1  / (alpha_sub * a_tod[obs,subj] + one_m_alpha_sub * a_dot[obs,subj]);
