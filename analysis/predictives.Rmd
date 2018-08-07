@@ -7,7 +7,7 @@ output:
 
 
 ```{r include=FALSE, r,echo=FALSE}
-setwd("..")
+#setwd("..")
 library(rstan)
 library(tidyverse)
 library(gridExtra)

@@ -170,23 +170,12 @@ ggplot(data=stg) +
 # w1*(1-d1^delta) - w1*(1-d2^delta)
 # w1 - w1*d1^delta - w1 - w1
 
-d = seq(0.01,0.99,0.01)
-w1=1
-delta = -0.5
-sg = w1*(1-d)^-delta
-plot(d,sg)
+# d = seq(0.01,0.99,0.01)
+# w1=1
+# delta = -0.5
+# sg = w1*(1-d)^-delta
+# plot(d,sg)
 
-
-
-%>%
-  point_interval(estimate) %>%
-  group_by(parameter,frame) %>%
-  arrange(estimate) %>%
-  mutate(order = 1:n())
-
-ggplot(data=pd3) +
-  geom_pointintervalh(aes(y=order,x=estimate),size=0.1,alpha=0.2) +
-  facet_grid(frame~parameter,scale="free")
 
 
 ```
