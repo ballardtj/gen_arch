@@ -1,10 +1,10 @@
 functions {
   row_vector goal_sub(real[] w1,
                       real[] w2,
-                      real[] w3,
+                      // real[] w3,
                       real[] delta,
                       real[] tau,
-                      real[] alpha,
+                      // real[] alpha,
                       int[] Nobs,
                       int subj,
                       int[] expt,
@@ -23,20 +23,20 @@ functions {
     //initialize subject parameters
     real delta_sub;
     real tau_sub;
-    real alpha_sub;
-    real one_m_alpha_sub;
-    real a_sg;
+    // real alpha_sub;
+    // real one_m_alpha_sub;
+    // real a_sg;
     real b_sg;
     real a_tg;
     real b_tg;
-    real a_stg;
-    real b_stg;
+    // real a_stg;
+    // real b_stg;
 
   //initialise matrix of data (dat), vector of weights, logits, and an array of
       //observations (y) for each subject. These need to be re-initialized for every
       //subject because their size will differ for each subject.
-      matrix[2,Nobs[subj]] dat;
-      row_vector[2] weights;
+      matrix[1,Nobs[subj]] dat;
+      row_vector[1] weights;
       row_vector[Nobs[subj]] p_a_logit;
       int y_sub[Nobs[subj]];
 
@@ -63,15 +63,15 @@ functions {
     }
 
     //the 3rd and 4th columns of data and weights are the same for all subjects.
-    alpha_sub = alpha[subj];
-    one_m_alpha_sub = 1-alpha_sub;
-    weights[2] = w3[subj]*2*one_m_alpha_sub*sqrt(alpha_sub/one_m_alpha_sub);
-
-    for(obs in 1:Nobs[subj]){
-      a_stg = 1  / (alpha_sub * a_tod[obs,subj] + one_m_alpha_sub * a_dot[obs,subj]);
-      b_stg = 1  / (alpha_sub * b_tod[obs,subj] + one_m_alpha_sub * b_dot[obs,subj]);
-      dat[2,obs] = a_stg - b_stg;
-    }
+    // alpha_sub = alpha[subj];
+    // one_m_alpha_sub = 1-alpha_sub;
+    // weights[2] = w3[subj]*2*one_m_alpha_sub*sqrt(alpha_sub/one_m_alpha_sub);
+    //
+    // for(obs in 1:Nobs[subj]){
+    //   a_stg = 1  / (alpha_sub * a_tod[obs,subj] + one_m_alpha_sub * a_dot[obs,subj]);
+    //   b_stg = 1  / (alpha_sub * b_tod[obs,subj] + one_m_alpha_sub * b_dot[obs,subj]);
+    //   dat[2,obs] = a_stg - b_stg;
+    // }
 
     //matrix multiplication to calculate the logit for each observation for that subject
     p_a_logit = weights * dat;
@@ -105,19 +105,19 @@ parameters {
 
   real w1[Nsubj1];
   real<upper=0> w2[Nsubj2];
-  real<lower=0> w3[Nsubj];
+  // real<lower=0> w3[Nsubj];
   real<lower=0,upper=1> delta[Nsubj1];
   real<lower=0,upper=1> tau[Nsubj2];
-  real<lower=0.01,upper=0.99> alpha[Nsubj];
+  // real<lower=0.01,upper=0.99> alpha[Nsubj];
 
 }
 
 model {
 
   //set priors
-  w1 ~ normal(0,1);
-  w2 ~ normal(0,1);
-  w3 ~ normal(0,1);
+  w1 ~ normal(0,5);
+  w2 ~ normal(0,5);
+  // w3 ~ normal(0,5);
 
   //gradient priors assumed to be uniform
 
@@ -125,8 +125,10 @@ model {
   for(subj in 1:Nsubj){
     row_vector[Nobs[subj]] p_a_logit;
 
-    p_a_logit = goal_sub(w1,w2,w3,
-                         delta,tau,alpha,
+    p_a_logit = goal_sub(w1,w2,
+    // w3,
+                         delta,tau,
+                         // alpha,
                          Nobs,subj,expt,s1,s2,
                          a_logd,b_logd,a_logt,b_logt,
                          a_dot,b_dot,a_tod,b_tod);
