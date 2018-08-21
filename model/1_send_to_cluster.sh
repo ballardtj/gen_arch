@@ -32,5 +32,3 @@ if [ $1 == "av" ]; then
 
 #run job script on cluster
 ssh uqtballa@tinaroo.rcc.uq.edu.au bash cmdstan/model/2_make_goal.sh $1 $2 $3 $4
-
-

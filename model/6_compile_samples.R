@@ -1,16 +1,16 @@
 library(rstan)
 
-args <- commandArgs(trailingOnly = F)
+args <- commandArgs(trailingOnly = T)
 
 print(args)
 
 i <- args[(length(args)-3):length(args)]
 frame <- strsplit(i[1],"--")[[1]][2]
 source <- strsplit(i[2],"--")[[1]][2]
-structure <- strsplit(i[3],"--")[[1]][3]
-model <- strsplit(i[4],"--")[[1]][4]
+structure <- strsplit(i[3],"--")[[1]][2]
+model <- strsplit(i[4],"--")[[1]][2]
 
-regexstr = paste0(frame,"_",source,"_",structure,"_",model,".*.csv")
+regexstr = paste0(frame,"_",source,".*",structure,"_",model,".*.csv")
 
 #get relevant csv files
 csvfiles=dir(path='~/cmdstan/model/',pattern=regexstr)

@@ -328,13 +328,12 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2018-08-08</p>
+<p><strong>Last updated:</strong> 2018-08-21</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
 <details>
-<p><summary> <strong style="color:blue;">✔</strong> <strong>R Markdown file:</strong> up-to-date </summary></p>
-<p>Great! Since the R Markdown file has been committed to the Git repository, you know the exact version of the code that produced these results.</p>
+<p><summary> <strong style="color:red;">✖</strong> <strong>R Markdown file:</strong> uncommitted changes </summary> The R Markdown file has unstaged changes. To know which version of the R Markdown file created these results, you’ll want to first commit it to the Git repo. If you’re still working on the analysis, you can ignore this warning. When you’re finished, you can run <code>wflow_publish</code> to commit the R Markdown file and build the HTML.</p>
 </details>
 </li>
 <li>
@@ -357,19 +356,20 @@ div.section {
 </li>
 <li>
 <details>
-<p><summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/ballardtj/gen_arch/tree/53b1f35ca715033a69c7af4292afe97f95006c8d" target="_blank">53b1f35</a> </summary></p>
+<p><summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/ballardtj/gen_arch/tree/2aa5ed887ec6513be70e16d64be5896f6b79fefc" target="_blank">2aa5ed8</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
     Ignored:    .DS_Store
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
+    Ignored:    analysis/figure/
     Ignored:    data/.DS_Store
     Ignored:    data/derived/.DS_Store
 
 Unstaged changes:
-    Modified:   data/derived/ap_opt_fit.RData
-    Modified:   data/derived/av_opt_fit.RData
+    Modified:   analysis/predictives.Rmd
+    Modified:   model/4_collect_samples.sh
 
 </code></pre>
 Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes.
@@ -400,6 +400,23 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/ballardtj/gen_arch/37fd55bf5666dcfd50dbf74f98840e876cee98cb/docs/predictives.html" target="_blank">37fd55b</a>
+</td>
+<td style="text-align:left;">
+ballardtj
+</td>
+<td style="text-align:left;">
+2018-08-08
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 html
@@ -681,6 +698,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/ballardtj/gen_arch/blob/37fd55bf5666dcfd50dbf74f98840e876cee98cb/docs/figure/predictives.Rmd/optimal_fits-1.png" target="_blank">37fd55b</a>
+</td>
+<td style="text-align:left;">
+ballardtj
+</td>
+<td style="text-align:left;">
+2018-08-08
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 <a href="https://github.com/ballardtj/gen_arch/blob/8131ec052e1fb24f2a97d5a627a157fd57f69f6e/docs/figure/predictives.Rmd/optimal_fits-1.png" target="_blank">8131ec0</a>

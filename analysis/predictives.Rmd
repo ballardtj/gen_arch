@@ -16,10 +16,10 @@ library(doMC)
 registerDoMC(cores=7)
 
 #load stan function for generating predictions
-expose_stan_functions("model/goal_hier.stan")
+expose_stan_functions("model/goal_hier_space.stan")
 goal_sub_obs = goal_sub
 
-expose_stan_functions("model/goal.stan")
+expose_stan_functions("model/goal_fixed_space.stan")
 goal_sub_opt = goal_sub
 
 #function to generate posterior predictives
@@ -99,7 +99,8 @@ generate_pp=function(fit,dataList,Nsamp,source){
                                expt = dataList$expt[subj],
                                sample=samples[i])
       
-      pp_data_tmp$y_pred = as.vector(1/(1+exp(-p_a_logit)))
+      y_prob = as.vector(1/(1+exp(-p_a_logit)))
+      pp_data_tmp$y_pred = 1*(y_prob > runif(n=length(y_prob)))
       pp_data_tmp$y_obs = dataList$y[1:dataList$Nobs[subj],subj]
       pp_data_tmp$a_d0 = dataList$a_d0[1:dataList$Nobs[subj],subj]
       pp_data_tmp$b_d0 = dataList$b_d0[1:dataList$Nobs[subj],subj]
