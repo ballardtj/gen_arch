@@ -142,7 +142,7 @@ generate_pp_plot=function(pp_data){
     geom_ribbon(aes(ymin=y_pred_lo,ymax=y_pred_hi),fill="skyblue") +
     geom_line(aes(y=y_pred_mean),col="blue") +
     geom_line(aes(y=y_obs_mean),col="red") +
-    geom_errorbar(aes(ymin=y_obs_lo,ymax=y_obs_hi,col="red")) +
+    #geom_errorbar(aes(ymin=y_obs_lo,ymax=y_obs_hi,col="red")) +
     facet_grid(.~factor(b_d0,labels=paste("Left Distance:",levels(factor(b_d0))))) + 
     coord_cartesian(ylim=c(0,1)) +
     labs(x="Right Distance",y="Proportion Prioritizing Right Goal") +
@@ -152,7 +152,7 @@ generate_pp_plot=function(pp_data){
       geom_ribbon(aes(ymin=y_pred_lo,ymax=y_pred_hi),fill="skyblue") +
       geom_line(aes(y=y_pred_mean),col="blue") +
       geom_line(aes(y=y_obs_mean),col="red") +
-      geom_errorbar(aes(ymin=y_obs_lo,ymax=y_obs_hi,col="red")) +
+      #geom_errorbar(aes(ymin=y_obs_lo,ymax=y_obs_hi,col="red")) +
       facet_grid(.~factor(b_t0,labels=paste("Left Deadline:",levels(factor(b_t0))))) + 
       coord_cartesian(ylim=c(0,1)) +
       labs(x="Right Deadline",y="Proportion Prioritizing Right Goal") +

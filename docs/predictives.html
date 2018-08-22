@@ -328,7 +328,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2018-08-21</p>
+<p><strong>Last updated:</strong> 2018-08-22</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -356,20 +356,27 @@ div.section {
 </li>
 <li>
 <details>
-<p><summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/ballardtj/gen_arch/tree/2aa5ed887ec6513be70e16d64be5896f6b79fefc" target="_blank">2aa5ed8</a> </summary></p>
+<p><summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/ballardtj/gen_arch/tree/a5c159fed4f3fd352cad6bdc45b3c5dc9b38e745" target="_blank">a5c159f</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
     Ignored:    .DS_Store
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
-    Ignored:    analysis/figure/
     Ignored:    data/.DS_Store
-    Ignored:    data/derived/.DS_Store
+    Ignored:    model/.DS_Store
+
+Untracked files:
+    Untracked:  model/3_collect_samples.pbspro
+    Untracked:  model/5_compile_samples.pbspro
 
 Unstaged changes:
     Modified:   analysis/predictives.Rmd
+    Modified:   model/2_make_goal.sh
+    Deleted:    model/3_collect_samples.pbs
     Modified:   model/4_collect_samples.sh
+    Deleted:    model/5_compile_samples.pbs
+    Modified:   model/goal_fixed_nospace.stan
 
 </code></pre>
 Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes.
@@ -400,6 +407,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/ballardtj/gen_arch/blob/a5c159fed4f3fd352cad6bdc45b3c5dc9b38e745/analysis/predictives.Rmd" target="_blank">a5c159f</a>
+</td>
+<td style="text-align:left;">
+ballardtj
+</td>
+<td style="text-align:left;">
+2018-08-22
+</td>
+<td style="text-align:left;">
+making code to run multiple models
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/ballardtj/gen_arch/a5c159fed4f3fd352cad6bdc45b3c5dc9b38e745/docs/predictives.html" target="_blank">a5c159f</a>
+</td>
+<td style="text-align:left;">
+ballardtj
+</td>
+<td style="text-align:left;">
+2018-08-22
+</td>
+<td style="text-align:left;">
+making code to run multiple models
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 html
@@ -665,6 +706,17 @@ Date
 <tbody>
 <tr>
 <td style="text-align:left;">
+<a href="https://github.com/ballardtj/gen_arch/blob/a5c159fed4f3fd352cad6bdc45b3c5dc9b38e745/docs/figure/predictives.Rmd/observed_fits-1.png" target="_blank">a5c159f</a>
+</td>
+<td style="text-align:left;">
+ballardtj
+</td>
+<td style="text-align:left;">
+2018-08-22
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
 <a href="https://github.com/ballardtj/gen_arch/blob/c2bbfc5b799cf9964b19df71586ccc38c2227662/docs/figure/predictives.Rmd/observed_fits-1.png" target="_blank">c2bbfc5</a>
 </td>
 <td style="text-align:left;">
@@ -698,6 +750,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/ballardtj/gen_arch/blob/a5c159fed4f3fd352cad6bdc45b3c5dc9b38e745/docs/figure/predictives.Rmd/optimal_fits-1.png" target="_blank">a5c159f</a>
+</td>
+<td style="text-align:left;">
+ballardtj
+</td>
+<td style="text-align:left;">
+2018-08-22
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 <a href="https://github.com/ballardtj/gen_arch/blob/37fd55bf5666dcfd50dbf74f98840e876cee98cb/docs/figure/predictives.Rmd/optimal_fits-1.png" target="_blank">37fd55b</a>
@@ -750,7 +813,7 @@ ballardtj
 <pre class="r"><code>sessionInfo()</code></pre>
 <pre><code>R version 3.5.1 (2018-07-02)
 Platform: x86_64-apple-darwin15.6.0 (64-bit)
-Running under: OS X El Capitan 10.11.6
+Running under: macOS High Sierra 10.13.3
 
 Matrix products: default
 BLAS: /Library/Frameworks/R.framework/Versions/3.5/Resources/lib/libRblas.0.dylib

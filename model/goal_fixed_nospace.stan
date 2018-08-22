@@ -25,7 +25,7 @@ functions {
     real tau_sub;
     // real alpha_sub;
     // real one_m_alpha_sub;
-    // real a_sg;
+    real a_sg;
     real b_sg;
     real a_tg;
     real b_tg;
