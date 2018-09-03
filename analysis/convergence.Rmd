@@ -1,178 +1,75 @@
 ---
 title: "R Notebook"
 output:
+  pdf_document: default
   html_document:
     df_print: paged
 ---
 
-Observed Model description:
+Model description:
 
-* Hierarchical
 * Weight parameters normally distributed, non-centered.
 * Gradient parameters normally distributed, and explicitly truncated. Delta and Tau between 0 and 1. Alpha between 0.01 and 0.99.
 
-Optimal Model description:
 
-* Same as above
-
-Run details: 
-
-* Chains: 8
-* Burnin: 4000
-* Post-burnin: 10000
-* Thinning: 10
-* Total samples: 8000
-
-Current issues with model:
-
-?
-
-# Observed Decisions
-
-## Approach Condition
-
-```{r,echo=FALSE,include=FALSE}
+```{r, results='asis',echo=FALSE,message=FALSE}
 library(rstan)
 library(coda)
+library(knitr)
 
-hypers=c('w1_mean','w1_sd','w2_mean','w2_sd','w3_mean','w3_sd',
-         'delta_mean','delta_sd','tau_mean','tau_sd','alpha_mean','alpha_sd')
-
-load("data/derived/ap_obs_fit.RData")
-```
-
-### RStan output
-
-```{r,echo=FALSE}
-smrystan = summary(fit)
-smrystan[[1]][hypers,]
-```
-
-### Coda output
-
-Effective sample size
-
-```{r,echo=FALSE}
 stan2coda <- function(fit) {
   mcmc.list(lapply(1:ncol(fit), function(x) mcmc(as.array(fit)[,x,])))
 }
-effectiveSize(stan2coda(fit))[hypers]
+
+parm_list=list(
+  hier = list(
+    space = c('w1_mean','w1_sd','w2_mean','w2_sd','w3_mean','w3_sd',
+         'delta_mean','delta_sd','tau_mean','tau_sd','alpha_mean','alpha_sd'),
+    nospace = c('w1_mean','w1_sd','w2_mean','w2_sd',
+         'delta_mean','delta_sd','tau_mean','tau_sd')
+  ),
+  fixed = list(
+    space = c('w1[1]','w1[2]','w2[1]','w2[2]','w3[1]','w3[2]','delta[1]','delta[2]',
+                'tau[1]','tau[2]','alpha[1]','alpha[2]'),
+    nospace = c('w1[1]','w1[2]','w1[3]','w2[1]','w2[2]','w2[3]','delta[1]','delta[2]','delta[3]',
+                'tau[1]','tau[2]','tau[3]')
+  )
+)
+    
+for (source in c('opt')){
+  cat('\n')
+  cat(paste('#',source))
+  for (frame in c('av')){
+    cat('\n')
+    cat(paste('##',frame))
+    for (structure in c('hier')){
+      cat('\n')
+      cat(paste('###',structure))
+      for (model in c('nospace')){
+        cat('\n')
+        cat(paste('####',model))
+    
+        #load data  
+        load(paste0("data/derived/",frame,"_",source,"_",structure,"_",model,"_fit.RData")) 
+        
+        parms = parm_list[[structure]][[model]]
+        
+        cat('\n')
+        cat('##### RStan output')
+        smrystan = summary(fit)
+        print(kable(round(smrystan[[1]][parms,],3)))
+        
+        cat('\n')
+        cat('##### Coda output')
+        print(kable(cbind(n_eff=effectiveSize(stan2coda(fit))[parms],
+              gelman.diag(stan2coda(fit))[[1]][parms,])))
+        
+        print(rstan::traceplot(fit,par=parms))
+        print(pairs(fit,pars=parms))
+
+      }
+    }
+  }
+}
 ```
 
-Gelman's Rhat
-
-```{r,echo=FALSE}
-gelman.diag(stan2coda(fit))[[1]][hypers,]
-```
-
-### Plots
-
-```{r,echo=FALSE}
-rstan::traceplot(fit,par=hypers)
-pairs(fit,pars=hypers)
-```
-
-## Avoidance Condition
-
-```{r,echo=FALSE}
-load("data/derived/av_obs_fit.RData")
-```
-
-### RStan output
-
-```{r,echo=FALSE}
-smrystan = summary(fit)
-smrystan[[1]][hypers,]
-```
-
-### Coda output
-
-Effective sample size
-```{r,echo=FALSE}
-effectiveSize(stan2coda(fit))[hypers]
-```
-
-Gelman's Rhat
-
-```{r,echo=FALSE}
-gelman.diag(stan2coda(fit))[[1]][hypers,]
-```
-
-### Plots
-
-```{r,echo=FALSE}
-rstan::traceplot(fit,par=hypers)
-pairs(fit,pars=hypers)
-```
-
-# Optimal Decisions
-
-## Approach Condition
-
-```{r,echo=FALSE}
-load("data/derived/ap_opt_fit.RData")
-
-hypers=c('w1[1]','w1[2]','w2[1]','w2[2]','w3[1]','w3[2]',
-         'delta[1]','delta[2]','tau[1]','tau[2]','alpha[1]','alpha[2]')
-```
-
-### RStan output
-
-```{r,echo=FALSE}
-smrystan = summary(fit)
-smrystan[[1]][hypers,]
-```
-
-### Coda output
-
-Effective sample size
-```{r,echo=FALSE}
-effectiveSize(stan2coda(fit))[hypers]
-```
-
-Gelman's Rhat
-
-```{r,echo=FALSE}
-gelman.diag(stan2coda(fit))[[1]][hypers,]
-```
-
-### Plots
-
-```{r,echo=FALSE}
-rstan::traceplot(fit,par=hypers)
-pairs(fit,pars=hypers)
-```
-
-
-## Avoidance Condition
-
-```{r,echo=FALSE}
-load("data/derived/av_opt_fit.RData")
-```
-
-### RStan output
-
-```{r,echo=FALSE}
-smrystan = summary(fit)
-smrystan[[1]][hypers,]
-```
-
-### Coda output
-
-Effective sample size
-```{r,echo=FALSE}
-effectiveSize(stan2coda(fit))[hypers]
-```
-
-Gelman's Rhat
-
-```{r,echo=FALSE}
-gelman.diag(stan2coda(fit))[[1]][hypers,]
-```
-
-### Plots
-
-```{r,echo=FALSE}
-rstan::traceplot(fit,par=hypers)
-pairs(fit,pars=hypers)
-```
