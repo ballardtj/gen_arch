@@ -12,7 +12,7 @@ Model description:
 * Gradient parameters normally distributed, and explicitly truncated. Delta and Tau between 0 and 1. Alpha between 0.01 and 0.99.
 
 
-```{r, results='asis',echo=FALSE,message=FALSE}
+```{r echo=FALSE, warning=FALSE,  message=FALSE,results='asis'}
 library(rstan)
 library(coda)
 library(knitr)
@@ -35,19 +35,24 @@ parm_list=list(
                 'tau[1]','tau[2]','tau[3]')
   )
 )
-    
-for (source in c('opt')){
+
+source_labels=c(obs="Observed Decisions",opt="Optimal Decisions")
+frame_labels=c(ap="Approach Condition",av="Avoidance Condition")  
+structure_labels=c(hier="Hierarchical Model",fixed="Non-hierarchical Model")
+model_labels=c(space="Spatiotemporal Gradient Included",nospace='Spatiotemporal Gradient Omitted')
+  
+for (source in c('obs','opt')){
   cat('\n')
-  cat(paste('#',source))
-  for (frame in c('av')){
+  cat(paste('#',source_labels[names(source_labels)==source]))
+  for (frame in c('ap','av')){
     cat('\n')
-    cat(paste('##',frame))
-    for (structure in c('hier')){
+    cat(paste('##',frame_labels[names(frame_labels)==frame]))
+    for (structure in c('hier','fixed')){
       cat('\n')
-      cat(paste('###',structure))
-      for (model in c('nospace')){
+      cat(paste('###',structure_labels[names(structure_labels)==structure]))
+      for (model in c('space','nospace')){
         cat('\n')
-        cat(paste('####',model))
+        cat(paste('####',model_labels[names(model_labels)==model]))
     
         #load data  
         load(paste0("data/derived/",frame,"_",source,"_",structure,"_",model,"_fit.RData")) 
@@ -57,15 +62,18 @@ for (source in c('opt')){
         cat('\n')
         cat('##### RStan output')
         smrystan = summary(fit)
-        print(kable(round(smrystan[[1]][parms,],3)))
+        print(kable(round(smrystan[[1]][parms,],3),format="markdown"))
         
         cat('\n')
         cat('##### Coda output')
         print(kable(cbind(n_eff=effectiveSize(stan2coda(fit))[parms],
-              gelman.diag(stan2coda(fit))[[1]][parms,])))
-        
+              gelman.diag(stan2coda(fit))[[1]][parms,]),format="markdown"))
+        cat('\n')
+        cat('##### Traceplot')
         print(rstan::traceplot(fit,par=parms))
-        print(pairs(fit,pars=parms))
+        cat('\n')
+        cat('##### Pairs plot')
+        pairs(fit,pars=parms)
 
       }
     }

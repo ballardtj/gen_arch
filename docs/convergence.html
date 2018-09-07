@@ -328,7 +328,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2018-09-03</p>
+<p><strong>Last updated:</strong> 2018-09-07</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -356,7 +356,7 @@ div.section {
 </li>
 <li>
 <details>
-<p><summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/ballardtj/gen_arch/tree/5a0eee46f024fd89148c5f5dcb27aecf3f9c9538" target="_blank">5a0eee4</a> </summary></p>
+<p><summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/ballardtj/gen_arch/tree/85c09548aacbded291328f9a46a6b353a33d0f1a" target="_blank">85c0954</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -364,14 +364,9 @@ Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
     Ignored:    data/.DS_Store
-    Ignored:    data/derived/.DS_Store
-
-Untracked files:
-    Untracked:  data/derived/av_obs_hier_nospace_fit.RData
-    Untracked:  data/derived/av_obs_hier_space_fit.RData
-    Untracked:  data/derived/av_opt_fixed_nospace_fit.RData
-    Untracked:  data/derived/av_opt_fixed_space_fit.RData
-    Untracked:  data/derived/av_opt_hier_nospace_fit.RData
+    Ignored:    docs/.DS_Store
+    Ignored:    docs/figure/.DS_Store
+    Ignored:    model/.DS_Store
 
 Unstaged changes:
     Modified:   analysis/convergence.Rmd
@@ -405,6 +400,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/ballardtj/gen_arch/blob/8aeeb175553be7f9feb719520f91f6175dc39ca3/analysis/convergence.Rmd" target="_blank">8aeeb17</a>
+</td>
+<td style="text-align:left;">
+ballardtj
+</td>
+<td style="text-align:left;">
+2018-09-03
+</td>
+<td style="text-align:left;">
+save fits and update convergence
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/ballardtj/gen_arch/8aeeb175553be7f9feb719520f91f6175dc39ca3/docs/convergence.html" target="_blank">8aeeb17</a>
+</td>
+<td style="text-align:left;">
+ballardtj
+</td>
+<td style="text-align:left;">
+2018-09-03
+</td>
+<td style="text-align:left;">
+save fits and update convergence
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 html
@@ -454,6 +483,23 @@ ballardtj
 </td>
 <td style="text-align:left;">
 Build site.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/ballardtj/gen_arch/blob/42c1bfc10825a75378a4e01482e480d57ba16ae5/analysis/convergence.Rmd" target="_blank">42c1bfc</a>
+</td>
+<td style="text-align:left;">
+ballardtj
+</td>
+<td style="text-align:left;">
+2018-08-05
+</td>
+<td style="text-align:left;">
+wflow_publish(&quot;analysis/*md&quot;)
 </td>
 </tr>
 <tr>
@@ -607,23 +653,6 @@ ballardtj
 </td>
 <td style="text-align:left;">
 Build site.
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Rmd
-</td>
-<td style="text-align:left;">
-<a href="https://github.com/ballardtj/gen_arch/blob/9742160e6048e084d80604b51acc55459b4c8fb2/analysis/convergence.Rmd" target="_blank">9742160</a>
-</td>
-<td style="text-align:left;">
-ballardtj
-</td>
-<td style="text-align:left;">
-2018-07-31
-</td>
-<td style="text-align:left;">
-wflow_publish(&quot;analysis/*md&quot;)
 </td>
 </tr>
 <tr>
@@ -819,123 +848,123 @@ wflow_publish(&quot;analysis/*Rmd&quot;)
 <table>
 <thead>
 <tr class="header">
-<th></th>
-<th align="right">mean s</th>
-<th align="left">e_mean</th>
-<th align="center">sd</th>
-<th align="center">2.5%</th>
-<th align="center">25%</th>
-<th align="center">50%</th>
-<th align="center">75%</th>
-<th align="left">97.5%</th>
-<th align="center">n_eff</th>
-<th align="left">Rhat</th>
+<th align="left"></th>
+<th align="right">mean</th>
+<th align="right">se_mean</th>
+<th align="right">sd</th>
+<th align="right">2.5%</th>
+<th align="right">25%</th>
+<th align="right">50%</th>
+<th align="right">75%</th>
+<th align="right">97.5%</th>
+<th align="right">n_eff</th>
+<th align="right">Rhat</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>w1_mean</td>
+<td align="left">w1_mean</td>
 <td align="right">-0.053</td>
-<td align="left">0.002</td>
-<td align="center">0.101</td>
-<td align="center">-0.167</td>
-<td align="center">-0.078</td>
-<td align="center">-0.049</td>
-<td align="center">-0.019</td>
-<td align="left">0.046</td>
-<td align="center">2174.657</td>
-<td align="left">1.003</td>
+<td align="right">0.002</td>
+<td align="right">0.101</td>
+<td align="right">-0.167</td>
+<td align="right">-0.078</td>
+<td align="right">-0.049</td>
+<td align="right">-0.019</td>
+<td align="right">0.046</td>
+<td align="right">2174.657</td>
+<td align="right">1.003</td>
 </tr>
 <tr class="even">
-<td>w1_sd</td>
+<td align="left">w1_sd</td>
 <td align="right">0.109</td>
-<td align="left">0.004</td>
-<td align="center">0.122</td>
-<td align="center">0.004</td>
-<td align="center">0.043</td>
-<td align="center">0.088</td>
-<td align="center">0.142</td>
-<td align="left">0.339</td>
-<td align="center">1068.083</td>
-<td align="left">1.009</td>
+<td align="right">0.004</td>
+<td align="right">0.122</td>
+<td align="right">0.004</td>
+<td align="right">0.043</td>
+<td align="right">0.088</td>
+<td align="right">0.142</td>
+<td align="right">0.339</td>
+<td align="right">1068.083</td>
+<td align="right">1.009</td>
 </tr>
 <tr class="odd">
-<td>w2_mean</td>
+<td align="left">w2_mean</td>
 <td align="right">-0.145</td>
-<td align="left">0.030</td>
-<td align="center">0.569</td>
-<td align="center">-1.361</td>
-<td align="center">-0.057</td>
-<td align="center">-0.027</td>
-<td align="center">-0.011</td>
-<td align="left">-0.001</td>
-<td align="center">366.648</td>
-<td align="left">1.024</td>
+<td align="right">0.030</td>
+<td align="right">0.569</td>
+<td align="right">-1.361</td>
+<td align="right">-0.057</td>
+<td align="right">-0.027</td>
+<td align="right">-0.011</td>
+<td align="right">-0.001</td>
+<td align="right">366.648</td>
+<td align="right">1.024</td>
 </tr>
 <tr class="even">
-<td>w2_sd</td>
+<td align="left">w2_sd</td>
 <td align="right">0.092</td>
-<td align="left">0.014</td>
-<td align="center">0.202</td>
-<td align="center">0.002</td>
-<td align="center">0.016</td>
-<td align="center">0.035</td>
-<td align="center">0.069</td>
-<td align="left">0.720</td>
-<td align="center">212.025</td>
-<td align="left">1.038</td>
+<td align="right">0.014</td>
+<td align="right">0.202</td>
+<td align="right">0.002</td>
+<td align="right">0.016</td>
+<td align="right">0.035</td>
+<td align="right">0.069</td>
+<td align="right">0.720</td>
+<td align="right">212.025</td>
+<td align="right">1.038</td>
 </tr>
 <tr class="odd">
-<td>delta_mean</td>
+<td align="left">delta_mean</td>
 <td align="right">0.440</td>
-<td align="left">0.011</td>
-<td align="center">0.299</td>
-<td align="center">0.010</td>
-<td align="center">0.171</td>
-<td align="center">0.403</td>
-<td align="center">0.709</td>
-<td align="left">0.966</td>
-<td align="center">729.922</td>
-<td align="left">1.010</td>
+<td align="right">0.011</td>
+<td align="right">0.299</td>
+<td align="right">0.010</td>
+<td align="right">0.171</td>
+<td align="right">0.403</td>
+<td align="right">0.709</td>
+<td align="right">0.966</td>
+<td align="right">729.922</td>
+<td align="right">1.010</td>
 </tr>
 <tr class="even">
-<td>delta_sd</td>
+<td align="left">delta_sd</td>
 <td align="right">0.843</td>
-<td align="left">0.035</td>
-<td align="center">0.625</td>
-<td align="center">0.042</td>
-<td align="center">0.344</td>
-<td align="center">0.714</td>
-<td align="center">1.213</td>
-<td align="left">2.356</td>
-<td align="center">311.016</td>
-<td align="left">1.021</td>
+<td align="right">0.035</td>
+<td align="right">0.625</td>
+<td align="right">0.042</td>
+<td align="right">0.344</td>
+<td align="right">0.714</td>
+<td align="right">1.213</td>
+<td align="right">2.356</td>
+<td align="right">311.016</td>
+<td align="right">1.021</td>
 </tr>
 <tr class="odd">
-<td>tau_mean</td>
+<td align="left">tau_mean</td>
 <td align="right">0.340</td>
-<td align="left">0.022</td>
-<td align="center">0.303</td>
-<td align="center">0.002</td>
-<td align="center">0.063</td>
-<td align="center">0.251</td>
-<td align="center">0.574</td>
-<td align="left">0.958</td>
-<td align="center">182.330</td>
-<td align="left">1.034</td>
+<td align="right">0.022</td>
+<td align="right">0.303</td>
+<td align="right">0.002</td>
+<td align="right">0.063</td>
+<td align="right">0.251</td>
+<td align="right">0.574</td>
+<td align="right">0.958</td>
+<td align="right">182.330</td>
+<td align="right">1.034</td>
 </tr>
 <tr class="even">
-<td>tau_sd</td>
+<td align="left">tau_sd</td>
 <td align="right">0.625</td>
-<td align="left">0.041</td>
-<td align="center">0.606</td>
-<td align="center">0.004</td>
-<td align="center">0.123</td>
-<td align="center">0.450</td>
-<td align="center">0.966</td>
-<td align="left">2.130</td>
-<td align="center">214.599</td>
-<td align="left">1.026</td>
+<td align="right">0.041</td>
+<td align="right">0.606</td>
+<td align="right">0.004</td>
+<td align="right">0.123</td>
+<td align="right">0.450</td>
+<td align="right">0.966</td>
+<td align="right">2.130</td>
+<td align="right">214.599</td>
+<td align="right">1.026</td>
 </tr>
 </tbody>
 </table>
@@ -945,149 +974,131 @@ wflow_publish(&quot;analysis/*Rmd&quot;)
 <table>
 <thead>
 <tr class="header">
-<th></th>
-<th align="right">n_eff P</th>
-<th>oint est. U</th>
-<th align="left">pper C.I.</th>
+<th align="left"></th>
+<th align="right">n_eff</th>
+<th align="right">Point est.</th>
+<th align="right">Upper C.I.</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>w1_mean</td>
+<td align="left">w1_mean</td>
 <td align="right">2675.6421</td>
-<td>1.173754</td>
-<td align="left">1.198244</td>
+<td align="right">1.173754</td>
+<td align="right">1.198244</td>
 </tr>
 <tr class="even">
-<td>w1_sd</td>
+<td align="left">w1_sd</td>
 <td align="right">1061.4456</td>
-<td>1.058398</td>
-<td align="left">1.081327</td>
+<td align="right">1.058398</td>
+<td align="right">1.081327</td>
 </tr>
 <tr class="odd">
-<td>w2_mean</td>
+<td align="left">w2_mean</td>
 <td align="right">721.3976</td>
-<td>1.115940</td>
-<td align="left">1.203758</td>
+<td align="right">1.115940</td>
+<td align="right">1.203758</td>
 </tr>
 <tr class="even">
-<td>w2_sd</td>
+<td align="left">w2_sd</td>
 <td align="right">674.0567</td>
-<td>1.130900</td>
-<td align="left">1.277601</td>
+<td align="right">1.130900</td>
+<td align="right">1.277601</td>
 </tr>
 <tr class="odd">
-<td>delta_mean</td>
+<td align="left">delta_mean</td>
 <td align="right">1648.0196</td>
-<td>1.006473</td>
-<td align="left">1.015315</td>
+<td align="right">1.006473</td>
+<td align="right">1.015315</td>
 </tr>
 <tr class="even">
-<td>delta_sd</td>
+<td align="left">delta_sd</td>
 <td align="right">1111.6005</td>
-<td>1.012346</td>
-<td align="left">1.028417</td>
+<td align="right">1.012346</td>
+<td align="right">1.028417</td>
 </tr>
 <tr class="odd">
-<td>tau_mean</td>
+<td align="left">tau_mean</td>
 <td align="right">507.0922</td>
-<td>1.053457</td>
-<td align="left">1.117056</td>
+<td align="right">1.053457</td>
+<td align="right">1.117056</td>
 </tr>
 <tr class="even">
-<td>tau_sd</td>
+<td align="left">tau_sd</td>
 <td align="right">449.0462</td>
-<td>1.047959</td>
-<td align="left">1.106483</td>
-</tr>
-<tr class="odd">
-<td>&lt;img src=&quot;fig</td>
-<td align="right">ure/converge</td>
-<td>nce.Rmd/unnam</td>
-<td align="left">ed-chunk-1-1.png&quot; width=“672” style=“display: block; margin: auto;” /&gt;</td>
+<td align="right">1.047959</td>
+<td align="right">1.106483</td>
 </tr>
 </tbody>
 </table>
-<pre><code>Warning in KernSmooth::bkde2D(x, bandwidth = bandwidth, gridsize = nbin, :
-Binning grid too coarse for current (small) bandwidth: consider increasing
-&#39;gridsize&#39;
-
-Warning in KernSmooth::bkde2D(x, bandwidth = bandwidth, gridsize = nbin, :
-Binning grid too coarse for current (small) bandwidth: consider increasing
-&#39;gridsize&#39;
-
-Warning in KernSmooth::bkde2D(x, bandwidth = bandwidth, gridsize = nbin, :
-Binning grid too coarse for current (small) bandwidth: consider increasing
-&#39;gridsize&#39;
-
-Warning in KernSmooth::bkde2D(x, bandwidth = bandwidth, gridsize = nbin, :
-Binning grid too coarse for current (small) bandwidth: consider increasing
-&#39;gridsize&#39;
-
-Warning in KernSmooth::bkde2D(x, bandwidth = bandwidth, gridsize = nbin, :
-Binning grid too coarse for current (small) bandwidth: consider increasing
-&#39;gridsize&#39;
-
-Warning in KernSmooth::bkde2D(x, bandwidth = bandwidth, gridsize = nbin, :
-Binning grid too coarse for current (small) bandwidth: consider increasing
-&#39;gridsize&#39;
-
-Warning in KernSmooth::bkde2D(x, bandwidth = bandwidth, gridsize = nbin, :
-Binning grid too coarse for current (small) bandwidth: consider increasing
-&#39;gridsize&#39;
-
-Warning in KernSmooth::bkde2D(x, bandwidth = bandwidth, gridsize = nbin, :
-Binning grid too coarse for current (small) bandwidth: consider increasing
-&#39;gridsize&#39;
-
-Warning in KernSmooth::bkde2D(x, bandwidth = bandwidth, gridsize = nbin, :
-Binning grid too coarse for current (small) bandwidth: consider increasing
-&#39;gridsize&#39;
-
-Warning in KernSmooth::bkde2D(x, bandwidth = bandwidth, gridsize = nbin, :
-Binning grid too coarse for current (small) bandwidth: consider increasing
-&#39;gridsize&#39;
-
-Warning in KernSmooth::bkde2D(x, bandwidth = bandwidth, gridsize = nbin, :
-Binning grid too coarse for current (small) bandwidth: consider increasing
-&#39;gridsize&#39;
-
-Warning in KernSmooth::bkde2D(x, bandwidth = bandwidth, gridsize = nbin, :
-Binning grid too coarse for current (small) bandwidth: consider increasing
-&#39;gridsize&#39;
-
-Warning in KernSmooth::bkde2D(x, bandwidth = bandwidth, gridsize = nbin, :
-Binning grid too coarse for current (small) bandwidth: consider increasing
-&#39;gridsize&#39;
-
-Warning in KernSmooth::bkde2D(x, bandwidth = bandwidth, gridsize = nbin, :
-Binning grid too coarse for current (small) bandwidth: consider increasing
-&#39;gridsize&#39;
-
-Warning in KernSmooth::bkde2D(x, bandwidth = bandwidth, gridsize = nbin, :
-Binning grid too coarse for current (small) bandwidth: consider increasing
-&#39;gridsize&#39;
-
-Warning in KernSmooth::bkde2D(x, bandwidth = bandwidth, gridsize = nbin, :
-Binning grid too coarse for current (small) bandwidth: consider increasing
-&#39;gridsize&#39;
-
-Warning in KernSmooth::bkde2D(x, bandwidth = bandwidth, gridsize = nbin, :
-Binning grid too coarse for current (small) bandwidth: consider increasing
-&#39;gridsize&#39;
-
-Warning in KernSmooth::bkde2D(x, bandwidth = bandwidth, gridsize = nbin, :
-Binning grid too coarse for current (small) bandwidth: consider increasing
-&#39;gridsize&#39;
-
-Warning in KernSmooth::bkde2D(x, bandwidth = bandwidth, gridsize = nbin, :
-Binning grid too coarse for current (small) bandwidth: consider increasing
-&#39;gridsize&#39;
-
-Warning in KernSmooth::bkde2D(x, bandwidth = bandwidth, gridsize = nbin, :
-Binning grid too coarse for current (small) bandwidth: consider increasing
-&#39;gridsize&#39;</code></pre>
-<p><img src="figure/convergence.Rmd/unnamed-chunk-1-2.png" width="672" style="display: block; margin: auto;" />NULL</p>
+</div>
+<div id="traceplot" class="section level5">
+<h5>Traceplot<img src="figure/convergence.Rmd/unnamed-chunk-1-1.png" width="672" style="display: block; margin: auto;" /></h5>
+<details>
+<summary><em>Expand here to see past versions of unnamed-chunk-1-1.png:</em></summary>
+<table style = "border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/ballardtj/gen_arch/blob/8aeeb175553be7f9feb719520f91f6175dc39ca3/docs/figure/convergence.Rmd/unnamed-chunk-1-1.png" target="_blank">8aeeb17</a>
+</td>
+<td style="text-align:left;">
+ballardtj
+</td>
+<td style="text-align:left;">
+2018-09-03
+</td>
+</tr>
+</tbody>
+</table>
+</details>
+</div>
+<div id="pairs-plot" class="section level5">
+<h5>Pairs plot<img src="figure/convergence.Rmd/unnamed-chunk-1-2.png" width="672" style="display: block; margin: auto;" /></h5>
+<details>
+<summary><em>Expand here to see past versions of unnamed-chunk-1-2.png:</em></summary>
+<table style = "border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/ballardtj/gen_arch/blob/8aeeb175553be7f9feb719520f91f6175dc39ca3/docs/figure/convergence.Rmd/unnamed-chunk-1-2.png" target="_blank">8aeeb17</a>
+</td>
+<td style="text-align:left;">
+ballardtj
+</td>
+<td style="text-align:left;">
+2018-09-03
+</td>
+</tr>
+</tbody>
+</table>
+</details>
 </div>
 </div>
 </div>
@@ -1097,7 +1108,7 @@ Binning grid too coarse for current (small) bandwidth: consider increasing
 <pre class="r"><code>sessionInfo()</code></pre>
 <pre><code>R version 3.5.1 (2018-07-02)
 Platform: x86_64-apple-darwin15.6.0 (64-bit)
-Running under: OS X El Capitan 10.11.6
+Running under: macOS High Sierra 10.13.3
 
 Matrix products: default
 BLAS: /Library/Frameworks/R.framework/Versions/3.5/Resources/lib/libRblas.0.dylib
