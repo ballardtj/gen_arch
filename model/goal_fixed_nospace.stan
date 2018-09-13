@@ -1,10 +1,8 @@
 functions {
   row_vector goal_sub(real[] w1,
                       real[] w2,
-                      // real[] w3,
                       real[] delta,
                       real[] tau,
-                      // real[] alpha,
                       int[] Nobs,
                       int subj,
                       int[] expt,
@@ -126,9 +124,7 @@ model {
     row_vector[Nobs[subj]] p_a_logit;
 
     p_a_logit = goal_sub(w1,w2,
-    // w3,
                          delta,tau,
-                         // alpha,
                          Nobs,subj,expt,s1,s2,
                          a_logd,b_logd,a_logt,b_logt,
                          a_dot,b_dot,a_tod,b_tod);

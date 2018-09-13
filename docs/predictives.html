@@ -328,7 +328,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2018-08-22</p>
+<p><strong>Last updated:</strong> 2018-09-12</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -356,7 +356,7 @@ div.section {
 </li>
 <li>
 <details>
-<p><summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/ballardtj/gen_arch/tree/a5c159fed4f3fd352cad6bdc45b3c5dc9b38e745" target="_blank">a5c159f</a> </summary></p>
+<p><summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/ballardtj/gen_arch/tree/d11ce4d9a649710f9e7a90a8c7eb980df29450cb" target="_blank">d11ce4d</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -364,19 +364,16 @@ Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
     Ignored:    data/.DS_Store
-    Ignored:    model/.DS_Store
+    Ignored:    data/derived/.DS_Store
 
 Untracked files:
-    Untracked:  model/3_collect_samples.pbspro
-    Untracked:  model/5_compile_samples.pbspro
+    Untracked:  analysis/manual_parms_tmp.R
 
 Unstaged changes:
+    Modified:   analysis/parameters.Rmd
     Modified:   analysis/predictives.Rmd
-    Modified:   model/2_make_goal.sh
-    Deleted:    model/3_collect_samples.pbs
-    Modified:   model/4_collect_samples.sh
-    Deleted:    model/5_compile_samples.pbs
     Modified:   model/goal_fixed_nospace.stan
+    Modified:   processing/3_prepare_data.R
 
 </code></pre>
 Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes.
@@ -407,6 +404,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/ballardtj/gen_arch/blob/702d282bfc04f0edd8dba4ce34704ef1b9bdaf84/analysis/predictives.Rmd" target="_blank">702d282</a>
+</td>
+<td style="text-align:left;">
+ballardtj
+</td>
+<td style="text-align:left;">
+2018-08-22
+</td>
+<td style="text-align:left;">
+get multiple models up and running for obs and opt
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/ballardtj/gen_arch/702d282bfc04f0edd8dba4ce34704ef1b9bdaf84/docs/predictives.html" target="_blank">702d282</a>
+</td>
+<td style="text-align:left;">
+ballardtj
+</td>
+<td style="text-align:left;">
+2018-08-22
+</td>
+<td style="text-align:left;">
+get multiple models up and running for obs and opt
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -684,136 +715,38 @@ changed alpha to exclude 0 and 1
 </ul>
 </details>
 <hr />
-<div id="observed-decisions" class="section level1">
+<div id="observed-decisions" class="section level2">
+<h2>Observed Decisions</h2>
+<div id="hierarchical-model" class="section level3">
+<h3>Hierarchical Model</h3>
+<div id="spatiotemporal-gradient-included" class="section level4">
+<h4>Spatiotemporal Gradient Included<img src="figure/predictives.Rmd/unnamed-chunk-1-1.png" width="672" style="display: block; margin: auto;" /></h4>
+</div>
+<div id="spatiotemporal-gradient-omitted" class="section level4">
+<h4>Spatiotemporal Gradient Omitted<img src="figure/predictives.Rmd/unnamed-chunk-1-2.png" width="672" style="display: block; margin: auto;" /></h4>
+</div>
+</div>
+<div id="non-hierarchical-model" class="section level3">
+<h3>Non-hierarchical Model</h3>
+<div id="spatiotemporal-gradient-included-1" class="section level4">
+<h4>Spatiotemporal Gradient Included<img src="figure/predictives.Rmd/unnamed-chunk-1-3.png" width="672" style="display: block; margin: auto;" /></h4>
+</div>
+<div id="spatiotemporal-gradient-omitted-1" class="section level4">
+<h4>Spatiotemporal Gradient Omitted<img src="figure/predictives.Rmd/unnamed-chunk-1-4.png" width="672" style="display: block; margin: auto;" /></h4>
+</div>
+</div>
+</div>
+<div id="observed-decisions-1" class="section level1">
 <h1>Observed Decisions</h1>
-<p><img src="figure/predictives.Rmd/observed_fits-1.png" width="960" style="display: block; margin: auto;" /></p>
-<details>
-<summary><em>Expand here to see past versions of observed_fits-1.png:</em></summary>
-<table style = "border-collapse:separate; border-spacing:5px;">
-<thead>
-<tr>
-<th style="text-align:left;">
-Version
-</th>
-<th style="text-align:left;">
-Author
-</th>
-<th style="text-align:left;">
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-<a href="https://github.com/ballardtj/gen_arch/blob/a5c159fed4f3fd352cad6bdc45b3c5dc9b38e745/docs/figure/predictives.Rmd/observed_fits-1.png" target="_blank">a5c159f</a>
-</td>
-<td style="text-align:left;">
-ballardtj
-</td>
-<td style="text-align:left;">
-2018-08-22
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-<a href="https://github.com/ballardtj/gen_arch/blob/c2bbfc5b799cf9964b19df71586ccc38c2227662/docs/figure/predictives.Rmd/observed_fits-1.png" target="_blank">c2bbfc5</a>
-</td>
-<td style="text-align:left;">
-ballardtj
-</td>
-<td style="text-align:left;">
-2018-08-04
-</td>
-</tr>
-</tbody>
-</table>
-</details>
 </div>
 <div id="optimal-decisions" class="section level1">
 <h1>Optimal Decisions</h1>
-<p><img src="figure/predictives.Rmd/optimal_fits-1.png" width="960" style="display: block; margin: auto;" /></p>
-<details>
-<summary><em>Expand here to see past versions of optimal_fits-1.png:</em></summary>
-<table style = "border-collapse:separate; border-spacing:5px;">
-<thead>
-<tr>
-<th style="text-align:left;">
-Version
-</th>
-<th style="text-align:left;">
-Author
-</th>
-<th style="text-align:left;">
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-<a href="https://github.com/ballardtj/gen_arch/blob/a5c159fed4f3fd352cad6bdc45b3c5dc9b38e745/docs/figure/predictives.Rmd/optimal_fits-1.png" target="_blank">a5c159f</a>
-</td>
-<td style="text-align:left;">
-ballardtj
-</td>
-<td style="text-align:left;">
-2018-08-22
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-<a href="https://github.com/ballardtj/gen_arch/blob/37fd55bf5666dcfd50dbf74f98840e876cee98cb/docs/figure/predictives.Rmd/optimal_fits-1.png" target="_blank">37fd55b</a>
-</td>
-<td style="text-align:left;">
-ballardtj
-</td>
-<td style="text-align:left;">
-2018-08-08
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-<a href="https://github.com/ballardtj/gen_arch/blob/8131ec052e1fb24f2a97d5a627a157fd57f69f6e/docs/figure/predictives.Rmd/optimal_fits-1.png" target="_blank">8131ec0</a>
-</td>
-<td style="text-align:left;">
-ballardtj
-</td>
-<td style="text-align:left;">
-2018-08-07
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-<a href="https://github.com/ballardtj/gen_arch/blob/6bee1a137ad4ce9488334527c7787db0903e1f94/docs/figure/predictives.Rmd/optimal_fits-1.png" target="_blank">6bee1a1</a>
-</td>
-<td style="text-align:left;">
-ballardtj
-</td>
-<td style="text-align:left;">
-2018-08-05
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-<a href="https://github.com/ballardtj/gen_arch/blob/c2bbfc5b799cf9964b19df71586ccc38c2227662/docs/figure/predictives.Rmd/optimal_fits-1.png" target="_blank">c2bbfc5</a>
-</td>
-<td style="text-align:left;">
-ballardtj
-</td>
-<td style="text-align:left;">
-2018-08-04
-</td>
-</tr>
-</tbody>
-</table>
-</details>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
 <pre class="r"><code>sessionInfo()</code></pre>
 <pre><code>R version 3.5.1 (2018-07-02)
 Platform: x86_64-apple-darwin15.6.0 (64-bit)
-Running under: macOS High Sierra 10.13.3
+Running under: OS X El Capitan 10.11.6
 
 Matrix products: default
 BLAS: /Library/Frameworks/R.framework/Versions/3.5/Resources/lib/libRblas.0.dylib
