@@ -328,12 +328,13 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2018-09-07</p>
+<p><strong>Last updated:</strong> 2018-09-13</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
 <details>
-<p><summary> <strong style="color:red;">✖</strong> <strong>R Markdown file:</strong> uncommitted changes </summary> The R Markdown file has unstaged changes. To know which version of the R Markdown file created these results, you’ll want to first commit it to the Git repo. If you’re still working on the analysis, you can ignore this warning. When you’re finished, you can run <code>wflow_publish</code> to commit the R Markdown file and build the HTML.</p>
+<p><summary> <strong style="color:blue;">✔</strong> <strong>R Markdown file:</strong> up-to-date </summary></p>
+<p>Great! Since the R Markdown file has been committed to the Git repository, you know the exact version of the code that produced these results.</p>
 </details>
 </li>
 <li>
@@ -356,7 +357,7 @@ div.section {
 </li>
 <li>
 <details>
-<p><summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/ballardtj/gen_arch/tree/85c09548aacbded291328f9a46a6b353a33d0f1a" target="_blank">85c0954</a> </summary></p>
+<p><summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/ballardtj/gen_arch/tree/e521caa58867c0d336c8eb8f55534eec133f0c02" target="_blank">e521caa</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -364,12 +365,7 @@ Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
     Ignored:    data/.DS_Store
-    Ignored:    docs/.DS_Store
-    Ignored:    docs/figure/.DS_Store
-    Ignored:    model/.DS_Store
-
-Unstaged changes:
-    Modified:   analysis/convergence.Rmd
+    Ignored:    data/derived/.DS_Store
 
 </code></pre>
 Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes.
@@ -400,6 +396,57 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/ballardtj/gen_arch/blob/e521caa58867c0d336c8eb8f55534eec133f0c02/analysis/convergence.Rmd" target="_blank">e521caa</a>
+</td>
+<td style="text-align:left;">
+ballardtj
+</td>
+<td style="text-align:left;">
+2018-09-13
+</td>
+<td style="text-align:left;">
+wflow_publish(files = &quot;analysis/*.Rmd&quot;)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/ballardtj/gen_arch/blob/d11ce4d9a649710f9e7a90a8c7eb980df29450cb/analysis/convergence.Rmd" target="_blank">d11ce4d</a>
+</td>
+<td style="text-align:left;">
+ballardtj
+</td>
+<td style="text-align:left;">
+2018-09-07
+</td>
+<td style="text-align:left;">
+polish off loop of convergence stats
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/ballardtj/gen_arch/d11ce4d9a649710f9e7a90a8c7eb980df29450cb/docs/convergence.html" target="_blank">d11ce4d</a>
+</td>
+<td style="text-align:left;">
+ballardtj
+</td>
+<td style="text-align:left;">
+2018-09-07
+</td>
+<td style="text-align:left;">
+polish off loop of convergence stats
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -483,23 +530,6 @@ ballardtj
 </td>
 <td style="text-align:left;">
 Build site.
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Rmd
-</td>
-<td style="text-align:left;">
-<a href="https://github.com/ballardtj/gen_arch/blob/42c1bfc10825a75378a4e01482e480d57ba16ae5/analysis/convergence.Rmd" target="_blank">42c1bfc</a>
-</td>
-<td style="text-align:left;">
-ballardtj
-</td>
-<td style="text-align:left;">
-2018-08-05
-</td>
-<td style="text-align:left;">
-wflow_publish(&quot;analysis/*md&quot;)
 </td>
 </tr>
 <tr>
@@ -653,6 +683,23 @@ ballardtj
 </td>
 <td style="text-align:left;">
 Build site.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/ballardtj/gen_arch/blob/9742160e6048e084d80604b51acc55459b4c8fb2/analysis/convergence.Rmd" target="_blank">9742160</a>
+</td>
+<td style="text-align:left;">
+ballardtj
+</td>
+<td style="text-align:left;">
+2018-07-31
+</td>
+<td style="text-align:left;">
+wflow_publish(&quot;analysis/*md&quot;)
 </td>
 </tr>
 <tr>
@@ -835,14 +882,14 @@ wflow_publish(&quot;analysis/*Rmd&quot;)
 <li>Weight parameters normally distributed, non-centered.</li>
 <li>Gradient parameters normally distributed, and explicitly truncated. Delta and Tau between 0 and 1. Alpha between 0.01 and 0.99.</li>
 </ul>
-<div id="opt" class="section level1">
-<h1>opt</h1>
-<div id="av" class="section level2">
-<h2>av</h2>
-<div id="hier" class="section level3">
-<h3>hier</h3>
-<div id="nospace" class="section level4">
-<h4>nospace</h4>
+<div id="observed-decisions" class="section level1">
+<h1>Observed Decisions</h1>
+<div id="approach-condition" class="section level2">
+<h2>Approach Condition</h2>
+<div id="hierarchical-model" class="section level3">
+<h3>Hierarchical Model</h3>
+<div id="spatiotemporal-gradient-included" class="section level4">
+<h4>Spatiotemporal Gradient Included</h4>
 <div id="rstan-output" class="section level5">
 <h5>RStan output</h5>
 <table>
@@ -864,107 +911,159 @@ wflow_publish(&quot;analysis/*Rmd&quot;)
 <tbody>
 <tr class="odd">
 <td align="left">w1_mean</td>
-<td align="right">-0.053</td>
-<td align="right">0.002</td>
-<td align="right">0.101</td>
-<td align="right">-0.167</td>
-<td align="right">-0.078</td>
-<td align="right">-0.049</td>
-<td align="right">-0.019</td>
-<td align="right">0.046</td>
-<td align="right">2174.657</td>
-<td align="right">1.003</td>
+<td align="right">-4.453</td>
+<td align="right">0.004</td>
+<td align="right">0.364</td>
+<td align="right">-5.180</td>
+<td align="right">-4.699</td>
+<td align="right">-4.446</td>
+<td align="right">-4.202</td>
+<td align="right">-3.753</td>
+<td align="right">6923.309</td>
+<td align="right">1.000</td>
 </tr>
 <tr class="even">
 <td align="left">w1_sd</td>
-<td align="right">0.109</td>
-<td align="right">0.004</td>
-<td align="right">0.122</td>
-<td align="right">0.004</td>
-<td align="right">0.043</td>
-<td align="right">0.088</td>
-<td align="right">0.142</td>
-<td align="right">0.339</td>
-<td align="right">1068.083</td>
-<td align="right">1.009</td>
+<td align="right">3.600</td>
+<td align="right">0.003</td>
+<td align="right">0.265</td>
+<td align="right">3.112</td>
+<td align="right">3.414</td>
+<td align="right">3.592</td>
+<td align="right">3.772</td>
+<td align="right">4.149</td>
+<td align="right">6984.044</td>
+<td align="right">1.000</td>
 </tr>
 <tr class="odd">
 <td align="left">w2_mean</td>
-<td align="right">-0.145</td>
-<td align="right">0.030</td>
-<td align="right">0.569</td>
-<td align="right">-1.361</td>
-<td align="right">-0.057</td>
-<td align="right">-0.027</td>
-<td align="right">-0.011</td>
-<td align="right">-0.001</td>
-<td align="right">366.648</td>
-<td align="right">1.024</td>
+<td align="right">-3.661</td>
+<td align="right">0.003</td>
+<td align="right">0.294</td>
+<td align="right">-4.230</td>
+<td align="right">-3.858</td>
+<td align="right">-3.664</td>
+<td align="right">-3.467</td>
+<td align="right">-3.080</td>
+<td align="right">7226.249</td>
+<td align="right">1.000</td>
 </tr>
 <tr class="even">
 <td align="left">w2_sd</td>
-<td align="right">0.092</td>
-<td align="right">0.014</td>
-<td align="right">0.202</td>
+<td align="right">6.654</td>
+<td align="right">0.005</td>
+<td align="right">0.442</td>
+<td align="right">5.818</td>
+<td align="right">6.350</td>
+<td align="right">6.646</td>
+<td align="right">6.949</td>
+<td align="right">7.540</td>
+<td align="right">8000.000</td>
+<td align="right">1.000</td>
+</tr>
+<tr class="odd">
+<td align="left">w3_mean</td>
+<td align="right">0.583</td>
+<td align="right">0.001</td>
+<td align="right">0.106</td>
+<td align="right">0.362</td>
+<td align="right">0.513</td>
+<td align="right">0.587</td>
+<td align="right">0.656</td>
+<td align="right">0.783</td>
+<td align="right">6886.056</td>
+<td align="right">1.000</td>
+</tr>
+<tr class="even">
+<td align="left">w3_sd</td>
+<td align="right">2.935</td>
 <td align="right">0.002</td>
-<td align="right">0.016</td>
-<td align="right">0.035</td>
-<td align="right">0.069</td>
-<td align="right">0.720</td>
-<td align="right">212.025</td>
-<td align="right">1.038</td>
+<td align="right">0.168</td>
+<td align="right">2.628</td>
+<td align="right">2.818</td>
+<td align="right">2.930</td>
+<td align="right">3.045</td>
+<td align="right">3.281</td>
+<td align="right">7653.690</td>
+<td align="right">1.000</td>
 </tr>
 <tr class="odd">
 <td align="left">delta_mean</td>
-<td align="right">0.440</td>
-<td align="right">0.011</td>
-<td align="right">0.299</td>
-<td align="right">0.010</td>
-<td align="right">0.171</td>
-<td align="right">0.403</td>
-<td align="right">0.709</td>
-<td align="right">0.966</td>
-<td align="right">729.922</td>
-<td align="right">1.010</td>
+<td align="right">0.949</td>
+<td align="right">0.001</td>
+<td align="right">0.051</td>
+<td align="right">0.829</td>
+<td align="right">0.930</td>
+<td align="right">0.963</td>
+<td align="right">0.985</td>
+<td align="right">0.999</td>
+<td align="right">7873.121</td>
+<td align="right">1.001</td>
 </tr>
 <tr class="even">
 <td align="left">delta_sd</td>
-<td align="right">0.843</td>
-<td align="right">0.035</td>
-<td align="right">0.625</td>
-<td align="right">0.042</td>
-<td align="right">0.344</td>
-<td align="right">0.714</td>
-<td align="right">1.213</td>
-<td align="right">2.356</td>
-<td align="right">311.016</td>
-<td align="right">1.021</td>
+<td align="right">0.573</td>
+<td align="right">0.002</td>
+<td align="right">0.167</td>
+<td align="right">0.404</td>
+<td align="right">0.479</td>
+<td align="right">0.536</td>
+<td align="right">0.617</td>
+<td align="right">0.954</td>
+<td align="right">6609.511</td>
+<td align="right">1.000</td>
 </tr>
 <tr class="odd">
 <td align="left">tau_mean</td>
-<td align="right">0.340</td>
-<td align="right">0.022</td>
-<td align="right">0.303</td>
-<td align="right">0.002</td>
-<td align="right">0.063</td>
-<td align="right">0.251</td>
-<td align="right">0.574</td>
-<td align="right">0.958</td>
-<td align="right">182.330</td>
-<td align="right">1.034</td>
+<td align="right">0.125</td>
+<td align="right">0.001</td>
+<td align="right">0.105</td>
+<td align="right">0.005</td>
+<td align="right">0.047</td>
+<td align="right">0.102</td>
+<td align="right">0.178</td>
+<td align="right">0.364</td>
+<td align="right">7757.163</td>
+<td align="right">1.000</td>
 </tr>
 <tr class="even">
 <td align="left">tau_sd</td>
+<td align="right">0.694</td>
+<td align="right">0.003</td>
+<td align="right">0.274</td>
+<td align="right">0.423</td>
+<td align="right">0.537</td>
 <td align="right">0.625</td>
-<td align="right">0.041</td>
-<td align="right">0.606</td>
-<td align="right">0.004</td>
-<td align="right">0.123</td>
-<td align="right">0.450</td>
-<td align="right">0.966</td>
-<td align="right">2.130</td>
-<td align="right">214.599</td>
-<td align="right">1.026</td>
+<td align="right">0.751</td>
+<td align="right">1.504</td>
+<td align="right">7791.538</td>
+<td align="right">1.000</td>
+</tr>
+<tr class="odd">
+<td align="left">alpha_mean</td>
+<td align="right">0.847</td>
+<td align="right">0.002</td>
+<td align="right">0.155</td>
+<td align="right">0.392</td>
+<td align="right">0.799</td>
+<td align="right">0.900</td>
+<td align="right">0.953</td>
+<td align="right">0.987</td>
+<td align="right">8000.000</td>
+<td align="right">1.000</td>
+</tr>
+<tr class="even">
+<td align="left">alpha_sd</td>
+<td align="right">1.568</td>
+<td align="right">0.006</td>
+<td align="right">0.528</td>
+<td align="right">0.846</td>
+<td align="right">1.165</td>
+<td align="right">1.460</td>
+<td align="right">1.862</td>
+<td align="right">2.818</td>
+<td align="right">8000.000</td>
+<td align="right">1.001</td>
 </tr>
 </tbody>
 </table>
@@ -983,51 +1082,75 @@ wflow_publish(&quot;analysis/*Rmd&quot;)
 <tbody>
 <tr class="odd">
 <td align="left">w1_mean</td>
-<td align="right">2675.6421</td>
-<td align="right">1.173754</td>
-<td align="right">1.198244</td>
+<td align="right">7269.289</td>
+<td align="right">1.0001180</td>
+<td align="right">1.001330</td>
 </tr>
 <tr class="even">
 <td align="left">w1_sd</td>
-<td align="right">1061.4456</td>
-<td align="right">1.058398</td>
-<td align="right">1.081327</td>
+<td align="right">8000.000</td>
+<td align="right">1.0004806</td>
+<td align="right">1.002066</td>
 </tr>
 <tr class="odd">
 <td align="left">w2_mean</td>
-<td align="right">721.3976</td>
-<td align="right">1.115940</td>
-<td align="right">1.203758</td>
+<td align="right">7705.671</td>
+<td align="right">1.0000053</td>
+<td align="right">1.000845</td>
 </tr>
 <tr class="even">
 <td align="left">w2_sd</td>
-<td align="right">674.0567</td>
-<td align="right">1.130900</td>
-<td align="right">1.277601</td>
+<td align="right">8063.042</td>
+<td align="right">0.9999941</td>
+<td align="right">1.001109</td>
+</tr>
+<tr class="odd">
+<td align="left">w3_mean</td>
+<td align="right">7289.382</td>
+<td align="right">1.0012721</td>
+<td align="right">1.003889</td>
+</tr>
+<tr class="even">
+<td align="left">w3_sd</td>
+<td align="right">7815.418</td>
+<td align="right">1.0007606</td>
+<td align="right">1.002406</td>
 </tr>
 <tr class="odd">
 <td align="left">delta_mean</td>
-<td align="right">1648.0196</td>
-<td align="right">1.006473</td>
-<td align="right">1.015315</td>
+<td align="right">7773.336</td>
+<td align="right">1.0093550</td>
+<td align="right">1.014975</td>
 </tr>
 <tr class="even">
 <td align="left">delta_sd</td>
-<td align="right">1111.6005</td>
-<td align="right">1.012346</td>
-<td align="right">1.028417</td>
+<td align="right">7186.884</td>
+<td align="right">1.0032364</td>
+<td align="right">1.005278</td>
 </tr>
 <tr class="odd">
 <td align="left">tau_mean</td>
-<td align="right">507.0922</td>
-<td align="right">1.053457</td>
-<td align="right">1.117056</td>
+<td align="right">8000.000</td>
+<td align="right">1.0011684</td>
+<td align="right">1.002313</td>
 </tr>
 <tr class="even">
 <td align="left">tau_sd</td>
-<td align="right">449.0462</td>
-<td align="right">1.047959</td>
-<td align="right">1.106483</td>
+<td align="right">7705.923</td>
+<td align="right">1.0017609</td>
+<td align="right">1.003595</td>
+</tr>
+<tr class="odd">
+<td align="left">alpha_mean</td>
+<td align="right">7880.164</td>
+<td align="right">0.9999399</td>
+<td align="right">1.000828</td>
+</tr>
+<tr class="even">
+<td align="left">alpha_sd</td>
+<td align="right">7976.003</td>
+<td align="right">1.0006384</td>
+<td align="right">1.001899</td>
 </tr>
 </tbody>
 </table>
@@ -1051,6 +1174,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/ballardtj/gen_arch/blob/d11ce4d9a649710f9e7a90a8c7eb980df29450cb/docs/figure/convergence.Rmd/unnamed-chunk-1-1.png" target="_blank">d11ce4d</a>
+</td>
+<td style="text-align:left;">
+ballardtj
+</td>
+<td style="text-align:left;">
+2018-09-07
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 <a href="https://github.com/ballardtj/gen_arch/blob/8aeeb175553be7f9feb719520f91f6175dc39ca3/docs/figure/convergence.Rmd/unnamed-chunk-1-1.png" target="_blank">8aeeb17</a>
@@ -1087,6 +1221,17 @@ Date
 <tbody>
 <tr>
 <td style="text-align:left;">
+<a href="https://github.com/ballardtj/gen_arch/blob/d11ce4d9a649710f9e7a90a8c7eb980df29450cb/docs/figure/convergence.Rmd/unnamed-chunk-1-2.png" target="_blank">d11ce4d</a>
+</td>
+<td style="text-align:left;">
+ballardtj
+</td>
+<td style="text-align:left;">
+2018-09-07
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
 <a href="https://github.com/ballardtj/gen_arch/blob/8aeeb175553be7f9feb719520f91f6175dc39ca3/docs/figure/convergence.Rmd/unnamed-chunk-1-2.png" target="_blank">8aeeb17</a>
 </td>
 <td style="text-align:left;">
@@ -1101,6 +1246,1784 @@ ballardtj
 </details>
 </div>
 </div>
+<div id="spatiotemporal-gradient-omitted" class="section level4">
+<h4>Spatiotemporal Gradient Omitted</h4>
+<div id="rstan-output-1" class="section level5">
+<h5>RStan output</h5>
+<table>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="right">mean</th>
+<th align="right">se_mean</th>
+<th align="right">sd</th>
+<th align="right">2.5%</th>
+<th align="right">25%</th>
+<th align="right">50%</th>
+<th align="right">75%</th>
+<th align="right">97.5%</th>
+<th align="right">n_eff</th>
+<th align="right">Rhat</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">w1_mean</td>
+<td align="right">-0.896</td>
+<td align="right">0.007</td>
+<td align="right">0.189</td>
+<td align="right">-1.254</td>
+<td align="right">-1.023</td>
+<td align="right">-0.902</td>
+<td align="right">-0.775</td>
+<td align="right">-0.502</td>
+<td align="right">650.021</td>
+<td align="right">1.009</td>
+</tr>
+<tr class="even">
+<td align="left">w1_sd</td>
+<td align="right">2.162</td>
+<td align="right">0.003</td>
+<td align="right">0.144</td>
+<td align="right">1.906</td>
+<td align="right">2.061</td>
+<td align="right">2.153</td>
+<td align="right">2.254</td>
+<td align="right">2.472</td>
+<td align="right">2011.278</td>
+<td align="right">1.004</td>
+</tr>
+<tr class="odd">
+<td align="left">w2_mean</td>
+<td align="right">-2.766</td>
+<td align="right">0.006</td>
+<td align="right">0.277</td>
+<td align="right">-3.222</td>
+<td align="right">-2.951</td>
+<td align="right">-2.798</td>
+<td align="right">-2.619</td>
+<td align="right">-2.111</td>
+<td align="right">2218.593</td>
+<td align="right">1.006</td>
+</tr>
+<tr class="even">
+<td align="left">w2_sd</td>
+<td align="right">5.911</td>
+<td align="right">0.007</td>
+<td align="right">0.437</td>
+<td align="right">5.110</td>
+<td align="right">5.608</td>
+<td align="right">5.895</td>
+<td align="right">6.200</td>
+<td align="right">6.800</td>
+<td align="right">3506.322</td>
+<td align="right">1.001</td>
+</tr>
+<tr class="odd">
+<td align="left">delta_mean</td>
+<td align="right">0.995</td>
+<td align="right">0.000</td>
+<td align="right">0.004</td>
+<td align="right">0.984</td>
+<td align="right">0.993</td>
+<td align="right">0.997</td>
+<td align="right">0.999</td>
+<td align="right">1.000</td>
+<td align="right">5397.117</td>
+<td align="right">1.000</td>
+</tr>
+<tr class="even">
+<td align="left">delta_sd</td>
+<td align="right">0.029</td>
+<td align="right">0.000</td>
+<td align="right">0.003</td>
+<td align="right">0.027</td>
+<td align="right">0.027</td>
+<td align="right">0.029</td>
+<td align="right">0.030</td>
+<td align="right">0.037</td>
+<td align="right">5237.408</td>
+<td align="right">1.001</td>
+</tr>
+<tr class="odd">
+<td align="left">tau_mean</td>
+<td align="right">0.088</td>
+<td align="right">0.001</td>
+<td align="right">0.081</td>
+<td align="right">0.003</td>
+<td align="right">0.030</td>
+<td align="right">0.068</td>
+<td align="right">0.124</td>
+<td align="right">0.272</td>
+<td align="right">5287.078</td>
+<td align="right">1.000</td>
+</tr>
+<tr class="even">
+<td align="left">tau_sd</td>
+<td align="right">0.663</td>
+<td align="right">0.004</td>
+<td align="right">0.228</td>
+<td align="right">0.438</td>
+<td align="right">0.534</td>
+<td align="right">0.606</td>
+<td align="right">0.714</td>
+<td align="right">1.278</td>
+<td align="right">4017.022</td>
+<td align="right">1.002</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="coda-output-1" class="section level5">
+<h5>Coda output</h5>
+<table>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="right">n_eff</th>
+<th align="right">Point est.</th>
+<th align="right">Upper C.I.</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">w1_mean</td>
+<td align="right">695.5011</td>
+<td align="right">1.010335</td>
+<td align="right">1.022561</td>
+</tr>
+<tr class="even">
+<td align="left">w1_sd</td>
+<td align="right">1916.9561</td>
+<td align="right">1.007537</td>
+<td align="right">1.017947</td>
+</tr>
+<tr class="odd">
+<td align="left">w2_mean</td>
+<td align="right">2393.7608</td>
+<td align="right">1.011116</td>
+<td align="right">1.023089</td>
+</tr>
+<tr class="even">
+<td align="left">w2_sd</td>
+<td align="right">4140.5185</td>
+<td align="right">1.001922</td>
+<td align="right">1.004701</td>
+</tr>
+<tr class="odd">
+<td align="left">delta_mean</td>
+<td align="right">5540.3910</td>
+<td align="right">1.001185</td>
+<td align="right">1.002940</td>
+</tr>
+<tr class="even">
+<td align="left">delta_sd</td>
+<td align="right">5304.7850</td>
+<td align="right">1.003373</td>
+<td align="right">1.006610</td>
+</tr>
+<tr class="odd">
+<td align="left">tau_mean</td>
+<td align="right">5411.0843</td>
+<td align="right">1.004994</td>
+<td align="right">1.007203</td>
+</tr>
+<tr class="even">
+<td align="left">tau_sd</td>
+<td align="right">4439.7905</td>
+<td align="right">1.006185</td>
+<td align="right">1.009864</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="traceplot-1" class="section level5">
+<h5>Traceplot<img src="figure/convergence.Rmd/unnamed-chunk-1-3.png" width="672" style="display: block; margin: auto;" /></h5>
+</div>
+<div id="pairs-plot-1" class="section level5">
+<h5>Pairs plot<img src="figure/convergence.Rmd/unnamed-chunk-1-4.png" width="672" style="display: block; margin: auto;" /></h5>
+</div>
+</div>
+</div>
+<div id="non-hierarchical-model" class="section level3">
+<h3>Non-hierarchical Model</h3>
+<div id="spatiotemporal-gradient-included-1" class="section level4">
+<h4>Spatiotemporal Gradient Included</h4>
+<div id="rstan-output-2" class="section level5">
+<h5>RStan output</h5>
+<table>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="right">mean</th>
+<th align="right">se_mean</th>
+<th align="right">sd</th>
+<th align="right">2.5%</th>
+<th align="right">25%</th>
+<th align="right">50%</th>
+<th align="right">75%</th>
+<th align="right">97.5%</th>
+<th align="right">n_eff</th>
+<th align="right">Rhat</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">w1[1]</td>
+<td align="right">-4.498</td>
+<td align="right">0.012</td>
+<td align="right">0.994</td>
+<td align="right">-6.893</td>
+<td align="right">-5.039</td>
+<td align="right">-4.292</td>
+<td align="right">-3.797</td>
+<td align="right">-3.061</td>
+<td align="right">7347.974</td>
+<td align="right">1.000</td>
+</tr>
+<tr class="even">
+<td align="left">w1[2]</td>
+<td align="right">-7.398</td>
+<td align="right">0.025</td>
+<td align="right">2.248</td>
+<td align="right">-12.510</td>
+<td align="right">-8.689</td>
+<td align="right">-7.145</td>
+<td align="right">-5.849</td>
+<td align="right">-3.643</td>
+<td align="right">8000.000</td>
+<td align="right">1.000</td>
+</tr>
+<tr class="odd">
+<td align="left">w2[1]</td>
+<td align="right">-6.120</td>
+<td align="right">0.029</td>
+<td align="right">2.515</td>
+<td align="right">-12.094</td>
+<td align="right">-7.546</td>
+<td align="right">-5.674</td>
+<td align="right">-4.272</td>
+<td align="right">-2.484</td>
+<td align="right">7765.048</td>
+<td align="right">1.001</td>
+</tr>
+<tr class="even">
+<td align="left">w2[2]</td>
+<td align="right">-6.058</td>
+<td align="right">0.010</td>
+<td align="right">0.858</td>
+<td align="right">-7.913</td>
+<td align="right">-6.584</td>
+<td align="right">-6.008</td>
+<td align="right">-5.464</td>
+<td align="right">-4.555</td>
+<td align="right">8000.000</td>
+<td align="right">1.000</td>
+</tr>
+<tr class="odd">
+<td align="left">w3[1]</td>
+<td align="right">3.044</td>
+<td align="right">0.005</td>
+<td align="right">0.483</td>
+<td align="right">2.118</td>
+<td align="right">2.714</td>
+<td align="right">3.041</td>
+<td align="right">3.358</td>
+<td align="right">4.016</td>
+<td align="right">8000.000</td>
+<td align="right">1.000</td>
+</tr>
+<tr class="even">
+<td align="left">w3[2]</td>
+<td align="right">1.473</td>
+<td align="right">0.006</td>
+<td align="right">0.514</td>
+<td align="right">0.513</td>
+<td align="right">1.127</td>
+<td align="right">1.453</td>
+<td align="right">1.805</td>
+<td align="right">2.534</td>
+<td align="right">8000.000</td>
+<td align="right">1.000</td>
+</tr>
+<tr class="odd">
+<td align="left">delta[1]</td>
+<td align="right">0.884</td>
+<td align="right">0.001</td>
+<td align="right">0.092</td>
+<td align="right">0.662</td>
+<td align="right">0.832</td>
+<td align="right">0.905</td>
+<td align="right">0.958</td>
+<td align="right">0.996</td>
+<td align="right">8000.000</td>
+<td align="right">1.000</td>
+</tr>
+<tr class="even">
+<td align="left">delta[2]</td>
+<td align="right">0.252</td>
+<td align="right">0.001</td>
+<td align="right">0.104</td>
+<td align="right">0.096</td>
+<td align="right">0.177</td>
+<td align="right">0.237</td>
+<td align="right">0.309</td>
+<td align="right">0.489</td>
+<td align="right">8000.000</td>
+<td align="right">1.000</td>
+</tr>
+<tr class="odd">
+<td align="left">tau[1]</td>
+<td align="right">0.158</td>
+<td align="right">0.001</td>
+<td align="right">0.086</td>
+<td align="right">0.055</td>
+<td align="right">0.098</td>
+<td align="right">0.137</td>
+<td align="right">0.194</td>
+<td align="right">0.385</td>
+<td align="right">7609.775</td>
+<td align="right">1.000</td>
+</tr>
+<tr class="even">
+<td align="left">tau[2]</td>
+<td align="right">0.738</td>
+<td align="right">0.002</td>
+<td align="right">0.153</td>
+<td align="right">0.417</td>
+<td align="right">0.633</td>
+<td align="right">0.750</td>
+<td align="right">0.857</td>
+<td align="right">0.981</td>
+<td align="right">8000.000</td>
+<td align="right">1.001</td>
+</tr>
+<tr class="odd">
+<td align="left">alpha[1]</td>
+<td align="right">0.808</td>
+<td align="right">0.000</td>
+<td align="right">0.028</td>
+<td align="right">0.750</td>
+<td align="right">0.790</td>
+<td align="right">0.809</td>
+<td align="right">0.827</td>
+<td align="right">0.860</td>
+<td align="right">7769.133</td>
+<td align="right">1.000</td>
+</tr>
+<tr class="even">
+<td align="left">alpha[2]</td>
+<td align="right">0.226</td>
+<td align="right">0.002</td>
+<td align="right">0.157</td>
+<td align="right">0.042</td>
+<td align="right">0.108</td>
+<td align="right">0.179</td>
+<td align="right">0.311</td>
+<td align="right">0.622</td>
+<td align="right">8000.000</td>
+<td align="right">1.000</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="coda-output-2" class="section level5">
+<h5>Coda output</h5>
+<table>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="right">n_eff</th>
+<th align="right">Point est.</th>
+<th align="right">Upper C.I.</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">w1[1]</td>
+<td align="right">7969.451</td>
+<td align="right">1.0001990</td>
+<td align="right">1.001293</td>
+</tr>
+<tr class="even">
+<td align="left">w1[2]</td>
+<td align="right">8124.653</td>
+<td align="right">1.0012845</td>
+<td align="right">1.003922</td>
+</tr>
+<tr class="odd">
+<td align="left">w2[1]</td>
+<td align="right">7781.873</td>
+<td align="right">1.0026345</td>
+<td align="right">1.006457</td>
+</tr>
+<tr class="even">
+<td align="left">w2[2]</td>
+<td align="right">7836.998</td>
+<td align="right">1.0003598</td>
+<td align="right">1.001394</td>
+</tr>
+<tr class="odd">
+<td align="left">w3[1]</td>
+<td align="right">8128.466</td>
+<td align="right">1.0003479</td>
+<td align="right">1.001677</td>
+</tr>
+<tr class="even">
+<td align="left">w3[2]</td>
+<td align="right">8175.019</td>
+<td align="right">0.9996615</td>
+<td align="right">1.000279</td>
+</tr>
+<tr class="odd">
+<td align="left">delta[1]</td>
+<td align="right">8191.484</td>
+<td align="right">0.9997673</td>
+<td align="right">1.000552</td>
+</tr>
+<tr class="even">
+<td align="left">delta[2]</td>
+<td align="right">8221.738</td>
+<td align="right">1.0006862</td>
+<td align="right">1.002331</td>
+</tr>
+<tr class="odd">
+<td align="left">tau[1]</td>
+<td align="right">7766.846</td>
+<td align="right">1.0004009</td>
+<td align="right">1.001713</td>
+</tr>
+<tr class="even">
+<td align="left">tau[2]</td>
+<td align="right">8898.939</td>
+<td align="right">1.0024050</td>
+<td align="right">1.006636</td>
+</tr>
+<tr class="odd">
+<td align="left">alpha[1]</td>
+<td align="right">7750.313</td>
+<td align="right">1.0008307</td>
+<td align="right">1.002695</td>
+</tr>
+<tr class="even">
+<td align="left">alpha[2]</td>
+<td align="right">7676.663</td>
+<td align="right">1.0001705</td>
+<td align="right">1.001311</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="traceplot-2" class="section level5">
+<h5>Traceplot<img src="figure/convergence.Rmd/unnamed-chunk-1-5.png" width="672" style="display: block; margin: auto;" /></h5>
+</div>
+<div id="pairs-plot-2" class="section level5">
+<h5>Pairs plot<img src="figure/convergence.Rmd/unnamed-chunk-1-6.png" width="672" style="display: block; margin: auto;" /></h5>
+</div>
+</div>
+<div id="spatiotemporal-gradient-omitted-1" class="section level4">
+<h4>Spatiotemporal Gradient Omitted</h4>
+<div id="rstan-output-3" class="section level5">
+<h5>RStan output</h5>
+<table>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="right">mean</th>
+<th align="right">se_mean</th>
+<th align="right">sd</th>
+<th align="right">2.5%</th>
+<th align="right">25%</th>
+<th align="right">50%</th>
+<th align="right">75%</th>
+<th align="right">97.5%</th>
+<th align="right">n_eff</th>
+<th align="right">Rhat</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">w1[1]</td>
+<td align="right">-3.874</td>
+<td align="right">0.005</td>
+<td align="right">0.405</td>
+<td align="right">-4.698</td>
+<td align="right">-4.145</td>
+<td align="right">-3.860</td>
+<td align="right">-3.597</td>
+<td align="right">-3.111</td>
+<td align="right">7737.934</td>
+<td align="right">1.000</td>
+</tr>
+<tr class="even">
+<td align="left">w1[2]</td>
+<td align="right">-0.880</td>
+<td align="right">0.012</td>
+<td align="right">1.066</td>
+<td align="right">-3.648</td>
+<td align="right">-1.028</td>
+<td align="right">-0.747</td>
+<td align="right">-0.489</td>
+<td align="right">0.144</td>
+<td align="right">7593.526</td>
+<td align="right">1.001</td>
+</tr>
+<tr class="odd">
+<td align="left">w1[3]</td>
+<td align="right">-1.572</td>
+<td align="right">0.003</td>
+<td align="right">0.284</td>
+<td align="right">-2.133</td>
+<td align="right">-1.762</td>
+<td align="right">-1.572</td>
+<td align="right">-1.375</td>
+<td align="right">-1.030</td>
+<td align="right">7974.181</td>
+<td align="right">0.999</td>
+</tr>
+<tr class="even">
+<td align="left">w2[1]</td>
+<td align="right">-4.613</td>
+<td align="right">0.021</td>
+<td align="right">1.797</td>
+<td align="right">-9.342</td>
+<td align="right">-5.351</td>
+<td align="right">-4.128</td>
+<td align="right">-3.364</td>
+<td align="right">-2.481</td>
+<td align="right">7200.170</td>
+<td align="right">1.000</td>
+</tr>
+<tr class="odd">
+<td align="left">w2[2]</td>
+<td align="right">-4.921</td>
+<td align="right">0.008</td>
+<td align="right">0.671</td>
+<td align="right">-6.377</td>
+<td align="right">-5.306</td>
+<td align="right">-4.872</td>
+<td align="right">-4.471</td>
+<td align="right">-3.763</td>
+<td align="right">7591.421</td>
+<td align="right">1.000</td>
+</tr>
+<tr class="even">
+<td align="left">w2[3]</td>
+<td align="right">-5.281</td>
+<td align="right">0.022</td>
+<td align="right">1.932</td>
+<td align="right">-10.399</td>
+<td align="right">-6.101</td>
+<td align="right">-4.817</td>
+<td align="right">-3.936</td>
+<td align="right">-2.891</td>
+<td align="right">8000.000</td>
+<td align="right">1.001</td>
+</tr>
+<tr class="odd">
+<td align="left">delta[1]</td>
+<td align="right">0.896</td>
+<td align="right">0.001</td>
+<td align="right">0.086</td>
+<td align="right">0.684</td>
+<td align="right">0.851</td>
+<td align="right">0.918</td>
+<td align="right">0.964</td>
+<td align="right">0.997</td>
+<td align="right">8000.000</td>
+<td align="right">1.000</td>
+</tr>
+<tr class="even">
+<td align="left">delta[2]</td>
+<td align="right">0.611</td>
+<td align="right">0.004</td>
+<td align="right">0.317</td>
+<td align="right">0.016</td>
+<td align="right">0.353</td>
+<td align="right">0.706</td>
+<td align="right">0.888</td>
+<td align="right">0.991</td>
+<td align="right">8000.000</td>
+<td align="right">1.000</td>
+</tr>
+<tr class="odd">
+<td align="left">delta[3]</td>
+<td align="right">0.912</td>
+<td align="right">0.001</td>
+<td align="right">0.086</td>
+<td align="right">0.687</td>
+<td align="right">0.877</td>
+<td align="right">0.938</td>
+<td align="right">0.974</td>
+<td align="right">0.998</td>
+<td align="right">8000.000</td>
+<td align="right">1.000</td>
+</tr>
+<tr class="even">
+<td align="left">tau[1]</td>
+<td align="right">0.355</td>
+<td align="right">0.002</td>
+<td align="right">0.177</td>
+<td align="right">0.107</td>
+<td align="right">0.220</td>
+<td align="right">0.324</td>
+<td align="right">0.457</td>
+<td align="right">0.783</td>
+<td align="right">7455.895</td>
+<td align="right">1.000</td>
+</tr>
+<tr class="odd">
+<td align="left">tau[2]</td>
+<td align="right">0.767</td>
+<td align="right">0.002</td>
+<td align="right">0.159</td>
+<td align="right">0.417</td>
+<td align="right">0.660</td>
+<td align="right">0.789</td>
+<td align="right">0.897</td>
+<td align="right">0.990</td>
+<td align="right">7871.325</td>
+<td align="right">1.000</td>
+</tr>
+<tr class="even">
+<td align="left">tau[3]</td>
+<td align="right">0.358</td>
+<td align="right">0.002</td>
+<td align="right">0.167</td>
+<td align="right">0.117</td>
+<td align="right">0.234</td>
+<td align="right">0.331</td>
+<td align="right">0.453</td>
+<td align="right">0.770</td>
+<td align="right">8000.000</td>
+<td align="right">1.000</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="coda-output-3" class="section level5">
+<h5>Coda output</h5>
+<table>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="right">n_eff</th>
+<th align="right">Point est.</th>
+<th align="right">Upper C.I.</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">w1[1]</td>
+<td align="right">8278.183</td>
+<td align="right">0.9999939</td>
+<td align="right">1.0008015</td>
+</tr>
+<tr class="even">
+<td align="left">w1[2]</td>
+<td align="right">7763.851</td>
+<td align="right">1.0067301</td>
+<td align="right">1.0097251</td>
+</tr>
+<tr class="odd">
+<td align="left">w1[3]</td>
+<td align="right">7986.363</td>
+<td align="right">0.9995266</td>
+<td align="right">0.9998846</td>
+</tr>
+<tr class="even">
+<td align="left">w2[1]</td>
+<td align="right">7465.558</td>
+<td align="right">1.0008302</td>
+<td align="right">1.0024833</td>
+</tr>
+<tr class="odd">
+<td align="left">w2[2]</td>
+<td align="right">7980.477</td>
+<td align="right">1.0016622</td>
+<td align="right">1.0040638</td>
+</tr>
+<tr class="even">
+<td align="left">w2[3]</td>
+<td align="right">8337.401</td>
+<td align="right">1.0016541</td>
+<td align="right">1.0040412</td>
+</tr>
+<tr class="odd">
+<td align="left">delta[1]</td>
+<td align="right">8000.000</td>
+<td align="right">0.9998491</td>
+<td align="right">1.0006467</td>
+</tr>
+<tr class="even">
+<td align="left">delta[2]</td>
+<td align="right">7909.879</td>
+<td align="right">0.9999685</td>
+<td align="right">1.0011628</td>
+</tr>
+<tr class="odd">
+<td align="left">delta[3]</td>
+<td align="right">8200.776</td>
+<td align="right">1.0009321</td>
+<td align="right">1.0026633</td>
+</tr>
+<tr class="even">
+<td align="left">tau[1]</td>
+<td align="right">7696.040</td>
+<td align="right">1.0008754</td>
+<td align="right">1.0030123</td>
+</tr>
+<tr class="odd">
+<td align="left">tau[2]</td>
+<td align="right">8028.433</td>
+<td align="right">1.0006721</td>
+<td align="right">1.0022772</td>
+</tr>
+<tr class="even">
+<td align="left">tau[3]</td>
+<td align="right">8492.609</td>
+<td align="right">1.0003316</td>
+<td align="right">1.0018827</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="traceplot-3" class="section level5">
+<h5>Traceplot<img src="figure/convergence.Rmd/unnamed-chunk-1-7.png" width="672" style="display: block; margin: auto;" /></h5>
+</div>
+<div id="pairs-plot-3" class="section level5">
+<h5>Pairs plot<img src="figure/convergence.Rmd/unnamed-chunk-1-8.png" width="672" style="display: block; margin: auto;" /></h5>
+</div>
+</div>
+</div>
+</div>
+<div id="avoidance-condition" class="section level2">
+<h2>Avoidance Condition</h2>
+<div id="hierarchical-model-1" class="section level3">
+<h3>Hierarchical Model</h3>
+<div id="spatiotemporal-gradient-included-2" class="section level4">
+<h4>Spatiotemporal Gradient Included</h4>
+<div id="rstan-output-4" class="section level5">
+<h5>RStan output</h5>
+<table>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="right">mean</th>
+<th align="right">se_mean</th>
+<th align="right">sd</th>
+<th align="right">2.5%</th>
+<th align="right">25%</th>
+<th align="right">50%</th>
+<th align="right">75%</th>
+<th align="right">97.5%</th>
+<th align="right">n_eff</th>
+<th align="right">Rhat</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">w1_mean</td>
+<td align="right">-6.641</td>
+<td align="right">0.006</td>
+<td align="right">0.493</td>
+<td align="right">-7.629</td>
+<td align="right">-6.969</td>
+<td align="right">-6.632</td>
+<td align="right">-6.304</td>
+<td align="right">-5.704</td>
+<td align="right">6979.303</td>
+<td align="right">1.000</td>
+</tr>
+<tr class="even">
+<td align="left">w1_sd</td>
+<td align="right">3.636</td>
+<td align="right">0.004</td>
+<td align="right">0.320</td>
+<td align="right">3.032</td>
+<td align="right">3.414</td>
+<td align="right">3.629</td>
+<td align="right">3.850</td>
+<td align="right">4.281</td>
+<td align="right">7284.870</td>
+<td align="right">1.000</td>
+</tr>
+<tr class="odd">
+<td align="left">w2_mean</td>
+<td align="right">-0.236</td>
+<td align="right">0.013</td>
+<td align="right">0.619</td>
+<td align="right">-1.413</td>
+<td align="right">-0.218</td>
+<td align="right">-0.091</td>
+<td align="right">-0.035</td>
+<td align="right">-0.003</td>
+<td align="right">2341.722</td>
+<td align="right">1.001</td>
+</tr>
+<tr class="even">
+<td align="left">w2_sd</td>
+<td align="right">1.877</td>
+<td align="right">0.008</td>
+<td align="right">0.587</td>
+<td align="right">0.868</td>
+<td align="right">1.455</td>
+<td align="right">1.832</td>
+<td align="right">2.251</td>
+<td align="right">3.144</td>
+<td align="right">5568.640</td>
+<td align="right">1.000</td>
+</tr>
+<tr class="odd">
+<td align="left">w3_mean</td>
+<td align="right">0.030</td>
+<td align="right">0.000</td>
+<td align="right">0.028</td>
+<td align="right">0.001</td>
+<td align="right">0.009</td>
+<td align="right">0.022</td>
+<td align="right">0.043</td>
+<td align="right">0.102</td>
+<td align="right">7636.590</td>
+<td align="right">1.000</td>
+</tr>
+<tr class="even">
+<td align="left">w3_sd</td>
+<td align="right">1.703</td>
+<td align="right">0.001</td>
+<td align="right">0.090</td>
+<td align="right">1.536</td>
+<td align="right">1.641</td>
+<td align="right">1.700</td>
+<td align="right">1.760</td>
+<td align="right">1.886</td>
+<td align="right">6938.086</td>
+<td align="right">1.000</td>
+</tr>
+<tr class="odd">
+<td align="left">delta_mean</td>
+<td align="right">0.027</td>
+<td align="right">0.000</td>
+<td align="right">0.025</td>
+<td align="right">0.001</td>
+<td align="right">0.008</td>
+<td align="right">0.020</td>
+<td align="right">0.038</td>
+<td align="right">0.093</td>
+<td align="right">8000.000</td>
+<td align="right">1.000</td>
+</tr>
+<tr class="even">
+<td align="left">delta_sd</td>
+<td align="right">0.370</td>
+<td align="right">0.001</td>
+<td align="right">0.045</td>
+<td align="right">0.295</td>
+<td align="right">0.339</td>
+<td align="right">0.365</td>
+<td align="right">0.397</td>
+<td align="right">0.469</td>
+<td align="right">7055.075</td>
+<td align="right">1.000</td>
+</tr>
+<tr class="odd">
+<td align="left">tau_mean</td>
+<td align="right">0.014</td>
+<td align="right">0.000</td>
+<td align="right">0.012</td>
+<td align="right">0.000</td>
+<td align="right">0.005</td>
+<td align="right">0.011</td>
+<td align="right">0.020</td>
+<td align="right">0.045</td>
+<td align="right">5465.214</td>
+<td align="right">1.000</td>
+</tr>
+<tr class="even">
+<td align="left">tau_sd</td>
+<td align="right">0.043</td>
+<td align="right">0.000</td>
+<td align="right">0.018</td>
+<td align="right">0.017</td>
+<td align="right">0.031</td>
+<td align="right">0.040</td>
+<td align="right">0.052</td>
+<td align="right">0.088</td>
+<td align="right">4105.389</td>
+<td align="right">1.000</td>
+</tr>
+<tr class="odd">
+<td align="left">alpha_mean</td>
+<td align="right">0.064</td>
+<td align="right">0.000</td>
+<td align="right">0.043</td>
+<td align="right">0.012</td>
+<td align="right">0.029</td>
+<td align="right">0.054</td>
+<td align="right">0.089</td>
+<td align="right">0.168</td>
+<td align="right">7839.876</td>
+<td align="right">1.000</td>
+</tr>
+<tr class="even">
+<td align="left">alpha_sd</td>
+<td align="right">0.393</td>
+<td align="right">0.001</td>
+<td align="right">0.041</td>
+<td align="right">0.319</td>
+<td align="right">0.366</td>
+<td align="right">0.392</td>
+<td align="right">0.419</td>
+<td align="right">0.478</td>
+<td align="right">5914.216</td>
+<td align="right">1.000</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="coda-output-4" class="section level5">
+<h5>Coda output</h5>
+<table>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="right">n_eff</th>
+<th align="right">Point est.</th>
+<th align="right">Upper C.I.</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">w1_mean</td>
+<td align="right">7059.285</td>
+<td align="right">0.9997744</td>
+<td align="right">1.000444</td>
+</tr>
+<tr class="even">
+<td align="left">w1_sd</td>
+<td align="right">7234.792</td>
+<td align="right">1.0001885</td>
+<td align="right">1.001602</td>
+</tr>
+<tr class="odd">
+<td align="left">w2_mean</td>
+<td align="right">2936.178</td>
+<td align="right">1.0258403</td>
+<td align="right">1.029876</td>
+</tr>
+<tr class="even">
+<td align="left">w2_sd</td>
+<td align="right">6067.961</td>
+<td align="right">1.0001065</td>
+<td align="right">1.000901</td>
+</tr>
+<tr class="odd">
+<td align="left">w3_mean</td>
+<td align="right">7912.010</td>
+<td align="right">1.0002067</td>
+<td align="right">1.001499</td>
+</tr>
+<tr class="even">
+<td align="left">w3_sd</td>
+<td align="right">7229.112</td>
+<td align="right">0.9996510</td>
+<td align="right">1.000126</td>
+</tr>
+<tr class="odd">
+<td align="left">delta_mean</td>
+<td align="right">7990.926</td>
+<td align="right">0.9998079</td>
+<td align="right">1.000400</td>
+</tr>
+<tr class="even">
+<td align="left">delta_sd</td>
+<td align="right">7400.046</td>
+<td align="right">1.0007052</td>
+<td align="right">1.002166</td>
+</tr>
+<tr class="odd">
+<td align="left">tau_mean</td>
+<td align="right">5856.585</td>
+<td align="right">0.9998187</td>
+<td align="right">1.000515</td>
+</tr>
+<tr class="even">
+<td align="left">tau_sd</td>
+<td align="right">4434.008</td>
+<td align="right">1.0013297</td>
+<td align="right">1.003417</td>
+</tr>
+<tr class="odd">
+<td align="left">alpha_mean</td>
+<td align="right">8000.000</td>
+<td align="right">0.9997458</td>
+<td align="right">1.000304</td>
+</tr>
+<tr class="even">
+<td align="left">alpha_sd</td>
+<td align="right">6898.341</td>
+<td align="right">1.0009782</td>
+<td align="right">1.003229</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="traceplot-4" class="section level5">
+<h5>Traceplot<img src="figure/convergence.Rmd/unnamed-chunk-1-9.png" width="672" style="display: block; margin: auto;" /></h5>
+</div>
+<div id="pairs-plot-4" class="section level5">
+<h5>Pairs plot<img src="figure/convergence.Rmd/unnamed-chunk-1-10.png" width="672" style="display: block; margin: auto;" /></h5>
+</div>
+</div>
+<div id="spatiotemporal-gradient-omitted-2" class="section level4">
+<h4>Spatiotemporal Gradient Omitted</h4>
+<div id="rstan-output-5" class="section level5">
+<h5>RStan output</h5>
+<table>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="right">mean</th>
+<th align="right">se_mean</th>
+<th align="right">sd</th>
+<th align="right">2.5%</th>
+<th align="right">25%</th>
+<th align="right">50%</th>
+<th align="right">75%</th>
+<th align="right">97.5%</th>
+<th align="right">n_eff</th>
+<th align="right">Rhat</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">w1_mean</td>
+<td align="right">-6.218</td>
+<td align="right">0.007</td>
+<td align="right">0.344</td>
+<td align="right">-6.901</td>
+<td align="right">-6.436</td>
+<td align="right">-6.234</td>
+<td align="right">-5.989</td>
+<td align="right">-5.538</td>
+<td align="right">2579.271</td>
+<td align="right">1.003</td>
+</tr>
+<tr class="even">
+<td align="left">w1_sd</td>
+<td align="right">3.351</td>
+<td align="right">0.012</td>
+<td align="right">0.253</td>
+<td align="right">2.880</td>
+<td align="right">3.168</td>
+<td align="right">3.352</td>
+<td align="right">3.534</td>
+<td align="right">3.845</td>
+<td align="right">412.789</td>
+<td align="right">1.019</td>
+</tr>
+<tr class="odd">
+<td align="left">w2_mean</td>
+<td align="right">-0.074</td>
+<td align="right">0.027</td>
+<td align="right">0.394</td>
+<td align="right">-0.852</td>
+<td align="right">-0.005</td>
+<td align="right">-0.002</td>
+<td align="right">-0.001</td>
+<td align="right">0.000</td>
+<td align="right">219.438</td>
+<td align="right">1.039</td>
+</tr>
+<tr class="even">
+<td align="left">w2_sd</td>
+<td align="right">0.045</td>
+<td align="right">0.014</td>
+<td align="right">0.179</td>
+<td align="right">0.000</td>
+<td align="right">0.001</td>
+<td align="right">0.003</td>
+<td align="right">0.006</td>
+<td align="right">0.551</td>
+<td align="right">161.903</td>
+<td align="right">1.054</td>
+</tr>
+<tr class="odd">
+<td align="left">delta_mean</td>
+<td align="right">0.213</td>
+<td align="right">0.006</td>
+<td align="right">0.194</td>
+<td align="right">0.007</td>
+<td align="right">0.068</td>
+<td align="right">0.159</td>
+<td align="right">0.301</td>
+<td align="right">0.753</td>
+<td align="right">1216.843</td>
+<td align="right">1.009</td>
+</tr>
+<tr class="even">
+<td align="left">delta_sd</td>
+<td align="right">1.231</td>
+<td align="right">0.009</td>
+<td align="right">0.488</td>
+<td align="right">0.608</td>
+<td align="right">0.864</td>
+<td align="right">1.128</td>
+<td align="right">1.481</td>
+<td align="right">2.441</td>
+<td align="right">2796.995</td>
+<td align="right">1.005</td>
+</tr>
+<tr class="odd">
+<td align="left">tau_mean</td>
+<td align="right">0.360</td>
+<td align="right">0.024</td>
+<td align="right">0.307</td>
+<td align="right">0.000</td>
+<td align="right">0.059</td>
+<td align="right">0.313</td>
+<td align="right">0.593</td>
+<td align="right">0.956</td>
+<td align="right">158.193</td>
+<td align="right">1.051</td>
+</tr>
+<tr class="even">
+<td align="left">tau_sd</td>
+<td align="right">0.653</td>
+<td align="right">0.060</td>
+<td align="right">0.617</td>
+<td align="right">0.000</td>
+<td align="right">0.137</td>
+<td align="right">0.501</td>
+<td align="right">1.014</td>
+<td align="right">2.147</td>
+<td align="right">107.597</td>
+<td align="right">1.069</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="coda-output-5" class="section level5">
+<h5>Coda output</h5>
+<table>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="right">n_eff</th>
+<th align="right">Point est.</th>
+<th align="right">Upper C.I.</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">w1_mean</td>
+<td align="right">3609.2061</td>
+<td align="right">1.007634</td>
+<td align="right">1.013397</td>
+</tr>
+<tr class="even">
+<td align="left">w1_sd</td>
+<td align="right">4598.6137</td>
+<td align="right">1.036923</td>
+<td align="right">1.085082</td>
+</tr>
+<tr class="odd">
+<td align="left">w2_mean</td>
+<td align="right">1628.0215</td>
+<td align="right">1.085429</td>
+<td align="right">1.130633</td>
+</tr>
+<tr class="even">
+<td align="left">w2_sd</td>
+<td align="right">1858.8086</td>
+<td align="right">1.126211</td>
+<td align="right">1.238807</td>
+</tr>
+<tr class="odd">
+<td align="left">delta_mean</td>
+<td align="right">5706.7734</td>
+<td align="right">1.019152</td>
+<td align="right">1.043451</td>
+</tr>
+<tr class="even">
+<td align="left">delta_sd</td>
+<td align="right">6298.5824</td>
+<td align="right">1.010514</td>
+<td align="right">1.022601</td>
+</tr>
+<tr class="odd">
+<td align="left">tau_mean</td>
+<td align="right">826.4688</td>
+<td align="right">1.061823</td>
+<td align="right">1.138026</td>
+</tr>
+<tr class="even">
+<td align="left">tau_sd</td>
+<td align="right">634.2252</td>
+<td align="right">1.080963</td>
+<td align="right">1.177733</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="traceplot-5" class="section level5">
+<h5>Traceplot<img src="figure/convergence.Rmd/unnamed-chunk-1-11.png" width="672" style="display: block; margin: auto;" /></h5>
+</div>
+<div id="pairs-plot-5" class="section level5">
+<h5>Pairs plot<img src="figure/convergence.Rmd/unnamed-chunk-1-12.png" width="672" style="display: block; margin: auto;" /></h5>
+</div>
+</div>
+</div>
+<div id="non-hierarchical-model-1" class="section level3">
+<h3>Non-hierarchical Model</h3>
+<div id="spatiotemporal-gradient-included-3" class="section level4">
+<h4>Spatiotemporal Gradient Included</h4>
+<div id="rstan-output-6" class="section level5">
+<h5>RStan output</h5>
+<table>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="right">mean</th>
+<th align="right">se_mean</th>
+<th align="right">sd</th>
+<th align="right">2.5%</th>
+<th align="right">25%</th>
+<th align="right">50%</th>
+<th align="right">75%</th>
+<th align="right">97.5%</th>
+<th align="right">n_eff</th>
+<th align="right">Rhat</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">w1[1]</td>
+<td align="right">-2.009</td>
+<td align="right">0.023</td>
+<td align="right">2.087</td>
+<td align="right">-7.500</td>
+<td align="right">-2.755</td>
+<td align="right">-1.641</td>
+<td align="right">-0.846</td>
+<td align="right">0.951</td>
+<td align="right">7938.847</td>
+<td align="right">1.001</td>
+</tr>
+<tr class="even">
+<td align="left">w1[2]</td>
+<td align="right">1.871</td>
+<td align="right">0.015</td>
+<td align="right">1.343</td>
+<td align="right">-0.417</td>
+<td align="right">1.174</td>
+<td align="right">1.816</td>
+<td align="right">2.488</td>
+<td align="right">4.574</td>
+<td align="right">7949.857</td>
+<td align="right">1.000</td>
+</tr>
+<tr class="odd">
+<td align="left">w2[1]</td>
+<td align="right">-1.097</td>
+<td align="right">0.020</td>
+<td align="right">1.783</td>
+<td align="right">-6.447</td>
+<td align="right">-1.225</td>
+<td align="right">-0.366</td>
+<td align="right">-0.131</td>
+<td align="right">-0.010</td>
+<td align="right">8000.000</td>
+<td align="right">1.000</td>
+</tr>
+<tr class="even">
+<td align="left">w2[2]</td>
+<td align="right">-2.161</td>
+<td align="right">0.026</td>
+<td align="right">2.264</td>
+<td align="right">-8.327</td>
+<td align="right">-3.033</td>
+<td align="right">-1.373</td>
+<td align="right">-0.537</td>
+<td align="right">-0.048</td>
+<td align="right">7567.929</td>
+<td align="right">1.001</td>
+</tr>
+<tr class="odd">
+<td align="left">w3[1]</td>
+<td align="right">1.914</td>
+<td align="right">0.004</td>
+<td align="right">0.312</td>
+<td align="right">1.315</td>
+<td align="right">1.699</td>
+<td align="right">1.909</td>
+<td align="right">2.119</td>
+<td align="right">2.550</td>
+<td align="right">7816.261</td>
+<td align="right">1.000</td>
+</tr>
+<tr class="even">
+<td align="left">w3[2]</td>
+<td align="right">1.754</td>
+<td align="right">0.004</td>
+<td align="right">0.392</td>
+<td align="right">1.056</td>
+<td align="right">1.474</td>
+<td align="right">1.731</td>
+<td align="right">2.001</td>
+<td align="right">2.577</td>
+<td align="right">7687.208</td>
+<td align="right">1.000</td>
+</tr>
+<tr class="odd">
+<td align="left">delta[1]</td>
+<td align="right">0.341</td>
+<td align="right">0.003</td>
+<td align="right">0.267</td>
+<td align="right">0.015</td>
+<td align="right">0.112</td>
+<td align="right">0.275</td>
+<td align="right">0.522</td>
+<td align="right">0.934</td>
+<td align="right">8000.000</td>
+<td align="right">1.000</td>
+</tr>
+<tr class="even">
+<td align="left">delta[2]</td>
+<td align="right">0.627</td>
+<td align="right">0.003</td>
+<td align="right">0.283</td>
+<td align="right">0.033</td>
+<td align="right">0.430</td>
+<td align="right">0.690</td>
+<td align="right">0.866</td>
+<td align="right">0.986</td>
+<td align="right">8000.000</td>
+<td align="right">0.999</td>
+</tr>
+<tr class="odd">
+<td align="left">tau[1]</td>
+<td align="right">0.260</td>
+<td align="right">0.003</td>
+<td align="right">0.289</td>
+<td align="right">0.001</td>
+<td align="right">0.027</td>
+<td align="right">0.126</td>
+<td align="right">0.441</td>
+<td align="right">0.936</td>
+<td align="right">7722.824</td>
+<td align="right">1.001</td>
+</tr>
+<tr class="even">
+<td align="left">tau[2]</td>
+<td align="right">0.205</td>
+<td align="right">0.003</td>
+<td align="right">0.229</td>
+<td align="right">0.007</td>
+<td align="right">0.046</td>
+<td align="right">0.109</td>
+<td align="right">0.278</td>
+<td align="right">0.872</td>
+<td align="right">7678.771</td>
+<td align="right">1.001</td>
+</tr>
+<tr class="odd">
+<td align="left">alpha[1]</td>
+<td align="right">0.210</td>
+<td align="right">0.001</td>
+<td align="right">0.045</td>
+<td align="right">0.126</td>
+<td align="right">0.180</td>
+<td align="right">0.209</td>
+<td align="right">0.240</td>
+<td align="right">0.302</td>
+<td align="right">7765.849</td>
+<td align="right">0.999</td>
+</tr>
+<tr class="even">
+<td align="left">alpha[2]</td>
+<td align="right">0.100</td>
+<td align="right">0.000</td>
+<td align="right">0.038</td>
+<td align="right">0.041</td>
+<td align="right">0.073</td>
+<td align="right">0.096</td>
+<td align="right">0.121</td>
+<td align="right">0.187</td>
+<td align="right">7965.145</td>
+<td align="right">1.001</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="coda-output-6" class="section level5">
+<h5>Coda output</h5>
+<table>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="right">n_eff</th>
+<th align="right">Point est.</th>
+<th align="right">Upper C.I.</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">w1[1]</td>
+<td align="right">8163.985</td>
+<td align="right">0.9998941</td>
+<td align="right">1.0003004</td>
+</tr>
+<tr class="even">
+<td align="left">w1[2]</td>
+<td align="right">8000.000</td>
+<td align="right">1.0004903</td>
+<td align="right">1.0015737</td>
+</tr>
+<tr class="odd">
+<td align="left">w2[1]</td>
+<td align="right">8125.129</td>
+<td align="right">1.0017521</td>
+<td align="right">1.0028146</td>
+</tr>
+<tr class="even">
+<td align="left">w2[2]</td>
+<td align="right">7710.188</td>
+<td align="right">0.9995049</td>
+<td align="right">0.9999405</td>
+</tr>
+<tr class="odd">
+<td align="left">w3[1]</td>
+<td align="right">7884.562</td>
+<td align="right">0.9999620</td>
+<td align="right">1.0009873</td>
+</tr>
+<tr class="even">
+<td align="left">w3[2]</td>
+<td align="right">7983.852</td>
+<td align="right">1.0003568</td>
+<td align="right">1.0017488</td>
+</tr>
+<tr class="odd">
+<td align="left">delta[1]</td>
+<td align="right">8072.824</td>
+<td align="right">0.9997196</td>
+<td align="right">1.0004488</td>
+</tr>
+<tr class="even">
+<td align="left">delta[2]</td>
+<td align="right">8314.639</td>
+<td align="right">0.9998403</td>
+<td align="right">1.0007757</td>
+</tr>
+<tr class="odd">
+<td align="left">tau[1]</td>
+<td align="right">7761.773</td>
+<td align="right">1.0007268</td>
+<td align="right">1.0025946</td>
+</tr>
+<tr class="even">
+<td align="left">tau[2]</td>
+<td align="right">8101.580</td>
+<td align="right">1.0012395</td>
+<td align="right">1.0030325</td>
+</tr>
+<tr class="odd">
+<td align="left">alpha[1]</td>
+<td align="right">8000.000</td>
+<td align="right">0.9998130</td>
+<td align="right">1.0001357</td>
+</tr>
+<tr class="even">
+<td align="left">alpha[2]</td>
+<td align="right">7870.432</td>
+<td align="right">1.0015494</td>
+<td align="right">1.0043372</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="traceplot-6" class="section level5">
+<h5>Traceplot<img src="figure/convergence.Rmd/unnamed-chunk-1-13.png" width="672" style="display: block; margin: auto;" /></h5>
+</div>
+<div id="pairs-plot-6" class="section level5">
+<h5>Pairs plot<img src="figure/convergence.Rmd/unnamed-chunk-1-14.png" width="672" style="display: block; margin: auto;" /></h5>
+</div>
+</div>
+<div id="spatiotemporal-gradient-omitted-3" class="section level4">
+<h4>Spatiotemporal Gradient Omitted</h4>
+<div id="rstan-output-7" class="section level5">
+<h5>RStan output</h5>
+<table>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="right">mean</th>
+<th align="right">se_mean</th>
+<th align="right">sd</th>
+<th align="right">2.5%</th>
+<th align="right">25%</th>
+<th align="right">50%</th>
+<th align="right">75%</th>
+<th align="right">97.5%</th>
+<th align="right">n_eff</th>
+<th align="right">Rhat</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">w1[1]</td>
+<td align="right">-3.585</td>
+<td align="right">0.006</td>
+<td align="right">0.560</td>
+<td align="right">-4.813</td>
+<td align="right">-3.883</td>
+<td align="right">-3.541</td>
+<td align="right">-3.223</td>
+<td align="right">-2.626</td>
+<td align="right">7661.797</td>
+<td align="right">1.001</td>
+</tr>
+<tr class="even">
+<td align="left">w1[2]</td>
+<td align="right">-2.077</td>
+<td align="right">0.011</td>
+<td align="right">0.994</td>
+<td align="right">-4.848</td>
+<td align="right">-2.280</td>
+<td align="right">-1.870</td>
+<td align="right">-1.540</td>
+<td align="right">-0.991</td>
+<td align="right">8000.000</td>
+<td align="right">1.000</td>
+</tr>
+<tr class="odd">
+<td align="left">w1[3]</td>
+<td align="right">-3.756</td>
+<td align="right">0.023</td>
+<td align="right">2.064</td>
+<td align="right">-9.180</td>
+<td align="right">-4.663</td>
+<td align="right">-3.169</td>
+<td align="right">-2.286</td>
+<td align="right">-1.393</td>
+<td align="right">8000.000</td>
+<td align="right">1.000</td>
+</tr>
+<tr class="even">
+<td align="left">w2[1]</td>
+<td align="right">-0.811</td>
+<td align="right">0.018</td>
+<td align="right">1.614</td>
+<td align="right">-5.857</td>
+<td align="right">-0.710</td>
+<td align="right">-0.125</td>
+<td align="right">-0.039</td>
+<td align="right">-0.003</td>
+<td align="right">8000.000</td>
+<td align="right">1.000</td>
+</tr>
+<tr class="odd">
+<td align="left">w2[2]</td>
+<td align="right">-0.893</td>
+<td align="right">0.019</td>
+<td align="right">1.645</td>
+<td align="right">-6.014</td>
+<td align="right">-0.903</td>
+<td align="right">-0.178</td>
+<td align="right">-0.052</td>
+<td align="right">-0.004</td>
+<td align="right">7862.062</td>
+<td align="right">1.000</td>
+</tr>
+<tr class="even">
+<td align="left">w2[3]</td>
+<td align="right">-2.382</td>
+<td align="right">0.020</td>
+<td align="right">1.812</td>
+<td align="right">-7.627</td>
+<td align="right">-2.875</td>
+<td align="right">-1.769</td>
+<td align="right">-1.214</td>
+<td align="right">-0.625</td>
+<td align="right">7867.724</td>
+<td align="right">1.000</td>
+</tr>
+<tr class="odd">
+<td align="left">delta[1]</td>
+<td align="right">0.615</td>
+<td align="right">0.002</td>
+<td align="right">0.163</td>
+<td align="right">0.304</td>
+<td align="right">0.500</td>
+<td align="right">0.612</td>
+<td align="right">0.731</td>
+<td align="right">0.936</td>
+<td align="right">8000.000</td>
+<td align="right">1.000</td>
+</tr>
+<tr class="even">
+<td align="left">delta[2]</td>
+<td align="right">0.556</td>
+<td align="right">0.003</td>
+<td align="right">0.250</td>
+<td align="right">0.096</td>
+<td align="right">0.362</td>
+<td align="right">0.565</td>
+<td align="right">0.762</td>
+<td align="right">0.974</td>
+<td align="right">8000.000</td>
+<td align="right">1.000</td>
+</tr>
+<tr class="odd">
+<td align="left">delta[3]</td>
+<td align="right">0.209</td>
+<td align="right">0.002</td>
+<td align="right">0.142</td>
+<td align="right">0.044</td>
+<td align="right">0.102</td>
+<td align="right">0.171</td>
+<td align="right">0.277</td>
+<td align="right">0.584</td>
+<td align="right">7794.457</td>
+<td align="right">1.000</td>
+</tr>
+<tr class="even">
+<td align="left">tau[1]</td>
+<td align="right">0.236</td>
+<td align="right">0.003</td>
+<td align="right">0.291</td>
+<td align="right">0.000</td>
+<td align="right">0.011</td>
+<td align="right">0.085</td>
+<td align="right">0.401</td>
+<td align="right">0.942</td>
+<td align="right">7901.854</td>
+<td align="right">1.000</td>
+</tr>
+<tr class="odd">
+<td align="left">tau[2]</td>
+<td align="right">0.223</td>
+<td align="right">0.003</td>
+<td align="right">0.281</td>
+<td align="right">0.001</td>
+<td align="right">0.012</td>
+<td align="right">0.078</td>
+<td align="right">0.367</td>
+<td align="right">0.925</td>
+<td align="right">7536.815</td>
+<td align="right">1.000</td>
+</tr>
+<tr class="even">
+<td align="left">tau[3]</td>
+<td align="right">0.300</td>
+<td align="right">0.002</td>
+<td align="right">0.219</td>
+<td align="right">0.037</td>
+<td align="right">0.122</td>
+<td align="right">0.245</td>
+<td align="right">0.430</td>
+<td align="right">0.838</td>
+<td align="right">7948.770</td>
+<td align="right">1.000</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="coda-output-7" class="section level5">
+<h5>Coda output</h5>
+<table>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="right">n_eff</th>
+<th align="right">Point est.</th>
+<th align="right">Upper C.I.</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">w1[1]</td>
+<td align="right">8000.000</td>
+<td align="right">1.0021990</td>
+<td align="right">1.004529</td>
+</tr>
+<tr class="even">
+<td align="left">w1[2]</td>
+<td align="right">7711.040</td>
+<td align="right">1.0021858</td>
+<td align="right">1.003264</td>
+</tr>
+<tr class="odd">
+<td align="left">w1[3]</td>
+<td align="right">8116.849</td>
+<td align="right">1.0004315</td>
+<td align="right">1.001532</td>
+</tr>
+<tr class="even">
+<td align="left">w2[1]</td>
+<td align="right">8352.721</td>
+<td align="right">1.0024136</td>
+<td align="right">1.003644</td>
+</tr>
+<tr class="odd">
+<td align="left">w2[2]</td>
+<td align="right">7832.936</td>
+<td align="right">1.0040337</td>
+<td align="right">1.006177</td>
+</tr>
+<tr class="even">
+<td align="left">w2[3]</td>
+<td align="right">7808.020</td>
+<td align="right">1.0012014</td>
+<td align="right">1.001973</td>
+</tr>
+<tr class="odd">
+<td align="left">delta[1]</td>
+<td align="right">8010.059</td>
+<td align="right">1.0002911</td>
+<td align="right">1.001448</td>
+</tr>
+<tr class="even">
+<td align="left">delta[2]</td>
+<td align="right">8060.168</td>
+<td align="right">0.9997869</td>
+<td align="right">1.000537</td>
+</tr>
+<tr class="odd">
+<td align="left">delta[3]</td>
+<td align="right">7979.140</td>
+<td align="right">1.0013988</td>
+<td align="right">1.003071</td>
+</tr>
+<tr class="even">
+<td align="left">tau[1]</td>
+<td align="right">7955.536</td>
+<td align="right">1.0000406</td>
+<td align="right">1.001172</td>
+</tr>
+<tr class="odd">
+<td align="left">tau[2]</td>
+<td align="right">8010.670</td>
+<td align="right">1.0003532</td>
+<td align="right">1.001799</td>
+</tr>
+<tr class="even">
+<td align="left">tau[3]</td>
+<td align="right">8340.383</td>
+<td align="right">1.0001878</td>
+<td align="right">1.001082</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="traceplot-7" class="section level5">
+<h5>Traceplot<img src="figure/convergence.Rmd/unnamed-chunk-1-15.png" width="672" style="display: block; margin: auto;" /></h5>
+</div>
+<div id="pairs-plot-7" class="section level5">
+<h5>Pairs plot<img src="figure/convergence.Rmd/unnamed-chunk-1-16.png" width="672" style="display: block; margin: auto;" /></h5>
+</div>
+</div>
 </div>
 </div>
 <div id="session-information" class="section level2">
@@ -1108,7 +3031,7 @@ ballardtj
 <pre class="r"><code>sessionInfo()</code></pre>
 <pre><code>R version 3.5.1 (2018-07-02)
 Platform: x86_64-apple-darwin15.6.0 (64-bit)
-Running under: macOS High Sierra 10.13.3
+Running under: OS X El Capitan 10.11.6
 
 Matrix products: default
 BLAS: /Library/Frameworks/R.framework/Versions/3.5/Resources/lib/libRblas.0.dylib
