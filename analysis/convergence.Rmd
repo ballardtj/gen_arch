@@ -41,7 +41,7 @@ frame_labels=c(ap="Approach Condition",av="Avoidance Condition")
 structure_labels=c(hier="Hierarchical Model",fixed="Non-hierarchical Model")
 model_labels=c(space="Spatiotemporal Gradient Included",nospace='Spatiotemporal Gradient Omitted')
   
-for (source in c('obs','opt')){
+for (source in c('obs')){
   cat('\n')
   cat(paste('#',source_labels[names(source_labels)==source]))
   for (frame in c('ap','av')){
