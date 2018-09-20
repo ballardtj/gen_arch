@@ -139,9 +139,9 @@ model {
 
   //set hyperpriors
   w1_mean ~ normal(0,5);
-  w1_sd ~ normal(0,1);
+  w1_sd ~ normal(0,5);
   w2_mean ~ normal(0,5);
-  w2_sd ~ normal(0,1);
+  w2_sd ~ normal(0,5);
   // w3_mean ~ normal(0,5);
   // w3_sd ~ normal(0,1);
 

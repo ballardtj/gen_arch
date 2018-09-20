@@ -1,0 +1,8 @@
+
+Simon
+
+1) Better way to plot predictives to showcase differences in st vs no-st model?
+
+2) Look at surface plots at individual level
+
+3) Look at clusters of participants. Need to think through priors for hierarchical model. Getting a sense of how people are distributed on the spatial axis. Possible standard deviation to small? Also possible bimodality? 
