@@ -91,10 +91,10 @@ model_labels=c(space="Spatiotemporal Gradient Included",nospace='Spatiotemporal 
   
 post_list=list()
 ctr=0
-for (source in c('obs')){
+for (source in c('obs','opt')){
   for (frame in c('ap','av')){
     for (structure in c('hier','fixed')){
-      for (model in c('space')){
+      for (model in c('space','nospace')){
         
         dataList=read_rdump(paste0('data/clean/',source,'_',frame,'_rdump.R'))
     
@@ -135,11 +135,11 @@ ggplot(data=pd1) +
 
 # Mean across participants of parameters from models of observed and optimal decisions
 
-```{r obs-vs-opt-mean-parameters, eval=FALSE, fig.align="center", fig.height=8, fig.width=10, include=FALSE}
+```{r obs-vs-opt-mean-parameters, echo=FALSE, fig.align="center", fig.height=8, fig.width=10}
 
 pd2 = posts %>%
   group_by(.draw,parameter,frame,source) %>%
-  summarise(estimate = mean(estimate))
+  summarise(estimate = mean(value))
 
 #Mean parameters across conditions
 ggplot(data=pd2) +
@@ -275,7 +275,7 @@ ggplot(data=gradients,aes(x=d,y=t)) +
 
 # Scatter Plot of Subject Maximum Gradients
 
-```{r echo=FALSE, warning=FALSE,message=FALSE,fig.align="center", fig.height=8, fig.width=10}
+```{r max-gradients, echo=FALSE, warning=FALSE,message=FALSE,fig.align="center", fig.height=8, fig.width=10}
 
 sim = expand.grid(d = seq(0.01,0.99,by=0.01),
                   t = seq(0.01,0.99,by=0.01),
@@ -317,7 +317,7 @@ ggplot(data=max_gradients,aes(x=d,y=t)) +
 
 # Surface Plots of Individual Gradients
 
-```{r observed-mean-gradient,warning=FALSE, message=FALSE,echo=FALSE, fig.align="center", fig.height=8, fig.width=10}
+```{r observed-subject-surfaces,warning=FALSE, message=FALSE,echo=FALSE, fig.align="center", fig.height=8, fig.width=10}
 
 sim = expand.grid(d = seq(0.01,0.99,by=0.01),
                   t = seq(0.01,0.99,by=0.01),
@@ -357,7 +357,7 @@ for(i in 1:244){
 
 # Scatterplot of Spatial Gradient Parameters
 
-```{r observed-mean-gradient,warning=FALSE, message=FALSE,echo=FALSE, fig.align="center", fig.height=8, fig.width=10}
+```{r observed-gradient-parameters,warning=FALSE, message=FALSE,echo=FALSE, fig.align="center", fig.height=8, fig.width=10}
 
 means=posts %>%
   filter(source=="obs",model=="space",parameter=="w1"|parameter=="delta") %>%
@@ -376,18 +376,18 @@ ggplot(data=means) +
   facet_grid(parameter~frame,scale="free") +
   labs(x="hierarchical estimate",y="non-hierarchical estimate")
 
-means=posts %>%
-  filter(source=="obs",model=="space",parameter=="w1"|parameter=="delta") %>%
-  select(subject,.draw,frame,parameter,value) %>%
-  spread(key=parameter,value=value) %>%
-  group_by(subject,frame) %>%
-  summarise(w1_raw = mean((delta>=0)*w1 + (delta<0)*-w1),
-            delta_raw = mean(abs(delta)))
-
-ggplot(data=means) +
-  geom_point(aes(x=w1_raw,y=delta_raw)) +
-  facet_grid(model~frame) +
-  labs(x="w1",y="delta")
+# means=posts %>%
+#   filter(source=="obs",model=="space",parameter=="w1"|parameter=="delta") %>%
+#   select(subject,.draw,frame,parameter,structure,value) %>%
+#   spread(key=parameter,value=value) %>%
+#   group_by(subject,frame) %>%
+#   summarise(w1_raw = mean((delta>=0)*w1 + (delta<0)*-w1),
+#             delta_raw = mean(abs(delta)))
+# 
+# ggplot(data=means) +
+#   geom_point(aes(x=w1_raw,y=delta_raw)) +
+#   facet_grid(model~frame) +
+#   labs(x="w1",y="delta")
 
 
 ```
