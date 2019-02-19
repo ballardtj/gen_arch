@@ -198,7 +198,7 @@ generate_pp_plot=function(pp_data){
     #geom_errorbar(aes(ymin=y_obs_lo,ymax=y_obs_hi,col="red")) +
     facet_grid(.~factor(b_d0,labels=paste("Left Distance:",levels(factor(b_d0))))) + 
     coord_cartesian(ylim=c(0,1)) +
-    labs(x="Right Distance",y="Proportion Prioritizing Right Goal") +
+    labs(x="Right Distance",y=" ") +
       theme(legend.position="none")
     
     dl_pp =ggplot(data=subset(pp_plot_data,expt==2),aes(x=factor(a_t0),group=1)) +
@@ -208,7 +208,7 @@ generate_pp_plot=function(pp_data){
       #geom_errorbar(aes(ymin=y_obs_lo,ymax=y_obs_hi,col="red")) +
       facet_grid(.~factor(b_t0,labels=paste("Left Deadline:",levels(factor(b_t0))))) + 
       coord_cartesian(ylim=c(0,1)) +
-      labs(x="Right Deadline",y="Proportion Prioritizing Right Goal") +
+      labs(x="Right Deadline",y=" ") +
       theme(legend.position="none")
   
    return(list(ds_pp,dl_pp))
@@ -226,37 +226,42 @@ for (source in c('obs')){#},'opt')){
     ap_dataList=read_rdump(paste0('data/clean/',source,'_ap_rdump.R'))  #Approach
     av_dataList=read_rdump(paste0('data/clean/',source,'_av_rdump.R'))  #Avoidance
     
-    for (structure in c('hier','fixed')){
+    for (structure in c('hier')){
       cat('\n')
       cat(paste('###',structure_labels[names(structure_labels)==structure]))
-      for (model in c('space','nospace')){
+      for (model in c('space')){
         cat('\n')
         cat(paste('####',model_labels[names(model_labels)==model]))
         
-      
+      #Approach
       load(paste0("data/derived/ap_",source,"_",structure,"_",model,"_fit.RData"))
       pp_data=generate_pp(fit=fit,dataList=ap_dataList,Nsamp=100,version=paste(structure,model,sep='_' ))
       ap_pp_plot= generate_pp_plot(pp_data)
       
       #Avoidance
-      dataList=read_rdump(paste0('data/clean/',source,'_av_rdump.R'))
-
       load(paste0("data/derived/av_",source,"_",structure,"_",model,"_fit.RData"))
       pp_data=generate_pp(fit=fit,dataList=av_dataList,Nsamp=100,version=paste(structure,model,sep='_' ))
       av_pp_plot= generate_pp_plot(pp_data)
       
       #Posterior predictives
-      grid.arrange(
-          arrangeGrob(ap_pp_plot[[1]] + theme(axis.text.x = element_text(size=6)) ,
-              top="Distance Experiment, Approach Condition"),
-          arrangeGrob(av_pp_plot[[1]]  + theme(axis.text.x = element_text(size=6)) ,
-              top="Distance Experiment, Avoidance Condition"),
-          arrangeGrob(ap_pp_plot[[2]]  + theme(axis.text.x = element_text(size=6)) ,
-              top="Deadline Experiment, Approach Condition"),
-          arrangeGrob(av_pp_plot[[2]]  + theme(axis.text.x = element_text(size=6)) ,
-              top="Deadline Experiment, Avoidance Condition"),
-          nrow=4
+     pp_fig = grid.arrange(
+          arrangeGrob(
+            arrangeGrob(ap_pp_plot[[1]] + theme(axis.text.x = element_text(size=6)) ,
+              top="Experiment 1, Approach Condition"),
+            arrangeGrob(av_pp_plot[[1]]  + theme(axis.text.x = element_text(size=6)) ,
+              top="Experiment 1, Avoidance Condition"),
+            arrangeGrob(ap_pp_plot[[2]]  + theme(axis.text.x = element_text(size=6)) ,
+              top="Experiment 2, Approach Condition"),
+            arrangeGrob(av_pp_plot[[2]]  + theme(axis.text.x = element_text(size=6)) ,
+              top="Experiment 2, Avoidance Condition"),
+            nrow=4
+          ),
+          left="Proportion Prioritizing Right-hand Goal"
       )
+     
+     grid.arrange(pp_fig)
+     
+     save(file=paste0("figures/predictives,",source,"_",structure,"_",model,".RData"),plot=grid.arrange(pp_fig),width=7,height=5)
     }
   }
 }
