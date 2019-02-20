@@ -3,6 +3,7 @@
 #load packages
 library(rstan)
 library(tidyverse)
+library(tidybayes)
 library(gridExtra)
 library(grid)
 
@@ -169,8 +170,8 @@ sg = left_join(sg2,sg1) %>%
          sg = (delta>=0)*w1*d^delta + (delta<0)*w1*(1-d^-delta),
          direction = factor(as.numeric(delta>=0),levels=c(1,0),labels=c('Positive','Negative'))) %>%
   ggplot() +
-  geom_line(aes(x=d,y=sg,group=subject,colour=direction),alpha=0.5) +
-  facet_grid(.~frame) + labs(x='Distance to Goal',y='Spatial Gradient',colour="Direction") +
+  geom_line(aes(x=d,y=sg,group=subject,colour=direction),alpha=0.2) +
+  facet_grid(.~frame) + labs(x='Distance to Goal (D)',y='Spatial Gradient',colour="Direction") +
   scale_color_manual(values=rev(gg_color_hue(2))) +
   theme(legend.position = "none")
 
@@ -194,8 +195,8 @@ tg = left_join(tg2,tg1) %>%
          tg = (tau>=0)*w2*t^tau + (tau<0)*w2*(1-t^-tau),
          direction = factor(as.numeric(tau>=0),levels=c(1,0),labels=c('Positive','Negative'))) %>%
   ggplot() +
-  geom_line(aes(x=t,y=tg,group=subject,colour=direction),alpha=0.5) +
-  facet_grid(.~frame) + labs(x='Time to Deadline',y='Temporal Gradient',colour="Direction") +
+  geom_line(aes(x=t,y=tg,group=subject,colour=direction),alpha=0.2) +
+  facet_grid(.~frame) + labs(x='Time to Deadline (T)',y='Temporal Gradient',colour="Direction") +
   #scale_color_manual(values=rev(gg_color_hue(2))) +
   theme(legend.position = "none")
 
@@ -212,15 +213,22 @@ stg2 = expand.grid(frame = unique(stg1$frame),
                    d = seq(0.05,0.95,by=0.05),
                    t = seq(0.05,0.95,by=0.05))
 
-stg = left_join(stg2,stg1) %>%
+stg3 = left_join(stg2,stg1) %>%
   mutate(frame = factor(frame,levels=c('ap','av'),labels=c("Approach","Avoidance")),
-         tod = t/d,
+         dot = d/t,
          max = 2*(1-alpha)*sqrt(alpha/(1-alpha)),
-         stg = w3*max / (alpha*tod + (1-alpha)/tod),
+         stg = w3*max / (alpha/dot + (1-alpha)*dot),
          direction = factor(as.numeric(alpha>=0.5),levels=c(1,0),labels=c('Positive','Negative'))) %>%
-ggplot() +
-  geom_line(aes(x=tod,y=stg,group=subject),alpha=0.2) +
-  facet_grid(.~frame) + labs(x='Time to Deadline / Distance to Goal',y='Spatiotemporal Gradient') +
+  group_by(subject,frame) %>%
+  arrange(subject,frame,d,t) %>%
+  mutate(max_stg = max(stg))
+
+stg3$max_stg[stg3$stg!=stg3$max_stg] <- NA
+
+stg = ggplot(stg3) +
+  geom_line(aes(x=dot,y=stg,group=subject),alpha=0.1,colour="black") +
+  geom_point(aes(x=dot,y=max_stg,group=subject),colour="darkblue",alpha=0.2,size=0.5) +
+  facet_grid(.~frame) + labs(x='Required Rate of Progress (D / T)',y='Spatiotemporal Gradient') +
   scale_x_continuous(trans='log10') +
   #geom_vline(xintercept = 1,linetype="dotted") +
   theme(legend.position = "none")
@@ -231,6 +239,21 @@ ggplot() +
 
 #count number of positive vs negative gradients
 stg1 %>% mutate(expectancy_increasing = alpha >= 0.5) %>% count(frame,expectancy_increasing )
+
+#variability in max level
+stg3 %>%
+  filter(stg==max_stg) %>%
+  group_by(frame) %>%
+  summarise(min_peak = min(max_stg),
+            max_peak = max(max_stg),
+            mean_peak = mean(max_stg),
+            sd_peak = sd(max_stg),
+            min_dot = min(dot),
+            max_dot = max(dot),
+            mean_dot = mean(dot),
+            sd_dot = sd(dot))  %>%
+  data.frame()
+
 
 #Create surface plots
 
@@ -265,8 +288,8 @@ sim = expand.grid(d = seq(0.01,0.99,by=0.01),
 
 means=posts %>%
   filter(source=="obs",model=="space",structure=="hier",!is.na(parameter)) %>%
-  #group_by(parameter,frame,subject) %>%
-  #summarise(value = mean(value)) %>%
+  group_by(parameter,frame,subject) %>%
+  summarise(value = mean(value)) %>%
   group_by(parameter,frame) %>%
   summarise(value = mean(value))  %>%
   spread(key=parameter,value=value)
@@ -286,7 +309,7 @@ surface = ggplot(data=gradients,aes(x=d,y=t)) +
   facet_grid(~frame) +
   scale_x_continuous(breaks=seq(0,1,by=0.25),expand=c(0.02,0.02)) +
   scale_y_continuous(breaks=seq(0,1,by=0.25),expand=c(0.02,0.02)) +
-  labs(x='Distance to Goal',y='Time to Deadline',fill='Motivational Value') +
+  labs(x='Distance to Goal (D)',y='Time to Deadline (T)',fill='Motivational Value') +
   theme(legend.position = 'bottom')
 
 #Combine plots into figure
@@ -308,7 +331,7 @@ gradient_fig = arrangeGrob(
 
 grid.arrange(gradient_fig)
 
-ggsave(file=paste0("figures/gradients.png"),plot=gradient_fig,width=6,height=10)
+ggsave(file=paste0("figures/gradients.png"),plot=gradient_fig,width=6,height=9)
 
 
 
