@@ -3,6 +3,7 @@
 library(rstan)
 library(tidyverse)
 library(gridExtra)
+library(grid)
 library(foreach)
 library(doMC)
 registerDoMC(cores=7)

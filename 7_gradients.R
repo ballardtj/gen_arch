@@ -3,7 +3,8 @@
 #load packages
 library(rstan)
 library(tidyverse)
-library(tidybayes)
+library(gridExtra)
+library(grid)
 
 Nsamp = 100
 samples=sample(x=1:8000,size=Nsamp)
@@ -142,53 +143,100 @@ ggplot(data=pd3) +
   geom_pointintervalh(aes(y=order,x=value,colour=interaction(structure,model)),show.legend=T,size=0.1,alpha=0.2) +
   facet_grid(frame~parameter,scale="free") + theme(legend.position="bottom")
 
-# Individual Gradients
+#### Individual Gradients ####
 
-sg=posts %>%
+#Emulate ggplot colour palette
+gg_color_hue <- function(n) {
+  hues = seq(15, 375, length = n + 1)
+  hcl(h = hues, l = 65, c = 100)[1:n]
+}
+
+#Spatial gradient
+sg1 = posts %>%
   filter(source=="obs",parameter %in% c('w1','delta'),!is.na(parameter)) %>%
-  group_by(parameter,frame,subject,structure,model) %>%
-  mutate(value = mean(value),
-         d = (1:n())/n() )  %>% #hacky way to create different data points for different distances
-  select(subject,frame,parameter,d,value,structure,model) %>%
+  group_by(parameter,frame,subject) %>%
+  summarise(value = mean(value)) %>%
   spread(key=parameter,value=value) %>%
-  mutate( sg = (delta>=0)*w1*d^delta + (delta<0)*w1*(1-d^-delta))
+  select(frame,subject,delta,w1)
 
-ggplot(data=sg) +
-  geom_line(aes(x=d,y=sg,group=subject),alpha=0.2) +
-  facet_grid(structure + model~frame) + labs(x='distance',y='spatial gradient')
+sg2 = expand.grid(frame = unique(sg1$frame),
+            subject = unique(sg1$subject),
+            d = seq(0.01,0.99,by=0.01))
 
-tg=posts %>%
+#Create plot
+sg = left_join(sg2,sg1) %>%
+  mutate(frame = factor(frame,levels=c('ap','av'),labels=c("Approach","Avoidance")),
+         sg = (delta>=0)*w1*d^delta + (delta<0)*w1*(1-d^-delta),
+         direction = factor(as.numeric(delta>=0),levels=c(1,0),labels=c('Positive','Negative'))) %>%
+  ggplot() +
+  geom_line(aes(x=d,y=sg,group=subject,colour=direction),alpha=0.5) +
+  facet_grid(.~frame) + labs(x='Distance to Goal',y='Spatial Gradient',colour="Direction") +
+  scale_color_manual(values=rev(gg_color_hue(2))) +
+  theme(legend.position = "none")
+
+#count number of positive vs negative gradients
+sg1 %>% mutate(positive = delta >= 0) %>% count(frame,positive)
+
+#Temporal gradient
+tg1=posts %>%
   filter(source=="obs",parameter %in% c('w2','tau'),!is.na(parameter)) %>%
-  group_by(parameter,frame,subject,structure,model) %>%
-  mutate(value = mean(value),
-         t = (1:n())/n() ) %>%
-  select(subject,frame,t,parameter,value,structure,model) %>%
+  group_by(parameter,frame,subject) %>%
+  summarise(value = mean(value)) %>%
   spread(key=parameter,value=value) %>%
-  mutate( tg = (tau>=0)*w2*t^tau + (tau<0)*w2*(1-t^-tau))
+  select(frame,subject,tau,w2)
 
-ggplot(data=tg) +
-  geom_line(aes(x=t,y=tg,group=subject),alpha=0.2) +
-  facet_grid(structure + model~frame) + labs(x='time to deadline',y='temporal gradient')
+tg2 = expand.grid(frame = unique(tg1$frame),
+                  subject = unique(tg1$subject),
+                  t = seq(0.01,0.99,by=0.01))
 
-stg=posts %>%
+tg = left_join(tg2,tg1) %>%
+  mutate(frame = factor(frame,levels=c('ap','av'),labels=c("Approach","Avoidance")),
+         tg = (tau>=0)*w2*t^tau + (tau<0)*w2*(1-t^-tau),
+         direction = factor(as.numeric(tau>=0),levels=c(1,0),labels=c('Positive','Negative'))) %>%
+  ggplot() +
+  geom_line(aes(x=t,y=tg,group=subject,colour=direction),alpha=0.5) +
+  facet_grid(.~frame) + labs(x='Time to Deadline',y='Temporal Gradient',colour="Direction") +
+  #scale_color_manual(values=rev(gg_color_hue(2))) +
+  theme(legend.position = "none")
+
+#Spatiotemporal Gradient
+stg1=posts %>%
   filter(source=="obs",parameter %in% c('w3','alpha'),!is.na(parameter)) %>%
-  group_by(parameter,frame,subject,structure,model) %>%
-  mutate(value = mean(value),
-         tod =  (1:n())/ (n()/3) ) %>%
-  select(subject,frame,tod,parameter,value,structure,model) %>%
+  group_by(parameter,frame,subject) %>%
+  summarise(value = mean(value)) %>%
   spread(key=parameter,value=value) %>%
-  mutate( max = 2*(1-alpha)*sqrt(alpha/(1-alpha)),
-          stg = w3*max / (alpha*tod + (1-alpha)/tod ) )
+  select(frame,subject,alpha,w3)
 
-ggplot(data=stg) +
+stg2 = expand.grid(frame = unique(stg1$frame),
+                   subject = unique(stg1$subject),
+                   d = seq(0.05,0.95,by=0.05),
+                   t = seq(0.05,0.95,by=0.05))
+
+stg = left_join(stg2,stg1) %>%
+  mutate(frame = factor(frame,levels=c('ap','av'),labels=c("Approach","Avoidance")),
+         tod = t/d,
+         max = 2*(1-alpha)*sqrt(alpha/(1-alpha)),
+         stg = w3*max / (alpha*tod + (1-alpha)/tod),
+         direction = factor(as.numeric(alpha>=0.5),levels=c(1,0),labels=c('Positive','Negative'))) %>%
+ggplot() +
   geom_line(aes(x=tod,y=stg,group=subject),alpha=0.2) +
-  facet_grid(structure + model~frame) + labs(x='time to deadline / distance to goal',y='spatiotemporal gradient')
+  facet_grid(.~frame) + labs(x='Time to Deadline / Distance to Goal',y='Spatiotemporal Gradient') +
+  scale_x_continuous(trans='log10') +
+  #geom_vline(xintercept = 1,linetype="dotted") +
+  theme(legend.position = "none")
 
 # tod: 1 = distance = deadline
 # tod: if function peaks at less than 1, mostly decreases with expectancy
 # tod: if function peaks at greater than 1, mostly increases with expectancy
 
+#count number of positive vs negative gradients
+stg1 %>% mutate(expectancy_increasing = alpha >= 0.5) %>% count(frame,expectancy_increasing )
+
 #Create surface plots
+
+
+
+
 
 #1. Showing surface generated using mean parameters.
 
@@ -231,11 +279,41 @@ gradients = left_join(sim,means) %>%
           g = sg + tg + stg,
           frame = factor(frame,levels=c('ap','av'),labels=c('Approach','Avoidance')))
 
-ggplot(data=gradients,aes(x=d,y=t)) +
+surface = ggplot(data=gradients,aes(x=d,y=t)) +
   geom_raster(aes(fill=g)) +
   geom_contour(aes(z=g),colour='gray50',binwidth=0.5) +
   scale_fill_distiller(palette="Spectral") + #,limits=c(0,20)) +
-  facet_grid(~frame)
+  facet_grid(~frame) +
+  scale_x_continuous(breaks=seq(0,1,by=0.25),expand=c(0.02,0.02)) +
+  scale_y_continuous(breaks=seq(0,1,by=0.25),expand=c(0.02,0.02)) +
+  labs(x='Distance to Goal',y='Time to Deadline',fill='Motivational Value') +
+  theme(legend.position = 'bottom')
+
+#Combine plots into figure
+
+
+gradient_fig = arrangeGrob(
+  arrangeGrob(sg),
+              #ap_pp_plot[[1]] + theme(axis.text.x = element_text(size=6), strip.text.x = element_text(size=10)),
+              #top=textGrob(expression(italic("Experiment 1, Approach Condition")),gp=gpar(fontsize=12))),
+  arrangeGrob(tg), #av_pp_plot[[1]]  + theme(axis.text.x = element_text(size=6), strip.text.x = element_text(size=10)),
+              #top=textGrob(expression(italic("Experiment 1, Avoidance Condition")),gp=gpar(fontsize=12))),
+  arrangeGrob(stg),#ap_pp_plot[[2]]  + theme(axis.text.x = element_text(size=6) , strip.text.x = element_text(size=10)),
+              #top=textGrob(expression(italic("Experiment 2, Approach Condition")),gp=gpar(fontsize=12))),
+  arrangeGrob(surface), #av_pp_plot[[2]]  + theme(axis.text.x = element_text(size=6) , strip.text.x = element_text(size=10)),
+              #top=textGrob(expression(italic("Experiment 2, Avoidance Condition")),gp=gpar(fontsize=12))),
+  nrow=4,
+  heights=c(1,1,1,1.5)
+)
+
+grid.arrange(gradient_fig)
+
+ggsave(file=paste0("figures/gradients.png"),plot=gradient_fig,width=6,height=10)
+
+
+
+
+
 
 # Scatter Plot of Subject Maximum Gradients
 
