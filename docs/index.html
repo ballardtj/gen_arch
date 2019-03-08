@@ -230,7 +230,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2018-08-08</p>
+<p><strong>Last updated:</strong> 2018-10-03</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -241,7 +241,7 @@ div.section {
 </li>
 <li>
 <details>
-<p><summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/ballardtj/gen_arch/tree/53b1f35ca715033a69c7af4292afe97f95006c8d" target="_blank">53b1f35</a> </summary></p>
+<p><summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/ballardtj/gen_arch/tree/7883b948b39eeed35acda9a6166e813543b38246" target="_blank">7883b94</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -249,11 +249,269 @@ Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
     Ignored:    data/.DS_Store
-    Ignored:    data/derived/.DS_Store
+    Ignored:    docs/.DS_Store
+    Ignored:    docs/figure/.DS_Store
+    Ignored:    model/.DS_Store
+
+Untracked files:
+    Untracked:  data/derived/av_opt_hier_space_fit.RData
 
 Unstaged changes:
-    Modified:   data/derived/ap_opt_fit.RData
-    Modified:   data/derived/av_opt_fit.RData
+    Modified:   analysis/gradients/subject1.pdf
+    Modified:   analysis/gradients/subject10.pdf
+    Modified:   analysis/gradients/subject100.pdf
+    Modified:   analysis/gradients/subject101.pdf
+    Modified:   analysis/gradients/subject102.pdf
+    Modified:   analysis/gradients/subject103.pdf
+    Modified:   analysis/gradients/subject104.pdf
+    Modified:   analysis/gradients/subject105.pdf
+    Modified:   analysis/gradients/subject106.pdf
+    Modified:   analysis/gradients/subject107.pdf
+    Modified:   analysis/gradients/subject108.pdf
+    Modified:   analysis/gradients/subject109.pdf
+    Modified:   analysis/gradients/subject11.pdf
+    Modified:   analysis/gradients/subject110.pdf
+    Modified:   analysis/gradients/subject111.pdf
+    Modified:   analysis/gradients/subject112.pdf
+    Modified:   analysis/gradients/subject113.pdf
+    Modified:   analysis/gradients/subject114.pdf
+    Modified:   analysis/gradients/subject115.pdf
+    Modified:   analysis/gradients/subject116.pdf
+    Modified:   analysis/gradients/subject117.pdf
+    Modified:   analysis/gradients/subject118.pdf
+    Modified:   analysis/gradients/subject119.pdf
+    Modified:   analysis/gradients/subject12.pdf
+    Modified:   analysis/gradients/subject120.pdf
+    Modified:   analysis/gradients/subject121.pdf
+    Modified:   analysis/gradients/subject122.pdf
+    Modified:   analysis/gradients/subject123.pdf
+    Modified:   analysis/gradients/subject124.pdf
+    Modified:   analysis/gradients/subject125.pdf
+    Modified:   analysis/gradients/subject126.pdf
+    Modified:   analysis/gradients/subject127.pdf
+    Modified:   analysis/gradients/subject128.pdf
+    Modified:   analysis/gradients/subject129.pdf
+    Modified:   analysis/gradients/subject13.pdf
+    Modified:   analysis/gradients/subject130.pdf
+    Modified:   analysis/gradients/subject131.pdf
+    Modified:   analysis/gradients/subject132.pdf
+    Modified:   analysis/gradients/subject133.pdf
+    Modified:   analysis/gradients/subject134.pdf
+    Modified:   analysis/gradients/subject135.pdf
+    Modified:   analysis/gradients/subject136.pdf
+    Modified:   analysis/gradients/subject137.pdf
+    Modified:   analysis/gradients/subject138.pdf
+    Modified:   analysis/gradients/subject139.pdf
+    Modified:   analysis/gradients/subject14.pdf
+    Modified:   analysis/gradients/subject140.pdf
+    Modified:   analysis/gradients/subject141.pdf
+    Modified:   analysis/gradients/subject142.pdf
+    Modified:   analysis/gradients/subject143.pdf
+    Modified:   analysis/gradients/subject144.pdf
+    Modified:   analysis/gradients/subject145.pdf
+    Modified:   analysis/gradients/subject146.pdf
+    Modified:   analysis/gradients/subject147.pdf
+    Modified:   analysis/gradients/subject148.pdf
+    Modified:   analysis/gradients/subject149.pdf
+    Modified:   analysis/gradients/subject15.pdf
+    Modified:   analysis/gradients/subject150.pdf
+    Modified:   analysis/gradients/subject151.pdf
+    Modified:   analysis/gradients/subject152.pdf
+    Modified:   analysis/gradients/subject153.pdf
+    Modified:   analysis/gradients/subject154.pdf
+    Modified:   analysis/gradients/subject155.pdf
+    Modified:   analysis/gradients/subject156.pdf
+    Modified:   analysis/gradients/subject157.pdf
+    Modified:   analysis/gradients/subject158.pdf
+    Modified:   analysis/gradients/subject159.pdf
+    Modified:   analysis/gradients/subject16.pdf
+    Modified:   analysis/gradients/subject160.pdf
+    Modified:   analysis/gradients/subject161.pdf
+    Modified:   analysis/gradients/subject162.pdf
+    Modified:   analysis/gradients/subject163.pdf
+    Modified:   analysis/gradients/subject164.pdf
+    Modified:   analysis/gradients/subject165.pdf
+    Modified:   analysis/gradients/subject166.pdf
+    Modified:   analysis/gradients/subject167.pdf
+    Modified:   analysis/gradients/subject168.pdf
+    Modified:   analysis/gradients/subject169.pdf
+    Modified:   analysis/gradients/subject17.pdf
+    Modified:   analysis/gradients/subject170.pdf
+    Modified:   analysis/gradients/subject171.pdf
+    Modified:   analysis/gradients/subject172.pdf
+    Modified:   analysis/gradients/subject173.pdf
+    Modified:   analysis/gradients/subject174.pdf
+    Modified:   analysis/gradients/subject175.pdf
+    Modified:   analysis/gradients/subject176.pdf
+    Modified:   analysis/gradients/subject177.pdf
+    Modified:   analysis/gradients/subject178.pdf
+    Modified:   analysis/gradients/subject179.pdf
+    Modified:   analysis/gradients/subject18.pdf
+    Modified:   analysis/gradients/subject180.pdf
+    Modified:   analysis/gradients/subject181.pdf
+    Modified:   analysis/gradients/subject182.pdf
+    Modified:   analysis/gradients/subject183.pdf
+    Modified:   analysis/gradients/subject184.pdf
+    Modified:   analysis/gradients/subject185.pdf
+    Modified:   analysis/gradients/subject186.pdf
+    Modified:   analysis/gradients/subject187.pdf
+    Modified:   analysis/gradients/subject188.pdf
+    Modified:   analysis/gradients/subject189.pdf
+    Modified:   analysis/gradients/subject19.pdf
+    Modified:   analysis/gradients/subject190.pdf
+    Modified:   analysis/gradients/subject191.pdf
+    Modified:   analysis/gradients/subject192.pdf
+    Modified:   analysis/gradients/subject193.pdf
+    Modified:   analysis/gradients/subject194.pdf
+    Modified:   analysis/gradients/subject195.pdf
+    Modified:   analysis/gradients/subject196.pdf
+    Modified:   analysis/gradients/subject197.pdf
+    Modified:   analysis/gradients/subject198.pdf
+    Modified:   analysis/gradients/subject199.pdf
+    Modified:   analysis/gradients/subject2.pdf
+    Modified:   analysis/gradients/subject20.pdf
+    Modified:   analysis/gradients/subject200.pdf
+    Modified:   analysis/gradients/subject201.pdf
+    Modified:   analysis/gradients/subject202.pdf
+    Modified:   analysis/gradients/subject203.pdf
+    Modified:   analysis/gradients/subject204.pdf
+    Modified:   analysis/gradients/subject205.pdf
+    Modified:   analysis/gradients/subject206.pdf
+    Modified:   analysis/gradients/subject207.pdf
+    Modified:   analysis/gradients/subject208.pdf
+    Modified:   analysis/gradients/subject209.pdf
+    Modified:   analysis/gradients/subject21.pdf
+    Modified:   analysis/gradients/subject210.pdf
+    Modified:   analysis/gradients/subject211.pdf
+    Modified:   analysis/gradients/subject212.pdf
+    Modified:   analysis/gradients/subject213.pdf
+    Modified:   analysis/gradients/subject214.pdf
+    Modified:   analysis/gradients/subject215.pdf
+    Modified:   analysis/gradients/subject216.pdf
+    Modified:   analysis/gradients/subject217.pdf
+    Modified:   analysis/gradients/subject218.pdf
+    Modified:   analysis/gradients/subject219.pdf
+    Modified:   analysis/gradients/subject22.pdf
+    Modified:   analysis/gradients/subject220.pdf
+    Modified:   analysis/gradients/subject221.pdf
+    Modified:   analysis/gradients/subject222.pdf
+    Modified:   analysis/gradients/subject223.pdf
+    Modified:   analysis/gradients/subject224.pdf
+    Modified:   analysis/gradients/subject225.pdf
+    Modified:   analysis/gradients/subject226.pdf
+    Modified:   analysis/gradients/subject227.pdf
+    Modified:   analysis/gradients/subject228.pdf
+    Modified:   analysis/gradients/subject229.pdf
+    Modified:   analysis/gradients/subject23.pdf
+    Modified:   analysis/gradients/subject230.pdf
+    Modified:   analysis/gradients/subject231.pdf
+    Modified:   analysis/gradients/subject232.pdf
+    Modified:   analysis/gradients/subject233.pdf
+    Modified:   analysis/gradients/subject234.pdf
+    Modified:   analysis/gradients/subject235.pdf
+    Modified:   analysis/gradients/subject236.pdf
+    Modified:   analysis/gradients/subject237.pdf
+    Modified:   analysis/gradients/subject238.pdf
+    Modified:   analysis/gradients/subject239.pdf
+    Modified:   analysis/gradients/subject24.pdf
+    Modified:   analysis/gradients/subject240.pdf
+    Modified:   analysis/gradients/subject241.pdf
+    Modified:   analysis/gradients/subject242.pdf
+    Modified:   analysis/gradients/subject243.pdf
+    Modified:   analysis/gradients/subject244.pdf
+    Modified:   analysis/gradients/subject25.pdf
+    Modified:   analysis/gradients/subject26.pdf
+    Modified:   analysis/gradients/subject27.pdf
+    Modified:   analysis/gradients/subject28.pdf
+    Modified:   analysis/gradients/subject29.pdf
+    Modified:   analysis/gradients/subject3.pdf
+    Modified:   analysis/gradients/subject30.pdf
+    Modified:   analysis/gradients/subject31.pdf
+    Modified:   analysis/gradients/subject32.pdf
+    Modified:   analysis/gradients/subject33.pdf
+    Modified:   analysis/gradients/subject34.pdf
+    Modified:   analysis/gradients/subject35.pdf
+    Modified:   analysis/gradients/subject36.pdf
+    Modified:   analysis/gradients/subject37.pdf
+    Modified:   analysis/gradients/subject38.pdf
+    Modified:   analysis/gradients/subject39.pdf
+    Modified:   analysis/gradients/subject4.pdf
+    Modified:   analysis/gradients/subject40.pdf
+    Modified:   analysis/gradients/subject41.pdf
+    Modified:   analysis/gradients/subject42.pdf
+    Modified:   analysis/gradients/subject43.pdf
+    Modified:   analysis/gradients/subject44.pdf
+    Modified:   analysis/gradients/subject45.pdf
+    Modified:   analysis/gradients/subject46.pdf
+    Modified:   analysis/gradients/subject47.pdf
+    Modified:   analysis/gradients/subject48.pdf
+    Modified:   analysis/gradients/subject49.pdf
+    Modified:   analysis/gradients/subject5.pdf
+    Modified:   analysis/gradients/subject50.pdf
+    Modified:   analysis/gradients/subject51.pdf
+    Modified:   analysis/gradients/subject52.pdf
+    Modified:   analysis/gradients/subject53.pdf
+    Modified:   analysis/gradients/subject54.pdf
+    Modified:   analysis/gradients/subject55.pdf
+    Modified:   analysis/gradients/subject56.pdf
+    Modified:   analysis/gradients/subject57.pdf
+    Modified:   analysis/gradients/subject58.pdf
+    Modified:   analysis/gradients/subject59.pdf
+    Modified:   analysis/gradients/subject6.pdf
+    Modified:   analysis/gradients/subject60.pdf
+    Modified:   analysis/gradients/subject61.pdf
+    Modified:   analysis/gradients/subject62.pdf
+    Modified:   analysis/gradients/subject63.pdf
+    Modified:   analysis/gradients/subject64.pdf
+    Modified:   analysis/gradients/subject65.pdf
+    Modified:   analysis/gradients/subject66.pdf
+    Modified:   analysis/gradients/subject67.pdf
+    Modified:   analysis/gradients/subject68.pdf
+    Modified:   analysis/gradients/subject69.pdf
+    Modified:   analysis/gradients/subject7.pdf
+    Modified:   analysis/gradients/subject70.pdf
+    Modified:   analysis/gradients/subject71.pdf
+    Modified:   analysis/gradients/subject72.pdf
+    Modified:   analysis/gradients/subject73.pdf
+    Modified:   analysis/gradients/subject74.pdf
+    Modified:   analysis/gradients/subject75.pdf
+    Modified:   analysis/gradients/subject76.pdf
+    Modified:   analysis/gradients/subject77.pdf
+    Modified:   analysis/gradients/subject78.pdf
+    Modified:   analysis/gradients/subject79.pdf
+    Modified:   analysis/gradients/subject8.pdf
+    Modified:   analysis/gradients/subject80.pdf
+    Modified:   analysis/gradients/subject81.pdf
+    Modified:   analysis/gradients/subject82.pdf
+    Modified:   analysis/gradients/subject83.pdf
+    Modified:   analysis/gradients/subject84.pdf
+    Modified:   analysis/gradients/subject85.pdf
+    Modified:   analysis/gradients/subject86.pdf
+    Modified:   analysis/gradients/subject87.pdf
+    Modified:   analysis/gradients/subject88.pdf
+    Modified:   analysis/gradients/subject89.pdf
+    Modified:   analysis/gradients/subject9.pdf
+    Modified:   analysis/gradients/subject90.pdf
+    Modified:   analysis/gradients/subject91.pdf
+    Modified:   analysis/gradients/subject92.pdf
+    Modified:   analysis/gradients/subject93.pdf
+    Modified:   analysis/gradients/subject94.pdf
+    Modified:   analysis/gradients/subject95.pdf
+    Modified:   analysis/gradients/subject96.pdf
+    Modified:   analysis/gradients/subject97.pdf
+    Modified:   analysis/gradients/subject98.pdf
+    Modified:   analysis/gradients/subject99.pdf
+    Modified:   data/derived/ap_obs_hier_nospace_fit.RData
+    Modified:   data/derived/ap_obs_hier_space_fit.RData
+    Modified:   data/derived/ap_opt_fixed_nospace_fit.RData
+    Modified:   data/derived/ap_opt_fixed_space_fit.RData
+    Modified:   data/derived/ap_opt_hier_nospace_fit.RData
+    Modified:   data/derived/ap_opt_hier_space_fit.RData
+    Modified:   data/derived/av_obs_hier_nospace_fit.RData
+    Modified:   data/derived/av_obs_hier_space_fit.RData
+    Modified:   data/derived/av_opt_fixed_nospace_fit.RData
+    Modified:   data/derived/av_opt_fixed_space_fit.RData
+    Modified:   data/derived/av_opt_hier_nospace_fit.RData
 
 </code></pre>
 Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes.
@@ -284,6 +542,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/ballardtj/gen_arch/13c3d6a509342af66995993d01f81200f15d0216/docs/index.html" target="_blank">13c3d6a</a>
+</td>
+<td style="text-align:left;">
+ballardtj
+</td>
+<td style="text-align:left;">
+2018-09-13
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/ballardtj/gen_arch/37fd55bf5666dcfd50dbf74f98840e876cee98cb/docs/index.html" target="_blank">37fd55b</a>
+</td>
+<td style="text-align:left;">
+ballardtj
+</td>
+<td style="text-align:left;">
+2018-08-08
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 html

@@ -41,9 +41,9 @@ for(source in 1:2){
     }
 
     #if optimal data, remove observations where policy = 0.5 (equal left vs right)
-    if(source==2){
-      Bdata = Bdata %>% filter(policy!=0.5)
-    }
+    #if(source==2){
+    #  Bdata = Bdata %>% filter(policy!=0.5)
+    #}
 
     # #Create vector of length Nsubj that represents the experiment
     Exptdata = Bdata %>% group_by(s) %>% summarise(expt = mean(expt))
@@ -100,7 +100,7 @@ for(source in 1:2){
         y[subj,1:n] = Bdata_tmp$prioritise_right
       }
       if(sources[source] == "opt"){
-        y[subj,1:n] = Bdata_tmp$policy
+        y[subj,1:n] = 1*(runif(length(Bdata_tmp$ev_left)) < (Bdata_tmp$ev_right / (Bdata_tmp$ev_right+Bdata_tmp$ev_left)))     #Bdata_tmp$policy
       }
       a_d0[subj,1:n] = Bdata_tmp$a_d0
       b_d0[subj,1:n] = Bdata_tmp$b_d0

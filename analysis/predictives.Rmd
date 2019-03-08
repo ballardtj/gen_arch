@@ -6,7 +6,7 @@ output:
 ---
 
 
-```{r include=FALSE, r,echo=FALSE}
+```{r echo=FALSE, warning=FALSE,  message=FALSE,results='asis',fig.align="center", fig.height=8, fig.width=10}
 #setwd("..")
 library(rstan)
 library(tidyverse)
@@ -16,14 +16,20 @@ library(doMC)
 registerDoMC(cores=7)
 
 #load stan function for generating predictions
-expose_stan_functions("model/goal_hier.stan")
-goal_sub_obs = goal_sub
+expose_stan_functions("model/goal_hier_space.stan")
+goal_sub_hier_space = goal_sub
 
-expose_stan_functions("model/goal.stan")
-goal_sub_opt = goal_sub
+expose_stan_functions("model/goal_fixed_space.stan")
+goal_sub_fixed_space = goal_sub
+
+expose_stan_functions("model/goal_hier_nospace.stan")
+goal_sub_hier_nospace = goal_sub
+
+expose_stan_functions("model/goal_fixed_nospace.stan")
+goal_sub_fixed_nospace = goal_sub
 
 #function to generate posterior predictives
-generate_pp=function(fit,dataList,Nsamp,source){
+generate_pp=function(fit,dataList,Nsamp,version){
   
   #get indicies of samples
   posts=rstan::extract(fit)
@@ -37,9 +43,9 @@ generate_pp=function(fit,dataList,Nsamp,source){
     for(subj in 1:dataList$Nsubj){
       ctr=ctr+1
       
-      if(source=="obs"){
+      if(version=="hier_space"){
       #observed model run on observed decision points
-      p_a_logit=goal_sub_obs(posts$w1_mean[samples[i]],
+      p_a_logit=goal_sub_hier_space(posts$w1_mean[samples[i]],
                          posts$w1_sd[samples[i]],
                          posts$w1[samples[i],], 
                          posts$w2_mean[samples[i]],
@@ -66,9 +72,9 @@ generate_pp=function(fit,dataList,Nsamp,source){
                          dataList$b_tod)
       }
       
-       if(source=="opt"){
+       if(version=="fixed_space"){
       #observed model run on observed decision points
-      p_a_logit=goal_sub_opt(posts$w1[samples[i],], 
+      p_a_logit=goal_sub_fixed_space(posts$w1[samples[i],], 
                          posts$w2[samples[i],], 
                          posts$w3[samples[i],], 
                          posts$delta[samples[i],],
@@ -87,7 +93,54 @@ generate_pp=function(fit,dataList,Nsamp,source){
                          dataList$b_dot,
                          dataList$a_tod,
                          dataList$b_tod)
+       }
+      
+      if(version=="hier_nospace"){
+      #observed model run on observed decision points
+      p_a_logit=goal_sub_hier_nospace(posts$w1_mean[samples[i]],
+                         posts$w1_sd[samples[i]],
+                         posts$w1[samples[i],], 
+                         posts$w2_mean[samples[i]],
+                         posts$w2_sd[samples[i]],
+                         posts$w2[samples[i],], 
+                         posts$delta[samples[i],],
+                         posts$tau[samples[i],] , 
+                         dataList$Nobs,
+                         subj,
+                         dataList$expt,
+                         dataList$s1,
+                         dataList$s2,
+                         dataList$a_logd,
+                         dataList$b_logd,
+                         dataList$a_logt,
+                         dataList$b_logt,
+                         dataList$a_dot,
+                         dataList$b_dot,
+                         dataList$a_tod,
+                         dataList$b_tod)
       }
+      
+       if(version=="fixed_nospace"){
+      #observed model run on observed decision points
+      p_a_logit=goal_sub_fixed_nospace(posts$w1[samples[i],], 
+                         posts$w2[samples[i],], 
+                         posts$delta[samples[i],],
+                         posts$tau[samples[i],] , 
+                         dataList$Nobs,
+                         subj,
+                         dataList$expt,
+                         dataList$s1,
+                         dataList$s2,
+                         dataList$a_logd,
+                         dataList$b_logd,
+                         dataList$a_logt,
+                         dataList$b_logt,
+                         dataList$a_dot,
+                         dataList$b_dot,
+                         dataList$a_tod,
+                         dataList$b_tod)
+      }
+     
       
       pp_data_tmp = data.frame(y_pred=rep(NA,dataList$Nobs[subj]),
                                y_obs=NA,
@@ -99,7 +152,8 @@ generate_pp=function(fit,dataList,Nsamp,source){
                                expt = dataList$expt[subj],
                                sample=samples[i])
       
-      pp_data_tmp$y_pred = as.vector(1/(1+exp(-p_a_logit)))
+      y_prob = as.vector(1/(1+exp(-p_a_logit)))
+      pp_data_tmp$y_pred = 1*(y_prob > runif(n=length(y_prob)))
       pp_data_tmp$y_obs = dataList$y[1:dataList$Nobs[subj],subj]
       pp_data_tmp$a_d0 = dataList$a_d0[1:dataList$Nobs[subj],subj]
       pp_data_tmp$b_d0 = dataList$b_d0[1:dataList$Nobs[subj],subj]
@@ -141,36 +195,89 @@ generate_pp_plot=function(pp_data){
     geom_ribbon(aes(ymin=y_pred_lo,ymax=y_pred_hi),fill="skyblue") +
     geom_line(aes(y=y_pred_mean),col="blue") +
     geom_line(aes(y=y_obs_mean),col="red") +
-    geom_errorbar(aes(ymin=y_obs_lo,ymax=y_obs_hi,col="red")) +
+    #geom_errorbar(aes(ymin=y_obs_lo,ymax=y_obs_hi,col="red")) +
     facet_grid(.~factor(b_d0,labels=paste("Left Distance:",levels(factor(b_d0))))) + 
     coord_cartesian(ylim=c(0,1)) +
-    labs(x="Right Distance",y="Proportion Prioritizing Right Goal") +
+    labs(x="Right Distance",y=" ") +
       theme(legend.position="none")
     
     dl_pp =ggplot(data=subset(pp_plot_data,expt==2),aes(x=factor(a_t0),group=1)) +
       geom_ribbon(aes(ymin=y_pred_lo,ymax=y_pred_hi),fill="skyblue") +
       geom_line(aes(y=y_pred_mean),col="blue") +
       geom_line(aes(y=y_obs_mean),col="red") +
-      geom_errorbar(aes(ymin=y_obs_lo,ymax=y_obs_hi,col="red")) +
+      #geom_errorbar(aes(ymin=y_obs_lo,ymax=y_obs_hi,col="red")) +
       facet_grid(.~factor(b_t0,labels=paste("Left Deadline:",levels(factor(b_t0))))) + 
       coord_cartesian(ylim=c(0,1)) +
-      labs(x="Right Deadline",y="Proportion Prioritizing Right Goal") +
+      labs(x="Right Deadline",y=" ") +
       theme(legend.position="none")
   
    return(list(ds_pp,dl_pp))
 }
+
+source_labels=c(obs="Observed Decisions",opt="Optimal Decisions")
+structure_labels=c(hier="Hierarchical Model",fixed="Non-hierarchical Model")
+model_labels=c(space="Spatiotemporal Gradient Included",nospace='Spatiotemporal Gradient Omitted')
+
+for (source in c('obs')){#},'opt')){
+    cat('\n')
+    cat(paste('##',source_labels[names(source_labels)==source]))
+    
+    #load datalists
+    ap_dataList=read_rdump(paste0('data/clean/',source,'_ap_rdump.R'))  #Approach
+    av_dataList=read_rdump(paste0('data/clean/',source,'_av_rdump.R'))  #Avoidance
+    
+    for (structure in c('hier')){
+      cat('\n')
+      cat(paste('###',structure_labels[names(structure_labels)==structure]))
+      for (model in c('space')){
+        cat('\n')
+        cat(paste('####',model_labels[names(model_labels)==model]))
+        
+      #Approach
+      load(paste0("data/derived/ap_",source,"_",structure,"_",model,"_fit.RData"))
+      pp_data=generate_pp(fit=fit,dataList=ap_dataList,Nsamp=100,version=paste(structure,model,sep='_' ))
+      ap_pp_plot= generate_pp_plot(pp_data)
+      
+      #Avoidance
+      load(paste0("data/derived/av_",source,"_",structure,"_",model,"_fit.RData"))
+      pp_data=generate_pp(fit=fit,dataList=av_dataList,Nsamp=100,version=paste(structure,model,sep='_' ))
+      av_pp_plot= generate_pp_plot(pp_data)
+      
+      #Posterior predictives
+     pp_fig = grid.arrange(
+          arrangeGrob(
+            arrangeGrob(ap_pp_plot[[1]] + theme(axis.text.x = element_text(size=6)) ,
+              top="Experiment 1, Approach Condition"),
+            arrangeGrob(av_pp_plot[[1]]  + theme(axis.text.x = element_text(size=6)) ,
+              top="Experiment 1, Avoidance Condition"),
+            arrangeGrob(ap_pp_plot[[2]]  + theme(axis.text.x = element_text(size=6)) ,
+              top="Experiment 2, Approach Condition"),
+            arrangeGrob(av_pp_plot[[2]]  + theme(axis.text.x = element_text(size=6)) ,
+              top="Experiment 2, Avoidance Condition"),
+            nrow=4
+          ),
+          left="Proportion Prioritizing Right-hand Goal"
+      )
+     
+     grid.arrange(pp_fig)
+     
+     save(file=paste0("figures/predictives,",source,"_",structure,"_",model,".RData"),plot=grid.arrange(pp_fig),width=7,height=5)
+    }
+  }
+}
+
 ```
 
 
 # Observed Decisions
 
-```{r observed_fits, echo=FALSE, fig.align="center", fig.height=12, fig.width=10}
+```{r observed_fits, eval=FALSE, fig.align="center", fig.height=12, fig.width=10, include=FALSE}
 #Approach
 #setwd("..")
 dataList=read_rdump('data/clean/obs_ap_rdump.R')
 
 load("data/derived/ap_obs_fit.RData")
-pp_data=generate_pp(fit=fit,dataList=dataList,Nsamp=100,source="obs")
+pp_data=generate_pp(fit=fit,dataList=dataList,Nsamp=10,source="obs")
 ap_obs_pp_plot= generate_pp_plot(pp_data)
   
   
@@ -178,7 +285,7 @@ ap_obs_pp_plot= generate_pp_plot(pp_data)
 dataList=read_rdump('data/clean/obs_av_rdump.R')
 
 load("data/derived/av_obs_fit.RData")
-pp_data=generate_pp(fit=fit,dataList=dataList,Nsamp=100,source="obs")
+pp_data=generate_pp(fit=fit,dataList=dataList,Nsamp=10,source="obs")
 av_obs_pp_plot= generate_pp_plot(pp_data)
 
 #Posterior predictives
@@ -191,13 +298,13 @@ grid.arrange(
               top="Deadline Experiment, Approach Condition"),
   arrangeGrob(av_obs_pp_plot[[2]]  + theme(axis.text.x = element_text(size=6)) ,
               top="Deadline Experiment, Avoidance Condition"),
-  nrow=4
+  nrow=4,height=12, width=10
 )
 ```
 
 # Optimal Decisions
 
-```{r optimal_fits, echo=FALSE, fig.align="center", fig.height=12, fig.width=10}
+```{r optimal_fits, eval=FALSE, fig.align="center", fig.height=12, fig.width=10, include=FALSE}
 
 #Approach
 #setwd("..")
