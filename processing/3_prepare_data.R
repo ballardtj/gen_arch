@@ -7,7 +7,16 @@ library(rstan)
 
 
 #Load Data
-load("./data/clean/dp_data.RData") #v4 is most current with bin size = 2
+
+#NOTE: Currently have not implemented dynamic programming for expts 3 and 4!
+
+#load("./data/clean/dp_data.RData") #v4 is most current with bin size = 2
+
+load("./data/clean/transformed_data.RData") %>%
+
+data_bound = transformed_data %>%
+  filter(trial_kind == "experimental")
+
 
 data_bound_tmp = data_bound %>%
   mutate(phase = (day<=pmin(right_start_deadline,left_start_deadline)) +  (day>pmin(right_start_deadline,left_start_deadline))*2) %>%
