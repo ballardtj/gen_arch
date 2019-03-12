@@ -10,12 +10,12 @@ library(rstan)
 
 #NOTE: Currently have not implemented dynamic programming for expts 3 and 4!
 
-#load("./data/clean/dp_data.RData") #v4 is most current with bin size = 2
+load("./data/clean/dp_data.RData") #v4 is most current with bin size = 2
 
-load("./data/clean/transformed_data.RData") %>%
+#load("./data/clean/transformed_data.RData") %>%
 
 data_bound = transformed_data %>%
-  filter(trial_kind == "experimental")
+  filter(trial_kind == "experimental",expt<3)
 
 
 data_bound_tmp = data_bound %>%
