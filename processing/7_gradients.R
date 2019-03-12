@@ -316,6 +316,8 @@ surface = ggplot(data=gradients,aes(x=d,y=t)) +
 
 
 gradient_fig = arrangeGrob(
+  arrangeGrob(surface), #av_pp_plot[[2]]  + theme(axis.text.x = element_text(size=6) , strip.text.x = element_text(size=10)),
+  #top=textGrob(expression(italic("Experiment 2, Avoidance Condition")),gp=gpar(fontsize=12))),
   arrangeGrob(sg),
               #ap_pp_plot[[1]] + theme(axis.text.x = element_text(size=6), strip.text.x = element_text(size=10)),
               #top=textGrob(expression(italic("Experiment 1, Approach Condition")),gp=gpar(fontsize=12))),
@@ -323,10 +325,8 @@ gradient_fig = arrangeGrob(
               #top=textGrob(expression(italic("Experiment 1, Avoidance Condition")),gp=gpar(fontsize=12))),
   arrangeGrob(stg),#ap_pp_plot[[2]]  + theme(axis.text.x = element_text(size=6) , strip.text.x = element_text(size=10)),
               #top=textGrob(expression(italic("Experiment 2, Approach Condition")),gp=gpar(fontsize=12))),
-  arrangeGrob(surface), #av_pp_plot[[2]]  + theme(axis.text.x = element_text(size=6) , strip.text.x = element_text(size=10)),
-              #top=textGrob(expression(italic("Experiment 2, Avoidance Condition")),gp=gpar(fontsize=12))),
   nrow=4,
-  heights=c(1,1,1,1.5)
+  heights=c(1.5,1,1,1)
 )
 
 grid.arrange(gradient_fig)
