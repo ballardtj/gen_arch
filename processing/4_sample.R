@@ -12,7 +12,7 @@ source("data/clean/obs_ap_rdump_expt3.R")
 
 fit = stan(file="cmdstan/model/goal_hier_space_expt123.stan",
            chains=1,
-           iter = 10)
+           iter = 1)
 
 
 

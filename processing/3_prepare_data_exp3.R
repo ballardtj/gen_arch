@@ -19,7 +19,7 @@ data_bound_tmp = transformed_data %>%
   mutate(left_start_deadline = left_days_total,
          right_start_deadline = right_days_total,
   phase = (day<=pmin(right_start_deadline,left_start_deadline)) +  (day>pmin(right_start_deadline,left_start_deadline))*2) %>%
-  filter(right_current_distance>0,left_current_distance>0,phase==1) %>%
+  filter(right_current_distance>0,left_current_distance>0,phase==1,expt<4) %>%
   mutate(max_dl = case_when(
             expt < 3 ~ 91,
             expt >= 3 ~ 9
@@ -33,6 +33,34 @@ data_bound_tmp = transformed_data %>%
          a_t0 = right_start_deadline,
          b_t0 = left_start_deadline) #%>%
   #filter(stage<4)
+
+
+# data_bound_tmp %>%
+#   filter(expt==3,goal_type=="Approach") %>%
+#   summarise(max(a_d),max(b_d)) %>% as.data.frame()
+#
+#   #Get proportion for each trial
+#   group_by(subject,a_d0,b_d0,a_t0,b_t0) %>%
+#   summarise(y_obs_tr = mean(prioritise_right)) %>%
+#   #Get proportion for each condition
+#   group_by(a_d0,b_d0,a_t0,b_t0) %>%
+#   summarise(y_obs_con = mean(y_obs_tr),
+#             y_obs_con_se = sd(y_obs_tr)/sqrt(length(y_obs_tr)),
+#             y_obs_hi = y_obs_con + mean(y_obs_con_se),
+#             y_obs_lo = y_obs_con - mean(y_obs_con_se)) %>%
+# filter(b_t0==8) %>%
+# ggplot(aes(x=factor(a_t0),group=factor(b_t0))) +
+#   #geom_ribbon(aes(ymin=y_pred_lo,ymax=y_pred_hi),fill="skyblue") +
+#   #geom_line(aes(y=y_pred_mean),col="blue") +
+#   geom_line(aes(y=y_obs_con),col="red") +
+#   geom_errorbar(aes(ymin=y_obs_lo,ymax=y_obs_hi,col="red")) +
+#   facet_grid(factor(b_d0,labels=paste("Left Distance:",levels(factor(b_d0))))
+#              ~factor(a_d0,labels=paste("Right Distance:",levels(factor(a_d0))))) +
+#   coord_cartesian(ylim=c(0,1)) +
+#   labs(x="Right Starting Distance",y=" ") +
+#   theme(legend.position="none")
+
+
 
 data_bound_tmp$s = as.numeric(as.factor(data_bound_tmp$subject)) #for some reason this does not work in dplyr
 
@@ -108,6 +136,11 @@ for(source in 1){
       Bdata_tmp = Bdata %>% filter(s==subj)
       n = dim(Bdata_tmp)[1]
       Nobs[subj]=n
+
+      if(any(Bdata_tmp$a_d>1)){
+        break()
+      }
+
       a_logd[subj,1:n] = log(Bdata_tmp$a_d)
       b_logd[subj,1:n] = log(Bdata_tmp$b_d)
       a_logt[subj,1:n] = log(Bdata_tmp$a_t)
@@ -169,7 +202,7 @@ for(source in 1){
 
     #Save as rdump
     list2env(dataList, .GlobalEnv)
-    stan_rdump(names(dataList),file=paste0('./data/clean/',sources[source],"_",goal_types[frame],'_rdump_expt3.R'))
+    stan_rdump(names(dataList),file=paste0('./data/clean/',sources[source],"_",goal_types[frame],'_rdump_expt123.R'))
   }
 
 }

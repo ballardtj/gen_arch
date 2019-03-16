@@ -36,495 +36,499 @@ theme.goal <- theme(strip.text.x = element_text(size=12,face="bold",colour="blac
 
 load("data/clean/dp_data.RData")
 
+data_bound = data_bound %>%
+  mutate(phase = (day<=pmin(right_start_deadline,left_start_deadline)) +  (day>pmin(right_start_deadline,left_start_deadline))*2)
+
+
 # TRIAL LEVEL PREDICTIVES -----
 
-load("Models.Rda")
-
-models.condition = list(Distance = c(1:20,61:63,67), #distance models
-                        Deadline = c(1:60,64:66,68))
-
-for(d in c("Distance",'Deadline')){
-
-  data_obs = data %>% filter(right_current_distance>0.5,left_current_distance>0.5,phase==1,diffCon==d) %>%
-    mutate(source = "Observed",
-           prioritise_right_upper = NaN,
-           prioritise_right_lower = NaN)
-
-  data_pred = data_obs %>%
-    mutate(source = "Predicted")
-
-for(m in models.condition[[d]]){
-  print(m)
-  for(f in c('Approach','Avoidance')){
-
-    file=paste0(Sys.getenv('HOME'),'/Dropbox/Research/Projects/MGP-1517-GOAL/Modelling-5-RealDataHierarchical/Output/',d,f,'_',m,'_',models[m],'/Summary.Rda')
-    if( file.exists(file) ){
-      load(file)
-      data_pred$prioritise_right[data_pred$goal_type==f] = 1/(1+exp(-smry[grep('p_a_logit',rownames(smry)),"50%"]))
-      data_pred$prioritise_right_upper[data_pred$goal_type==f] = 1/(1+exp(-smry[grep('p_a_logit',rownames(smry)),"97.5%"]))
-      data_pred$prioritise_right_lower[data_pred$goal_type==f] = 1/(1+exp(-smry[grep('p_a_logit',rownames(smry)),"2.5%"]))
-    } else {
-      data_pred$prioritise_right[data_pred$goal_type==f] = NA
-      data_pred$prioritise_right_upper[data_pred$goal_type==f] = NA
-      data_pred$prioritise_right_lower[data_pred$goal_type==f] = NA
-    }
-  }
-
-  data_comb = bind_rows(data_obs,data_pred)
-
-  if(d == "Distance"){
-    data_comb$panel_factor = factor(data_comb$left_start_distance,levels=c(30,45,67.5,90,112.5,135,150),labels=c('Left Start: 30','Left Start: 45','Left Start: 67.5','Left Start: 90','Left Start: 112.5','Left Start: 135','Left Start: 150'))
-    data_comb$x_factor = factor(data_comb$right_start_distance,levels=c(30,45,67.5,90,112.5,135,150))
-  }
-  if(d == "Deadline"){
-    data_comb$panel_factor = factor(data_comb$left_start_deadline,levels=c(18,20,24,30,40,60,90),labels=c('Left Deadline: 18','Left Deadline: 20','Left Deadline: 24','Left Deadline: 30','Left Deadline: 40','Left Deadline: 60','Left Deadline: 90'))
-    data_comb$x_factor = factor(data_comb$right_start_deadline,levels=c(18,20,24,30,40,60,90))
-  }
-
-  # pd <- data_comb %>%
-  #   group_by(x_factor,panel_factor,source,goal_type) %>%
-  #   summarise(choice_right = mean(prioritise_right),
-  #             choice_right_upper = mean(prioritise_right_upper),
-  #             choice_right_lower = mean(prioritise_right_lower),
-  #             choice_se = sqrt(choice_right*(1-choice_right)/length(stage)))
-  # pd$choice_se[pd$source=="Predicted"]<-NA
-  #
-  # ggplot(data=pd,aes(x=x_factor)) +
-  #   geom_ribbon(aes(ymin=choice_right_lower,ymax=choice_right_upper,group=source),fill="lightblue") +
-  #   geom_line(aes(y=choice_right,group=factor(source),color=factor(source))) +
-  #   geom_errorbar(aes(ymin=choice_right-choice_se,ymax=choice_right+choice_se,group=factor(source),color=factor(source))) +
-  #   facet_grid(goal_type~panel_factor) +
-  #   coord_cartesian(ylim=0:1) +
-  #   xlab(paste0('Right Start ',d)) +
-  #   ylab("Proportion of Choices Prioritizing Right Goal") +
-  #   theme.goal +
-  #   theme(axis.text.x = element_text(size=8,colour="black",family="Times")) +
-  #   guides(color=guide_legend(title="Source"))
-
-  #Trial Average (with SE)
-  pd <- data_comb %>%
-    group_by(x_factor,panel_factor,source,goal_type,subject) %>%
-    summarise(choice_right = mean(prioritise_right),
-              choice_right_upper = mean(prioritise_right_upper),
-              choice_right_lower = mean(prioritise_right_lower)) %>%
-    group_by(x_factor,panel_factor,source,goal_type) %>%
-    summarise(choice_right = mean(choice_right),
-              choice_right_upper = mean(choice_right_upper),
-              choice_right_lower = mean(choice_right_lower),
-              choice_se = sqrt(choice_right*(1-choice_right)/length(goal_type)))
-
-  pd$choice_se[pd$source=="Predicted"]<-NA
-
-  ggplot(data=pd,aes(x=x_factor)) +
-    geom_ribbon(aes(ymin=choice_right_lower,ymax=choice_right_upper,group=source),fill="lightblue") +
-    geom_line(aes(y=choice_right,group=factor(source),color=factor(source))) +
-    geom_errorbar(aes(ymin=choice_right-choice_se,ymax=choice_right+choice_se,group=factor(source),color=factor(source))) +
-    facet_grid(goal_type~panel_factor) +
-    coord_cartesian(ylim=0:1) +
-    xlab(paste0('Right Start ',d)) +
-    ylab("Proportion of Choices Prioritizing Right Goal") +
-    theme.goal +
-    theme(axis.text.x = element_text(size=8,colour="black",family="Times")) +
-    guides(color=guide_legend(title="Source"))
-
-  ggsave(paste0(getwd(),"/PosteriorPredictives/TrialLevel-SE",d,"_",models[m],".pdf"),width=15,height=9)
-
-
-  #Trial Average (with quantile)
-  # pd <- data_comb %>%
-  #   group_by(x_factor,panel_factor,source,goal_type,subject) %>%
-  #   summarise(choice_right = mean(prioritise_right),
-  #             choice_right_upper = mean(prioritise_right_upper),
-  #             choice_right_lower = mean(prioritise_right_lower)) %>%
-  #   group_by(x_factor,panel_factor,source,goal_type) %>%
-  #   summarise(q10 = quantile(choice_right,0.1),
-  #             q30 = quantile(choice_right,0.3),
-  #             q50 = quantile(choice_right,0.5),
-  #             q70 = quantile(choice_right,0.7),
-  #             q90 = quantile(choice_right,0.9)) %>%
-  #   tidyr::gather(key=quantile,value=choice_right,q10:q90) %>%
-  #   mutate(quantile=factor(quantile,levels=c('q10','q30','q50','q70','q90'),labels=seq(0.1,0.9,by=0.2) ))
-  #
-  #
-  # ggplot(data=pd,aes(x=x_factor)) +
-  #   #geom_ribbon(aes(ymin=choice_right_lower,ymax=choice_right_upper,group=source),fill="lightblue") +
-  #   geom_line(aes(y=choice_right,group=interaction(quantile,factor(source)),color=factor(source))) +
-  #   #geom_errorbar(aes(ymin=choice_right-choice_se,ymax=choice_right+choice_se,group=factor(source),color=factor(source))) +
-  #   facet_grid(goal_type~panel_factor) +
-  #   coord_cartesian(ylim=0:1) +
-  #   xlab(paste0('Right Start ',d)) +
-  #   ylab("Proportion of Choices Prioritizing Right Goal") +
-  #   theme.goal +
-  #   theme(axis.text.x = element_text(size=8,colour="black",family="Times")) +
-  #   guides(color=guide_legend(title="Source"))
-  #
-  # ggsave("TrialAverage-Quantile.pdf",width=15,height=12)
-  #
-
-  #Trial Average (by group)
-  # pd <- data_comb %>%
-  #   group_by(x_factor,panel_factor,source,goal_type,subject) %>%
-  #   summarise(choice_right = mean(prioritise_right),
-  #             choice_right_upper = mean(prioritise_right_upper),
-  #             choice_right_lower = mean(prioritise_right_lower)) %>%
-  #   mutate(strategy_group=factor(cut(choice_right,quantile(choice_right,probs=c(0,0.33,0.66,1))+c(-0.1,0,0,0.1)),labels=1:3)) %>%
-  #   group_by(x_factor,panel_factor,source,goal_type,strategy_group) %>%
-  #   summarise(choice_right = mean(choice_right))
-  #
-  # ggplot(data=pd,aes(x=x_factor)) +
-  #   #geom_ribbon(aes(ymin=choice_right_lower,ymax=choice_right_upper,group=source),fill="lightblue") +
-  #   geom_line(aes(y=choice_right,group=interaction(strategy_group,factor(source)),color=factor(source))) +
-  #   #geom_errorbar(aes(ymin=choice_right-choice_se,ymax=choice_right+choice_se,group=factor(source),color=factor(source))) +
-  #   facet_grid(goal_type~panel_factor) +
-  #   coord_cartesian(ylim=0:1) +
-  #   xlab(paste0('Right Start ',d)) +
-  #   ylab("Proportion of Choices Prioritizing Right Goal") +
-  #   theme.goal +
-  #   theme(axis.text.x = element_text(size=8,colour="black",family="Times")) +
-  #   guides(color=guide_legend(title="Source"))
-  #
-  # #ggsave("TrialAverage-Groups.pdf",width=15,height=12)
-  # ggsave(paste0(getwd(),"/PosteriorPredictives/TrialLevel-Groups",d,"_",models[m],".pdf"),width=15,height=9)
-
-
-  #ggsave(paste0(getwd(),"/PosteriorPredictives/TrialLevel",d,"_",models[m],".pdf"),width=15,height=9)
-
-#}
-
-}
-
-}
-
-
-# STAGE LEVEL PREDICTIVES -----
-
-load("Models.Rda")
-
-models.condition = list(Distance = c(1:20,61:63,67), #distance models
-                        Deadline = c(1:60,64:66,68))
-
-for(d in c("Distance",'Deadline')){
-
-  data_obs = data %>% filter(right_current_distance>0.5,left_current_distance>0.5,phase==1,diffCon==d) %>%
-    mutate(source = "Observed",
-           prioritise_right_upper = NaN,
-           prioritise_right_lower = NaN)
-
-  data_pred = data_obs %>%
-    mutate(source = "Predicted")
-
-  for(m in models.condition[[d]]){
-    print(m)
-    for(f in c('Approach','Avoidance')){
-
-      file=paste0(Sys.getenv('HOME'),'/Dropbox/Research/Projects/MGP-1517-GOAL/Modelling-5-RealDataHierarchical/Output/',d,f,'_',m,'_',models[m],'/Summary.Rda')
-      if( file.exists(file) ){
-        load(file)
-        data_pred$prioritise_right[data_pred$goal_type==f] = 1/(1+exp(-smry[grep('p_a_logit',rownames(smry)),"50%"]))
-        data_pred$prioritise_right_upper[data_pred$goal_type==f] = 1/(1+exp(-smry[grep('p_a_logit',rownames(smry)),"97.5%"]))
-        data_pred$prioritise_right_lower[data_pred$goal_type==f] = 1/(1+exp(-smry[grep('p_a_logit',rownames(smry)),"2.5%"]))
-      } else {
-        data_pred$prioritise_right[data_pred$goal_type==f] = NA
-        data_pred$prioritise_right_upper[data_pred$goal_type==f] = NA
-        data_pred$prioritise_right_lower[data_pred$goal_type==f] = NA
-      }
-    }
-
-    data_comb = bind_rows(data_obs,data_pred)
-
-    if(d == "Distance"){
-      data_comb$panel_factor = factor(data_comb$left_start_distance,levels=c(30,45,67.5,90,112.5,135,150),labels=c('Left Start: 30','Left Start: 45','Left Start: 67.5','Left Start: 90','Left Start: 112.5','Left Start: 135','Left Start: 150'))
-      data_comb$x_factor = factor(data_comb$right_start_distance,levels=c(30,45,67.5,90,112.5,135,150),labels=c('Right Start: 30','Right Start: 45','Right Start: 67.5','Right Start: 90','Right Start: 112.5','Right Start: 135','Right Start: 150'))
-         }
-    if(d == "Deadline"){
-      data_comb$panel_factor = factor(data_comb$left_start_deadline,levels=c(18,20,24,30,40,60,90),labels=c('Left Deadline: 18','Left Deadline: 20','Left Deadline: 24','Left Deadline: 30','Left Deadline: 40','Left Deadline: 60','Left Deadline: 90'))
-      data_comb$x_factor = factor(data_comb$right_start_deadline,levels=c(18,20,24,30,40,60,90))
-    }
-
-    pd <- data_comb %>%
-      mutate(stage_group = ceiling(stage/5)) %>%
-      group_by(x_factor,panel_factor,source,goal_type,stage) %>%
-      summarise(choice_right = mean(prioritise_right),
-                choice_right_upper = mean(prioritise_right_upper),
-                choice_right_lower = mean(prioritise_right_lower),
-                choice_se = sqrt(choice_right*(1-choice_right)/length(stage)),
-                nobs = length(stage)) %>% filter(nobs>9)
-    pd$choice_se[pd$source=="Predicted"]<-NA
-
-    ggplot(data=subset(pd,goal_type=="Avoidance"),aes(x=stage)) +
-      geom_ribbon(aes(ymin=choice_right_lower,ymax=choice_right_upper,group=source),fill="lightblue") +
-      geom_line(aes(y=choice_right,group=factor(source),color=factor(source))) +
-      geom_errorbar(aes(ymin=choice_right-choice_se,ymax=choice_right+choice_se,group=factor(source),color=factor(source))) +
-      facet_grid(panel_factor~x_factor) +
-      coord_cartesian(ylim=0:1) +
-      xlab(paste0('Right Start ',d)) +
-      ylab("Proportion of Choices Prioritizing Right Goal") +
-      theme.goal +
-      theme(axis.text.x = element_text(size=8,colour="black",family="Times")) +
-      guides(color=guide_legend(title="Source"))
-
-    #ggsave(paste0(getwd(),"/PosteriorPredictives/",d,"_",models[m],".pdf"),width=15,height=9)
-
-    #}
-
-  }
-
-}
-
-
-pd <- data_comb %>%
-  mutate(choice_far = prioritise_right*(left_current_distance<right_current_distance) +
-           (1-prioritise_right)*(left_current_distance>right_current_distance),
-         choice_far_upper = prioritise_right_upper*(left_current_distance<right_current_distance) +
-           (1-prioritise_right_lower)*(left_current_distance>right_current_distance),
-         choice_far_lower = prioritise_right_lower*(left_current_distance<right_current_distance) +
-           (1-prioritise_right_upper)*(left_current_distance>right_current_distance),
-         farther_start_distanceF = factor(farther_start_distance,levels=c(30,45,67.5,90,112.5,135,150),labels=c('Far: 30','Far: 45','Far: 67.5','Far: 90','Far: 112.5','Far: 135','Far: 150')),
-         closer_start_distanceF = factor(closer_start_distance,levels=c(30,45,67.5,90,112.5,135,150),labels=c('Close: 30','Close: 45','Close: 67.5','Close: 90','Close: 112.5','Close: 135','Close: 150')))
-pd$choice_far[pd$left_current_distance>=pd$right_current_distance]<-NA
-pd$choice_far_upper[pd$left_current_distance>=pd$right_current_distance]<-NA
-pd$choice_far_lower[pd$left_current_distance>=pd$right_current_distance]<-NA
-
-pd <- pd %>%
-  group_by(farther_start_distanceF,closer_start_distanceF,source,goal_type,stage) %>%
-  summarise(choice_far = mean(choice_far,na.rm=T),
-            choice_far_upper = mean(choice_far_upper,na.rm=T),
-            choice_far_lower = mean(choice_far_lower,na.rm=T),
-            choice_se = sqrt(choice_far*(1-choice_far)/length(stage)),
-            nobs = length(stage)) %>% filter(nobs>9)
-pd$choice_se[pd$source=="Predicted"]<-NA
-
-ggplot(data=subset(pd,goal_type=="Avoidance"),aes(x=stage)) +
-  geom_ribbon(aes(ymin=choice_far_lower,ymax=choice_far_upper,group=source),fill="lightblue") +
-  geom_line(aes(y=choice_far,group=factor(source),color=factor(source))) +
-  geom_errorbar(aes(ymin=choice_far-choice_se,ymax=choice_far+choice_se,group=factor(source),color=factor(source))) +
-  facet_grid(farther_start_distanceF~closer_start_distanceF) +
-  coord_cartesian(ylim=0:1,xlim=1:30) +
-  xlab('Stage') +
-  ylab("Proportion of Choices Prioritizing Farther Goal") +
-  theme.goal +
-  theme(axis.text.x = element_text(size=8,colour="black",family="Times")) +
-  guides(color=guide_legend(title="Source")) +
-  geom_hline(yintercept = 0.5,colour='gray')
-
-
-ggsave("StageLevelPredictives-Avoidance.pdf",width=15,height=12)
-
-
-
-#Traceplot of worst fitting conditions
-#Editted by TB (29/11/2017)
-
-
-
-data_obs$lik = (data_obs$prioritise_right==1)*data_pred$prioritise_right + (data_obs$prioritise_right==0)*(1-data_pred$prioritise_right)
-
-sublik = data_obs %>% group_by(goal_type,subject) %>% summarise(mlik = mean(lik)) %>% group_by(goal_type) %>% mutate(rlik=rank(mlik))
-trlik15030 = data_obs %>% filter(farther_start_distance==150,closer_start_distance==30) %>%  group_by(goal_type,subject) %>% summarise(trlik15030 = mean(lik)) %>% group_by(goal_type) %>% mutate(rtrlik15030=rank(trlik15030))
-trlik = data_obs %>% group_by(subject,trial_number,goal_type) %>% summarise(trlik = mean(lik)) %>% group_by(goal_type) %>% mutate(rtrlik=rank(trlik))
-lik = data_obs %>% select(subject,trial_number,stage,lik)
-
-data_comb_lik = left_join(left_join(left_join(left_join(data_comb,sublik),trlik),lik),trlik15030)
-
-bimodal=rep(FALSE,130)
-bimodal[c(15,17,23,24,35,61,65,66,71,104,105,1,10,11,16,19,25,41,42,50,55,56,60,74,80,119,112,123,127,
-          3,5,6,12,14,33,46,51,54,57,67,69,72,76,84,87,88,92,96,99,107,111,113,116,118)]<-TRUE
-
-pd <- data_obs %>%
-  mutate(sn = as.numeric(factor(subject)),
-         bimodal=bimodal[sn],
-          farther_start_distanceF = factor(farther_start_distance,levels=c(30,45,67.5,90,112.5,135,150),labels=c('Far: 30','Far: 45','Far: 67.5','Far: 90','Far: 112.5','Far: 135','Far: 150')),
-         closer_start_distanceF = factor(closer_start_distance,levels=c(30,45,67.5,90,112.5,135,150),labels=c('Close: 30','Close: 45','Close: 67.5','Close: 90','Close: 112.5','Close: 135','Close: 150'))) %>%
-  filter( goal_type=="Avoidance") %>%
-  group_by(stage,farther_start_distanceF,closer_start_distanceF,bimodal,sn) %>%
-  summarise(closer_start_distance_current = mean(closer_start_distance_current),
-            farther_start_distance_current = mean(farther_start_distance_current),
-            prioritise_farther = mean((farther_current_distance==left_current_distance)*(prioritise_right==0) +
-                                        (farther_current_distance==right_current_distance)*(prioritise_right==1))) %>%
-  mutate(crit_cond = 1*((closer_start_distanceF=='Close: 30')&(farther_start_distanceF=='Far: 150') ))
-
-library(RColorBrewer)
-myPalette <- colorRampPalette(brewer.pal(11, "Spectral"))
-p=ggplot(data=subset(pd),
-       aes(y=farther_start_distance_current,x=closer_start_distance_current,
-           group=interaction(farther_start_distanceF,closer_start_distanceF)))+
-  geom_path(alpha=0.1)+
-  geom_point(aes(colour=bimodal),size=0.5)+
-  # geom_point(data=subset(pd,stage=1))+#aes(colour=factor(prioritise_farther)))+
-  facet_wrap(~sn) +
-  scale_x_reverse() +
-  scale_y_reverse() +
-  geom_vline(xintercept=0) +
-  geom_hline(yintercept=0) +
-  coord_cartesian(ylim= c(-60,160),xlim=c(-60,160)) +
-  ylab('Distance to Farther Goal') +
-  xlab("Distance to Closer Goal") +
-  theme.goal #+ #theme(legend.position = 'none') +
-  #scale_colour_gradientn(colours = myPalette(100), limits=c(0, 1))
-
-ggsave(file="Traceplots-BySubject-Avoidance-Bimodality.pdf",plot=p,height=20,width=20)
-
-
-
-pd <- data_comb_lik %>%
-  mutate(farther_start_distanceF = factor(farther_start_distance,levels=c(30,45,67.5,90,112.5,135,150),labels=c('Far: 30','Far: 45','Far: 67.5','Far: 90','Far: 112.5','Far: 135','Far: 150')),
-         closer_start_distanceF = factor(closer_start_distance,levels=c(30,45,67.5,90,112.5,135,150),labels=c('Close: 30','Close: 45','Close: 67.5','Close: 90','Close: 112.5','Close: 135','Close: 150'))) %>%
-  filter(rtrlik15030>100) %>%
-  group_by(closer_start_distanceF,farther_start_distanceF,source,goal_type,stage) %>%
-  summarise(choice_right = mean(prioritise_right),
-            choice_right_upper = mean(prioritise_right_upper),
-            choice_right_lower = mean(prioritise_right_lower),
-            choice_se = sqrt(choice_right*(1-choice_right)/length(stage)),
-            nobs = length(stage)) #%>% filter(nobs>9)
-pd$choice_se[pd$source=="Predicted"]<-NA
-
-ggplot(data=subset(pd,goal_type=="Approach"),aes(x=stage)) +
-  geom_ribbon(aes(ymin=choice_right_lower,ymax=choice_right_upper,group=source),fill="lightblue") +
-  geom_line(aes(y=choice_right,group=factor(source),color=factor(source))) +
-  geom_errorbar(aes(ymin=choice_right-choice_se,ymax=choice_right+choice_se,group=factor(source),color=factor(source))) +
-  facet_grid(farther_start_distanceF~closer_start_distanceF) +
-  coord_cartesian(ylim=0:1) +
-  xlab(paste0('Right Start ',d)) +
-  ylab("Proportion of Choices Prioritizing Right Goal") +
-  theme.goal +
-  theme(axis.text.x = element_text(size=8,colour="black",family="Times")) +
-  guides(color=guide_legend(title="Source"))
-
-
-
-
-
-
-ggplot(data=subset(pd),
-       aes(y=farther_start_distance_current,x=closer_start_distance_current,
-           group=rlik))+
-  geom_path(alpha=0.1)+
-  geom_point(aes(colour=lik),size=0.5)+
-  # geom_point(data=subset(pd,stage=1))+#aes(colour=factor(prioritise_farther)))+
-  facet_grid(farther_start_distanceF~closer_start_distanceF) +
-  scale_x_reverse() +
-  scale_y_reverse() +
-  geom_vline(xintercept=0) +
-  geom_hline(yintercept=0) +
-  coord_cartesian(ylim= c(-60,160),xlim=c(-60,160)) +
-  ylab('Distance to Farther Goal') +
-  xlab("Distance to Closer Goal") +
-  theme.goal + #theme(legend.position = 'none') +
-  scale_colour_gradientn(colours = myPalette(100), limits=c(0, 1))
-
-ggsave(file="Traceplots-ByCondition-Approach.pdf",height=20,width=20)
-
-
-
-
-
-
-
-
-#CHECK POSTERIOR PREDICTIVES - LINE PLOTS -----
-
-pd <- data_comb %>%
-  filter(goal_type=="Avoidance") %>%
-  mutate(stage_group = factor(ceiling(stage/5),levels=1:6,labels=c('Stage 1-5','Stage 6-10','Stage 11-15','Stage 16-20','Stage 21-25','Stage 26-30')),
-         left_start_distance_group = (left_start_distance<=45)*1 + ((left_start_distance>45)*(left_start_distance<135))*2 + (left_start_distance>=135)*3,
-         right_start_distance_group = (right_start_distance<=45)*1 + ((right_start_distance>45)*(right_start_distance<135))*2 + (right_start_distance>=135)*3,
-          left_start_distance_groupF = factor(left_start_distance_group,levels=1:3,labels=c('Left: Far','Left: Medium','Left: Close')),
-          right_start_distance_groupF = factor(right_start_distance_group,levels=1:3,labels=c('Right: Far','Right: Medium','Right: Close')) ) %>%
-  group_by(left_start_distance_groupF,right_start_distance_groupF,source,stage) %>%
-  summarise(choice_right = mean(prioritise_right),
-            choice_right_upper = mean(prioritise_right_upper),
-            choice_right_lower = mean(prioritise_right_lower),
-            choice_se = sqrt(choice_right*(1-choice_right)/length(stage)))
-
-#pd$choice_right_upper[pd$source=='Observed']=pd$choice_right[pd$source=='Observed'] + pd$choice_se[pd$source=='Observed']
-#pd$choice_right_lower[pd$source=='Observed']=pd$choice_right[pd$source=='Observed'] - pd$choice_se[pd$source=='Observed']
-
-
-ggplot(data=pd,aes(x=stage)) +
-  geom_ribbon(aes(ymin=choice_right_lower,ymax=choice_right_upper,group=source),fill="lightblue") +
-  geom_line(aes(y=choice_right,group=factor(source),color=factor(source))) +
-  facet_grid(left_start_distance_groupF~right_start_distance_groupF) +
-  coord_cartesian(xlim=1:30,ylim=0:1) +
-  xlab('Stage') +
-  ylab("Proportion of Choices Prioritizing Right Goal") +
-  theme.goal
-
-pd <- data_comb %>%
-  #filter(goal_type=="Avoidance") %>%
-  mutate(stage_group = factor(ceiling(stage/5),levels=1:6,labels=c('Stage 1-5','Stage 6-10','Stage 11-15','Stage 16-20','Stage 21-25','Stage 26-30')),
-         left_start_distanceF = factor(left_start_distance,levels=c(30,45,67.5,90,112.5,135,150),labels=c('Left Start: 30','Left Start: 45','Left Start: 67.5','Left Start: 90','Left Start: 112.5','Left Start: 135','Left Start: 150')),
-         right_start_distanceF = factor(right_start_distance,levels=c(30,45,67.5,90,112.5,135,150))) %>%
-  group_by(left_start_distanceF,right_start_distanceF,source,goal_type) %>%
-  summarise(choice_right = mean(prioritise_right),
-            choice_right_upper = mean(prioritise_right_upper),
-            choice_right_lower = mean(prioritise_right_lower),
-            choice_se = sqrt(choice_right*(1-choice_right)/length(stage)))
-
-
-ggplot(data=pd,aes(x=right_start_distanceF)) +
-  geom_ribbon(aes(ymin=choice_right_lower,ymax=choice_right_upper,group=source),fill="lightblue") +
-  geom_line(aes(y=choice_right,group=factor(source),color=factor(source))) +
-  facet_grid(goal_type~left_start_distanceF) +
-  coord_cartesian(ylim=0:1) +
-  xlab('Right Start Distance') +
-  ylab("Proportion of Choices Prioritizing Right Goal") +
-  theme.goal +
-  theme(axis.text.x = element_text(size=8,colour="black",family="Times"))
-
-ggsave("PosteriorPredictives-FixedGradient.pdf",width=15,height=9)
-
-
-ggplot(data=pd) +
-  geom_line(aes(x=right_start_distance,y=choice_right,group=factor(left_start_distance),color=factor(left_start_distance))) +
-  facet_grid(source~stage_group)
-
-
-#HEAT MAPS OF CHOICE - DISTANCE -----
-
-#data=data_bound
-#tile plot - choice
-pd <- data_bound %>%
-  mutate(phase = (day<=pmin(right_start_deadline,left_start_deadline)) +  (day>pmin(right_start_deadline,left_start_deadline))*2) %>%
-  filter(phase==1,expt==1) %>%
-  mutate(left_current_distance_bin = round(left_current_distance/2)*2,
-         right_current_distance_bin = round(right_current_distance/2)*2,
-         stage_bin = factor(ceiling(stage/10),levels=1:3,labels=c('Stages 1-10','Stages 11-20','Stages 21-30')),
-         prioritise_farther = (left_current_distance < right_current_distance)*prioritise_right +  (left_current_distance > right_current_distance)*(1-prioritise_right),
-         policy_farther = (left_current_distance < right_current_distance)*policy +  (left_current_distance > right_current_distance)*(1-policy)) %>%
-  group_by(left_current_distance_bin,right_current_distance_bin,goal_type) %>%
-  summarise(count = length(stage),
-            #right_prioritised = mean(prioritise_right),
-            #policy_right = mean(policy),
-            left_current_distance = mean(left_current_distance),
-            right_current_distance = mean(right_current_distance),
-            prioritise_farther = mean(prioritise_farther),
-            policy_farther = mean(policy_farther) ) %>%
-  filter(left_current_distance>-100,right_current_distance>-100) %>%
-  gather(source,choice_farther,prioritise_farther,policy_farther)
-
-pd$source = factor(pd$source,levels=c('prioritise_farther','policy_farther'),labels=c('Observed','Optimal'))
-
-#pdp = bind_rows(pd,d_ap,d_av) #%>% filter(source=='Predicted')
-
-ggplot(data=pd,aes(y=left_current_distance_bin,x=right_current_distance_bin,fill=choice_farther)) +
-  geom_raster() +
-  #facet_grid(left_start_distance~right_start_distance) +
-  facet_grid(source~goal_type) +
-  #geom_contour(aes(x=left_current_distance_bin,y=right_current_distance_bin,z=right_prioritised),colour="black",binwidth=.1,size=.2) +
-  scale_x_reverse() +
-  scale_y_reverse() +
-  geom_vline(xintercept=0,size=2.5) +
-  geom_hline(yintercept=0,size=2.5) +
-  geom_vline(xintercept=0,size=0.5,color='yellow') +
-  geom_hline(yintercept=0,size=0.5,color='yellow') +
-  coord_cartesian(ylim= c(-20,180),xlim=c(-20,180)) +
-  ylab('Left Distance to Goal') +
-  xlab("Right Distance to Goal") +
-  theme.goal +
-  scale_fill_gradient2(low="blue",high="red",mid="black",midpoint=0.5,na.value='black') +
-  labs(fill = "Proportion Prioritizing\nFarther Goal\n")
-
-ggsave("HeatMap-Distance.pdf",width=8,height=9)
+# load("Models.Rda")
+#
+# models.condition = list(Distance = c(1:20,61:63,67), #distance models
+#                         Deadline = c(1:60,64:66,68))
+#
+# for(d in c("Distance",'Deadline')){
+#
+#   data_obs = data %>% filter(right_current_distance>0.5,left_current_distance>0.5,phase==1,diffCon==d) %>%
+#     mutate(source = "Observed",
+#            prioritise_right_upper = NaN,
+#            prioritise_right_lower = NaN)
+#
+#   data_pred = data_obs %>%
+#     mutate(source = "Predicted")
+#
+# for(m in models.condition[[d]]){
+#   print(m)
+#   for(f in c('Approach','Avoidance')){
+#
+#     file=paste0(Sys.getenv('HOME'),'/Dropbox/Research/Projects/MGP-1517-GOAL/Modelling-5-RealDataHierarchical/Output/',d,f,'_',m,'_',models[m],'/Summary.Rda')
+#     if( file.exists(file) ){
+#       load(file)
+#       data_pred$prioritise_right[data_pred$goal_type==f] = 1/(1+exp(-smry[grep('p_a_logit',rownames(smry)),"50%"]))
+#       data_pred$prioritise_right_upper[data_pred$goal_type==f] = 1/(1+exp(-smry[grep('p_a_logit',rownames(smry)),"97.5%"]))
+#       data_pred$prioritise_right_lower[data_pred$goal_type==f] = 1/(1+exp(-smry[grep('p_a_logit',rownames(smry)),"2.5%"]))
+#     } else {
+#       data_pred$prioritise_right[data_pred$goal_type==f] = NA
+#       data_pred$prioritise_right_upper[data_pred$goal_type==f] = NA
+#       data_pred$prioritise_right_lower[data_pred$goal_type==f] = NA
+#     }
+#   }
+#
+#   data_comb = bind_rows(data_obs,data_pred)
+#
+#   if(d == "Distance"){
+#     data_comb$panel_factor = factor(data_comb$left_start_distance,levels=c(30,45,67.5,90,112.5,135,150),labels=c('Left Start: 30','Left Start: 45','Left Start: 67.5','Left Start: 90','Left Start: 112.5','Left Start: 135','Left Start: 150'))
+#     data_comb$x_factor = factor(data_comb$right_start_distance,levels=c(30,45,67.5,90,112.5,135,150))
+#   }
+#   if(d == "Deadline"){
+#     data_comb$panel_factor = factor(data_comb$left_start_deadline,levels=c(18,20,24,30,40,60,90),labels=c('Left Deadline: 18','Left Deadline: 20','Left Deadline: 24','Left Deadline: 30','Left Deadline: 40','Left Deadline: 60','Left Deadline: 90'))
+#     data_comb$x_factor = factor(data_comb$right_start_deadline,levels=c(18,20,24,30,40,60,90))
+#   }
+#
+#   # pd <- data_comb %>%
+#   #   group_by(x_factor,panel_factor,source,goal_type) %>%
+#   #   summarise(choice_right = mean(prioritise_right),
+#   #             choice_right_upper = mean(prioritise_right_upper),
+#   #             choice_right_lower = mean(prioritise_right_lower),
+#   #             choice_se = sqrt(choice_right*(1-choice_right)/length(stage)))
+#   # pd$choice_se[pd$source=="Predicted"]<-NA
+#   #
+#   # ggplot(data=pd,aes(x=x_factor)) +
+#   #   geom_ribbon(aes(ymin=choice_right_lower,ymax=choice_right_upper,group=source),fill="lightblue") +
+#   #   geom_line(aes(y=choice_right,group=factor(source),color=factor(source))) +
+#   #   geom_errorbar(aes(ymin=choice_right-choice_se,ymax=choice_right+choice_se,group=factor(source),color=factor(source))) +
+#   #   facet_grid(goal_type~panel_factor) +
+#   #   coord_cartesian(ylim=0:1) +
+#   #   xlab(paste0('Right Start ',d)) +
+#   #   ylab("Proportion of Choices Prioritizing Right Goal") +
+#   #   theme.goal +
+#   #   theme(axis.text.x = element_text(size=8,colour="black",family="Times")) +
+#   #   guides(color=guide_legend(title="Source"))
+#
+#   #Trial Average (with SE)
+#   pd <- data_comb %>%
+#     group_by(x_factor,panel_factor,source,goal_type,subject) %>%
+#     summarise(choice_right = mean(prioritise_right),
+#               choice_right_upper = mean(prioritise_right_upper),
+#               choice_right_lower = mean(prioritise_right_lower)) %>%
+#     group_by(x_factor,panel_factor,source,goal_type) %>%
+#     summarise(choice_right = mean(choice_right),
+#               choice_right_upper = mean(choice_right_upper),
+#               choice_right_lower = mean(choice_right_lower),
+#               choice_se = sqrt(choice_right*(1-choice_right)/length(goal_type)))
+#
+#   pd$choice_se[pd$source=="Predicted"]<-NA
+#
+#   ggplot(data=pd,aes(x=x_factor)) +
+#     geom_ribbon(aes(ymin=choice_right_lower,ymax=choice_right_upper,group=source),fill="lightblue") +
+#     geom_line(aes(y=choice_right,group=factor(source),color=factor(source))) +
+#     geom_errorbar(aes(ymin=choice_right-choice_se,ymax=choice_right+choice_se,group=factor(source),color=factor(source))) +
+#     facet_grid(goal_type~panel_factor) +
+#     coord_cartesian(ylim=0:1) +
+#     xlab(paste0('Right Start ',d)) +
+#     ylab("Proportion of Choices Prioritizing Right Goal") +
+#     theme.goal +
+#     theme(axis.text.x = element_text(size=8,colour="black",family="Times")) +
+#     guides(color=guide_legend(title="Source"))
+#
+#   ggsave(paste0(getwd(),"/PosteriorPredictives/TrialLevel-SE",d,"_",models[m],".pdf"),width=15,height=9)
+#
+#
+#   #Trial Average (with quantile)
+#   # pd <- data_comb %>%
+#   #   group_by(x_factor,panel_factor,source,goal_type,subject) %>%
+#   #   summarise(choice_right = mean(prioritise_right),
+#   #             choice_right_upper = mean(prioritise_right_upper),
+#   #             choice_right_lower = mean(prioritise_right_lower)) %>%
+#   #   group_by(x_factor,panel_factor,source,goal_type) %>%
+#   #   summarise(q10 = quantile(choice_right,0.1),
+#   #             q30 = quantile(choice_right,0.3),
+#   #             q50 = quantile(choice_right,0.5),
+#   #             q70 = quantile(choice_right,0.7),
+#   #             q90 = quantile(choice_right,0.9)) %>%
+#   #   tidyr::gather(key=quantile,value=choice_right,q10:q90) %>%
+#   #   mutate(quantile=factor(quantile,levels=c('q10','q30','q50','q70','q90'),labels=seq(0.1,0.9,by=0.2) ))
+#   #
+#   #
+#   # ggplot(data=pd,aes(x=x_factor)) +
+#   #   #geom_ribbon(aes(ymin=choice_right_lower,ymax=choice_right_upper,group=source),fill="lightblue") +
+#   #   geom_line(aes(y=choice_right,group=interaction(quantile,factor(source)),color=factor(source))) +
+#   #   #geom_errorbar(aes(ymin=choice_right-choice_se,ymax=choice_right+choice_se,group=factor(source),color=factor(source))) +
+#   #   facet_grid(goal_type~panel_factor) +
+#   #   coord_cartesian(ylim=0:1) +
+#   #   xlab(paste0('Right Start ',d)) +
+#   #   ylab("Proportion of Choices Prioritizing Right Goal") +
+#   #   theme.goal +
+#   #   theme(axis.text.x = element_text(size=8,colour="black",family="Times")) +
+#   #   guides(color=guide_legend(title="Source"))
+#   #
+#   # ggsave("TrialAverage-Quantile.pdf",width=15,height=12)
+#   #
+#
+#   #Trial Average (by group)
+#   # pd <- data_comb %>%
+#   #   group_by(x_factor,panel_factor,source,goal_type,subject) %>%
+#   #   summarise(choice_right = mean(prioritise_right),
+#   #             choice_right_upper = mean(prioritise_right_upper),
+#   #             choice_right_lower = mean(prioritise_right_lower)) %>%
+#   #   mutate(strategy_group=factor(cut(choice_right,quantile(choice_right,probs=c(0,0.33,0.66,1))+c(-0.1,0,0,0.1)),labels=1:3)) %>%
+#   #   group_by(x_factor,panel_factor,source,goal_type,strategy_group) %>%
+#   #   summarise(choice_right = mean(choice_right))
+#   #
+#   # ggplot(data=pd,aes(x=x_factor)) +
+#   #   #geom_ribbon(aes(ymin=choice_right_lower,ymax=choice_right_upper,group=source),fill="lightblue") +
+#   #   geom_line(aes(y=choice_right,group=interaction(strategy_group,factor(source)),color=factor(source))) +
+#   #   #geom_errorbar(aes(ymin=choice_right-choice_se,ymax=choice_right+choice_se,group=factor(source),color=factor(source))) +
+#   #   facet_grid(goal_type~panel_factor) +
+#   #   coord_cartesian(ylim=0:1) +
+#   #   xlab(paste0('Right Start ',d)) +
+#   #   ylab("Proportion of Choices Prioritizing Right Goal") +
+#   #   theme.goal +
+#   #   theme(axis.text.x = element_text(size=8,colour="black",family="Times")) +
+#   #   guides(color=guide_legend(title="Source"))
+#   #
+#   # #ggsave("TrialAverage-Groups.pdf",width=15,height=12)
+#   # ggsave(paste0(getwd(),"/PosteriorPredictives/TrialLevel-Groups",d,"_",models[m],".pdf"),width=15,height=9)
+#
+#
+#   #ggsave(paste0(getwd(),"/PosteriorPredictives/TrialLevel",d,"_",models[m],".pdf"),width=15,height=9)
+#
+# #}
+#
+# }
+#
+# }
+#
+#
+# # STAGE LEVEL PREDICTIVES -----
+#
+# load("Models.Rda")
+#
+# models.condition = list(Distance = c(1:20,61:63,67), #distance models
+#                         Deadline = c(1:60,64:66,68))
+#
+# for(d in c("Distance",'Deadline')){
+#
+#   data_obs = data %>% filter(right_current_distance>0.5,left_current_distance>0.5,phase==1,diffCon==d) %>%
+#     mutate(source = "Observed",
+#            prioritise_right_upper = NaN,
+#            prioritise_right_lower = NaN)
+#
+#   data_pred = data_obs %>%
+#     mutate(source = "Predicted")
+#
+#   for(m in models.condition[[d]]){
+#     print(m)
+#     for(f in c('Approach','Avoidance')){
+#
+#       file=paste0(Sys.getenv('HOME'),'/Dropbox/Research/Projects/MGP-1517-GOAL/Modelling-5-RealDataHierarchical/Output/',d,f,'_',m,'_',models[m],'/Summary.Rda')
+#       if( file.exists(file) ){
+#         load(file)
+#         data_pred$prioritise_right[data_pred$goal_type==f] = 1/(1+exp(-smry[grep('p_a_logit',rownames(smry)),"50%"]))
+#         data_pred$prioritise_right_upper[data_pred$goal_type==f] = 1/(1+exp(-smry[grep('p_a_logit',rownames(smry)),"97.5%"]))
+#         data_pred$prioritise_right_lower[data_pred$goal_type==f] = 1/(1+exp(-smry[grep('p_a_logit',rownames(smry)),"2.5%"]))
+#       } else {
+#         data_pred$prioritise_right[data_pred$goal_type==f] = NA
+#         data_pred$prioritise_right_upper[data_pred$goal_type==f] = NA
+#         data_pred$prioritise_right_lower[data_pred$goal_type==f] = NA
+#       }
+#     }
+#
+#     data_comb = bind_rows(data_obs,data_pred)
+#
+#     if(d == "Distance"){
+#       data_comb$panel_factor = factor(data_comb$left_start_distance,levels=c(30,45,67.5,90,112.5,135,150),labels=c('Left Start: 30','Left Start: 45','Left Start: 67.5','Left Start: 90','Left Start: 112.5','Left Start: 135','Left Start: 150'))
+#       data_comb$x_factor = factor(data_comb$right_start_distance,levels=c(30,45,67.5,90,112.5,135,150),labels=c('Right Start: 30','Right Start: 45','Right Start: 67.5','Right Start: 90','Right Start: 112.5','Right Start: 135','Right Start: 150'))
+#          }
+#     if(d == "Deadline"){
+#       data_comb$panel_factor = factor(data_comb$left_start_deadline,levels=c(18,20,24,30,40,60,90),labels=c('Left Deadline: 18','Left Deadline: 20','Left Deadline: 24','Left Deadline: 30','Left Deadline: 40','Left Deadline: 60','Left Deadline: 90'))
+#       data_comb$x_factor = factor(data_comb$right_start_deadline,levels=c(18,20,24,30,40,60,90))
+#     }
+#
+#     pd <- data_comb %>%
+#       mutate(stage_group = ceiling(stage/5)) %>%
+#       group_by(x_factor,panel_factor,source,goal_type,stage) %>%
+#       summarise(choice_right = mean(prioritise_right),
+#                 choice_right_upper = mean(prioritise_right_upper),
+#                 choice_right_lower = mean(prioritise_right_lower),
+#                 choice_se = sqrt(choice_right*(1-choice_right)/length(stage)),
+#                 nobs = length(stage)) %>% filter(nobs>9)
+#     pd$choice_se[pd$source=="Predicted"]<-NA
+#
+#     ggplot(data=subset(pd,goal_type=="Avoidance"),aes(x=stage)) +
+#       geom_ribbon(aes(ymin=choice_right_lower,ymax=choice_right_upper,group=source),fill="lightblue") +
+#       geom_line(aes(y=choice_right,group=factor(source),color=factor(source))) +
+#       geom_errorbar(aes(ymin=choice_right-choice_se,ymax=choice_right+choice_se,group=factor(source),color=factor(source))) +
+#       facet_grid(panel_factor~x_factor) +
+#       coord_cartesian(ylim=0:1) +
+#       xlab(paste0('Right Start ',d)) +
+#       ylab("Proportion of Choices Prioritizing Right Goal") +
+#       theme.goal +
+#       theme(axis.text.x = element_text(size=8,colour="black",family="Times")) +
+#       guides(color=guide_legend(title="Source"))
+#
+#     #ggsave(paste0(getwd(),"/PosteriorPredictives/",d,"_",models[m],".pdf"),width=15,height=9)
+#
+#     #}
+#
+#   }
+#
+# }
+#
+#
+# pd <- data_comb %>%
+#   mutate(choice_far = prioritise_right*(left_current_distance<right_current_distance) +
+#            (1-prioritise_right)*(left_current_distance>right_current_distance),
+#          choice_far_upper = prioritise_right_upper*(left_current_distance<right_current_distance) +
+#            (1-prioritise_right_lower)*(left_current_distance>right_current_distance),
+#          choice_far_lower = prioritise_right_lower*(left_current_distance<right_current_distance) +
+#            (1-prioritise_right_upper)*(left_current_distance>right_current_distance),
+#          farther_start_distanceF = factor(farther_start_distance,levels=c(30,45,67.5,90,112.5,135,150),labels=c('Far: 30','Far: 45','Far: 67.5','Far: 90','Far: 112.5','Far: 135','Far: 150')),
+#          closer_start_distanceF = factor(closer_start_distance,levels=c(30,45,67.5,90,112.5,135,150),labels=c('Close: 30','Close: 45','Close: 67.5','Close: 90','Close: 112.5','Close: 135','Close: 150')))
+# pd$choice_far[pd$left_current_distance>=pd$right_current_distance]<-NA
+# pd$choice_far_upper[pd$left_current_distance>=pd$right_current_distance]<-NA
+# pd$choice_far_lower[pd$left_current_distance>=pd$right_current_distance]<-NA
+#
+# pd <- pd %>%
+#   group_by(farther_start_distanceF,closer_start_distanceF,source,goal_type,stage) %>%
+#   summarise(choice_far = mean(choice_far,na.rm=T),
+#             choice_far_upper = mean(choice_far_upper,na.rm=T),
+#             choice_far_lower = mean(choice_far_lower,na.rm=T),
+#             choice_se = sqrt(choice_far*(1-choice_far)/length(stage)),
+#             nobs = length(stage)) %>% filter(nobs>9)
+# pd$choice_se[pd$source=="Predicted"]<-NA
+#
+# ggplot(data=subset(pd,goal_type=="Avoidance"),aes(x=stage)) +
+#   geom_ribbon(aes(ymin=choice_far_lower,ymax=choice_far_upper,group=source),fill="lightblue") +
+#   geom_line(aes(y=choice_far,group=factor(source),color=factor(source))) +
+#   geom_errorbar(aes(ymin=choice_far-choice_se,ymax=choice_far+choice_se,group=factor(source),color=factor(source))) +
+#   facet_grid(farther_start_distanceF~closer_start_distanceF) +
+#   coord_cartesian(ylim=0:1,xlim=1:30) +
+#   xlab('Stage') +
+#   ylab("Proportion of Choices Prioritizing Farther Goal") +
+#   theme.goal +
+#   theme(axis.text.x = element_text(size=8,colour="black",family="Times")) +
+#   guides(color=guide_legend(title="Source")) +
+#   geom_hline(yintercept = 0.5,colour='gray')
+#
+#
+# ggsave("StageLevelPredictives-Avoidance.pdf",width=15,height=12)
+#
+#
+#
+# #Traceplot of worst fitting conditions
+# #Editted by TB (29/11/2017)
+#
+#
+#
+# data_obs$lik = (data_obs$prioritise_right==1)*data_pred$prioritise_right + (data_obs$prioritise_right==0)*(1-data_pred$prioritise_right)
+#
+# sublik = data_obs %>% group_by(goal_type,subject) %>% summarise(mlik = mean(lik)) %>% group_by(goal_type) %>% mutate(rlik=rank(mlik))
+# trlik15030 = data_obs %>% filter(farther_start_distance==150,closer_start_distance==30) %>%  group_by(goal_type,subject) %>% summarise(trlik15030 = mean(lik)) %>% group_by(goal_type) %>% mutate(rtrlik15030=rank(trlik15030))
+# trlik = data_obs %>% group_by(subject,trial_number,goal_type) %>% summarise(trlik = mean(lik)) %>% group_by(goal_type) %>% mutate(rtrlik=rank(trlik))
+# lik = data_obs %>% select(subject,trial_number,stage,lik)
+#
+# data_comb_lik = left_join(left_join(left_join(left_join(data_comb,sublik),trlik),lik),trlik15030)
+#
+# bimodal=rep(FALSE,130)
+# bimodal[c(15,17,23,24,35,61,65,66,71,104,105,1,10,11,16,19,25,41,42,50,55,56,60,74,80,119,112,123,127,
+#           3,5,6,12,14,33,46,51,54,57,67,69,72,76,84,87,88,92,96,99,107,111,113,116,118)]<-TRUE
+#
+# pd <- data_obs %>%
+#   mutate(sn = as.numeric(factor(subject)),
+#          bimodal=bimodal[sn],
+#           farther_start_distanceF = factor(farther_start_distance,levels=c(30,45,67.5,90,112.5,135,150),labels=c('Far: 30','Far: 45','Far: 67.5','Far: 90','Far: 112.5','Far: 135','Far: 150')),
+#          closer_start_distanceF = factor(closer_start_distance,levels=c(30,45,67.5,90,112.5,135,150),labels=c('Close: 30','Close: 45','Close: 67.5','Close: 90','Close: 112.5','Close: 135','Close: 150'))) %>%
+#   filter( goal_type=="Avoidance") %>%
+#   group_by(stage,farther_start_distanceF,closer_start_distanceF,bimodal,sn) %>%
+#   summarise(closer_start_distance_current = mean(closer_start_distance_current),
+#             farther_start_distance_current = mean(farther_start_distance_current),
+#             prioritise_farther = mean((farther_current_distance==left_current_distance)*(prioritise_right==0) +
+#                                         (farther_current_distance==right_current_distance)*(prioritise_right==1))) %>%
+#   mutate(crit_cond = 1*((closer_start_distanceF=='Close: 30')&(farther_start_distanceF=='Far: 150') ))
+#
+# library(RColorBrewer)
+# myPalette <- colorRampPalette(brewer.pal(11, "Spectral"))
+# p=ggplot(data=subset(pd),
+#        aes(y=farther_start_distance_current,x=closer_start_distance_current,
+#            group=interaction(farther_start_distanceF,closer_start_distanceF)))+
+#   geom_path(alpha=0.1)+
+#   geom_point(aes(colour=bimodal),size=0.5)+
+#   # geom_point(data=subset(pd,stage=1))+#aes(colour=factor(prioritise_farther)))+
+#   facet_wrap(~sn) +
+#   scale_x_reverse() +
+#   scale_y_reverse() +
+#   geom_vline(xintercept=0) +
+#   geom_hline(yintercept=0) +
+#   coord_cartesian(ylim= c(-60,160),xlim=c(-60,160)) +
+#   ylab('Distance to Farther Goal') +
+#   xlab("Distance to Closer Goal") +
+#   theme.goal #+ #theme(legend.position = 'none') +
+#   #scale_colour_gradientn(colours = myPalette(100), limits=c(0, 1))
+#
+# ggsave(file="Traceplots-BySubject-Avoidance-Bimodality.pdf",plot=p,height=20,width=20)
+#
+#
+#
+# pd <- data_comb_lik %>%
+#   mutate(farther_start_distanceF = factor(farther_start_distance,levels=c(30,45,67.5,90,112.5,135,150),labels=c('Far: 30','Far: 45','Far: 67.5','Far: 90','Far: 112.5','Far: 135','Far: 150')),
+#          closer_start_distanceF = factor(closer_start_distance,levels=c(30,45,67.5,90,112.5,135,150),labels=c('Close: 30','Close: 45','Close: 67.5','Close: 90','Close: 112.5','Close: 135','Close: 150'))) %>%
+#   filter(rtrlik15030>100) %>%
+#   group_by(closer_start_distanceF,farther_start_distanceF,source,goal_type,stage) %>%
+#   summarise(choice_right = mean(prioritise_right),
+#             choice_right_upper = mean(prioritise_right_upper),
+#             choice_right_lower = mean(prioritise_right_lower),
+#             choice_se = sqrt(choice_right*(1-choice_right)/length(stage)),
+#             nobs = length(stage)) #%>% filter(nobs>9)
+# pd$choice_se[pd$source=="Predicted"]<-NA
+#
+# ggplot(data=subset(pd,goal_type=="Approach"),aes(x=stage)) +
+#   geom_ribbon(aes(ymin=choice_right_lower,ymax=choice_right_upper,group=source),fill="lightblue") +
+#   geom_line(aes(y=choice_right,group=factor(source),color=factor(source))) +
+#   geom_errorbar(aes(ymin=choice_right-choice_se,ymax=choice_right+choice_se,group=factor(source),color=factor(source))) +
+#   facet_grid(farther_start_distanceF~closer_start_distanceF) +
+#   coord_cartesian(ylim=0:1) +
+#   xlab(paste0('Right Start ',d)) +
+#   ylab("Proportion of Choices Prioritizing Right Goal") +
+#   theme.goal +
+#   theme(axis.text.x = element_text(size=8,colour="black",family="Times")) +
+#   guides(color=guide_legend(title="Source"))
+#
+#
+#
+#
+#
+#
+# ggplot(data=subset(pd),
+#        aes(y=farther_start_distance_current,x=closer_start_distance_current,
+#            group=rlik))+
+#   geom_path(alpha=0.1)+
+#   geom_point(aes(colour=lik),size=0.5)+
+#   # geom_point(data=subset(pd,stage=1))+#aes(colour=factor(prioritise_farther)))+
+#   facet_grid(farther_start_distanceF~closer_start_distanceF) +
+#   scale_x_reverse() +
+#   scale_y_reverse() +
+#   geom_vline(xintercept=0) +
+#   geom_hline(yintercept=0) +
+#   coord_cartesian(ylim= c(-60,160),xlim=c(-60,160)) +
+#   ylab('Distance to Farther Goal') +
+#   xlab("Distance to Closer Goal") +
+#   theme.goal + #theme(legend.position = 'none') +
+#   scale_colour_gradientn(colours = myPalette(100), limits=c(0, 1))
+#
+# ggsave(file="Traceplots-ByCondition-Approach.pdf",height=20,width=20)
+#
+#
+#
+#
+#
+#
+#
+#
+# #CHECK POSTERIOR PREDICTIVES - LINE PLOTS -----
+#
+# pd <- data_comb %>%
+#   filter(goal_type=="Avoidance") %>%
+#   mutate(stage_group = factor(ceiling(stage/5),levels=1:6,labels=c('Stage 1-5','Stage 6-10','Stage 11-15','Stage 16-20','Stage 21-25','Stage 26-30')),
+#          left_start_distance_group = (left_start_distance<=45)*1 + ((left_start_distance>45)*(left_start_distance<135))*2 + (left_start_distance>=135)*3,
+#          right_start_distance_group = (right_start_distance<=45)*1 + ((right_start_distance>45)*(right_start_distance<135))*2 + (right_start_distance>=135)*3,
+#           left_start_distance_groupF = factor(left_start_distance_group,levels=1:3,labels=c('Left: Far','Left: Medium','Left: Close')),
+#           right_start_distance_groupF = factor(right_start_distance_group,levels=1:3,labels=c('Right: Far','Right: Medium','Right: Close')) ) %>%
+#   group_by(left_start_distance_groupF,right_start_distance_groupF,source,stage) %>%
+#   summarise(choice_right = mean(prioritise_right),
+#             choice_right_upper = mean(prioritise_right_upper),
+#             choice_right_lower = mean(prioritise_right_lower),
+#             choice_se = sqrt(choice_right*(1-choice_right)/length(stage)))
+#
+# #pd$choice_right_upper[pd$source=='Observed']=pd$choice_right[pd$source=='Observed'] + pd$choice_se[pd$source=='Observed']
+# #pd$choice_right_lower[pd$source=='Observed']=pd$choice_right[pd$source=='Observed'] - pd$choice_se[pd$source=='Observed']
+#
+#
+# ggplot(data=pd,aes(x=stage)) +
+#   geom_ribbon(aes(ymin=choice_right_lower,ymax=choice_right_upper,group=source),fill="lightblue") +
+#   geom_line(aes(y=choice_right,group=factor(source),color=factor(source))) +
+#   facet_grid(left_start_distance_groupF~right_start_distance_groupF) +
+#   coord_cartesian(xlim=1:30,ylim=0:1) +
+#   xlab('Stage') +
+#   ylab("Proportion of Choices Prioritizing Right Goal") +
+#   theme.goal
+#
+# pd <- data_comb %>%
+#   #filter(goal_type=="Avoidance") %>%
+#   mutate(stage_group = factor(ceiling(stage/5),levels=1:6,labels=c('Stage 1-5','Stage 6-10','Stage 11-15','Stage 16-20','Stage 21-25','Stage 26-30')),
+#          left_start_distanceF = factor(left_start_distance,levels=c(30,45,67.5,90,112.5,135,150),labels=c('Left Start: 30','Left Start: 45','Left Start: 67.5','Left Start: 90','Left Start: 112.5','Left Start: 135','Left Start: 150')),
+#          right_start_distanceF = factor(right_start_distance,levels=c(30,45,67.5,90,112.5,135,150))) %>%
+#   group_by(left_start_distanceF,right_start_distanceF,source,goal_type) %>%
+#   summarise(choice_right = mean(prioritise_right),
+#             choice_right_upper = mean(prioritise_right_upper),
+#             choice_right_lower = mean(prioritise_right_lower),
+#             choice_se = sqrt(choice_right*(1-choice_right)/length(stage)))
+#
+#
+# ggplot(data=pd,aes(x=right_start_distanceF)) +
+#   geom_ribbon(aes(ymin=choice_right_lower,ymax=choice_right_upper,group=source),fill="lightblue") +
+#   geom_line(aes(y=choice_right,group=factor(source),color=factor(source))) +
+#   facet_grid(goal_type~left_start_distanceF) +
+#   coord_cartesian(ylim=0:1) +
+#   xlab('Right Start Distance') +
+#   ylab("Proportion of Choices Prioritizing Right Goal") +
+#   theme.goal +
+#   theme(axis.text.x = element_text(size=8,colour="black",family="Times"))
+#
+# ggsave("PosteriorPredictives-FixedGradient.pdf",width=15,height=9)
+#
+#
+# ggplot(data=pd) +
+#   geom_line(aes(x=right_start_distance,y=choice_right,group=factor(left_start_distance),color=factor(left_start_distance))) +
+#   facet_grid(source~stage_group)
+#
+
+# #HEAT MAPS OF CHOICE - DISTANCE -----
+#
+# #data=data_bound
+# #tile plot - choice
+# pd <- data_bound %>%
+#   mutate(phase = (day<=pmin(right_start_deadline,left_start_deadline)) +  (day>pmin(right_start_deadline,left_start_deadline))*2) %>%
+#   filter(phase==1,expt==1) %>%
+#   mutate(left_current_distance_bin = round(left_current_distance/2)*2,
+#          right_current_distance_bin = round(right_current_distance/2)*2,
+#          stage_bin = factor(ceiling(stage/10),levels=1:3,labels=c('Stages 1-10','Stages 11-20','Stages 21-30')),
+#          prioritise_farther = (left_current_distance < right_current_distance)*prioritise_right +  (left_current_distance > right_current_distance)*(1-prioritise_right),
+#          policy_farther = (left_current_distance < right_current_distance)*policy +  (left_current_distance > right_current_distance)*(1-policy)) %>%
+#   group_by(left_current_distance_bin,right_current_distance_bin,goal_type) %>%
+#   summarise(count = length(stage),
+#             #right_prioritised = mean(prioritise_right),
+#             #policy_right = mean(policy),
+#             left_current_distance = mean(left_current_distance),
+#             right_current_distance = mean(right_current_distance),
+#             prioritise_farther = mean(prioritise_farther),
+#             policy_farther = mean(policy_farther) ) %>%
+#   filter(left_current_distance>-100,right_current_distance>-100) %>%
+#   gather(source,choice_farther,prioritise_farther,policy_farther)
+#
+# pd$source = factor(pd$source,levels=c('prioritise_farther','policy_farther'),labels=c('Observed','Optimal'))
+#
+# #pdp = bind_rows(pd,d_ap,d_av) #%>% filter(source=='Predicted')
+#
+# ggplot(data=pd,aes(y=left_current_distance_bin,x=right_current_distance_bin,fill=choice_farther)) +
+#   geom_raster() +
+#   #facet_grid(left_start_distance~right_start_distance) +
+#   facet_grid(source~goal_type) +
+#   #geom_contour(aes(x=left_current_distance_bin,y=right_current_distance_bin,z=right_prioritised),colour="black",binwidth=.1,size=.2) +
+#   scale_x_reverse() +
+#   scale_y_reverse() +
+#   geom_vline(xintercept=0,size=2.5) +
+#   geom_hline(yintercept=0,size=2.5) +
+#   geom_vline(xintercept=0,size=0.5,color='yellow') +
+#   geom_hline(yintercept=0,size=0.5,color='yellow') +
+#   coord_cartesian(ylim= c(-20,180),xlim=c(-20,180)) +
+#   ylab('Left Distance to Goal') +
+#   xlab("Right Distance to Goal") +
+#   theme.goal +
+#   scale_fill_gradient2(low="blue",high="red",mid="black",midpoint=0.5,na.value='black') +
+#   labs(fill = "Proportion Prioritizing\nFarther Goal\n")
+#
+# ggsave("HeatMap-Distance.pdf",width=8,height=9)
 
 #HEAT MAPS OF CHOICE - DISTANCE - COLLAPSED ACROSS CHOICES WITHIN EACH CONDITION
 
@@ -533,42 +537,33 @@ ggsave("HeatMap-Distance.pdf",width=8,height=9)
 pd <- data_bound %>%
   mutate(phase = (day<=pmin(right_start_deadline,left_start_deadline)) +  (day>pmin(right_start_deadline,left_start_deadline))*2) %>%
   filter(phase==1,expt==1) %>%
-  mutate( prioritise_farther = (left_current_distance < right_current_distance)*prioritise_right +  (left_current_distance > right_current_distance)*(1-prioritise_right) ,
-  policy_farther = (left_current_distance < right_current_distance)*policy +  (left_current_distance > right_current_distance)*(1-policy)) %>%
-  group_by(subject,trial_number,left_start_distance,right_start_distance,goal_type) %>%
+  mutate( prioritise_farther = (left_start_height < right_start_height)*prioritise_right +  (left_start_height > right_start_height)*(1-prioritise_right) ,
+  policy_farther = (left_start_height < right_start_height)*policy +  (left_start_height > right_start_height)*(1-policy)) %>%
+  group_by(subject,trial_number,left_start_height,right_start_height,goal_type) %>%
   summarise( prioritise_farther = mean(prioritise_farther),
              policy_farther = mean(policy_farther)) %>%
-  group_by(left_start_distance,right_start_distance,goal_type) %>%
+  group_by(left_start_height,right_start_height,goal_type) %>%
   summarise(  prioritise_farther = mean(prioritise_farther),
             policy_farther = mean(policy_farther) ) %>%
   gather(source,choice_farther,prioritise_farther,policy_farther)
+
+pd$choice_farther[pd$left_start_height==pd$right_start_height] = NA
 
 pd$source = factor(pd$source,levels=c('prioritise_farther','policy_farther'),labels=c('Observed','Optimal'))
 
 #pdp = bind_rows(pd,d_ap,d_av) #%>% filter(source=='Predicted')
 
-ggplot(data=pd,aes(y=factor(left_start_distance),x=factor(right_start_distance),fill=choice_farther)) +
+ggplot(data=pd,aes(y=factor(left_start_height),x=factor(right_start_height),fill=choice_farther)) +
   geom_raster() +
-  #facet_grid(left_start_distance~right_start_distance) +
   facet_grid(source~goal_type) +
-  #geom_contour(aes(x=left_current_distance_bin,y=right_current_distance_bin,z=right_prioritised),colour="black",binwidth=.1,size=.2) +
- # scale_x_reverse() +
-#  scale_y_reverse() +
-  #geom_vline(xintercept=0,size=2.5) +
-  #geom_hline(yintercept=0,size=2.5) +
- # geom_vline(xintercept=0,size=0.5,color='yellow') +
-  #geom_hline(yintercept=0,size=0.5,color='yellow') +
-  #coord_cartesian(ylim= c(-20,180),xlim=c(-20,180)) +
-  ylab('Left Distance to Goal at Start') +
-  xlab("Right Distance to Goal at Start") +
+  ylab('Left Starting Height (cm)') +
+  xlab("Right Starting Height (cm)") +
   theme.goal +
   #scale_fill_gradient2(low="blue",high="red",mid="black",midpoint=0.5,na.value='black',limits=c(0,1)) +
   scale_fill_distiller(palette="Spectral",limits=c(0,1)) +
-  labs(fill = "Proportion Prioritizing\nFarther Goal\n")
+  labs(fill = "Proportion Prioritizing\nCrop/Weed with Higher\nStarting Height\n")
 
-ggsave("HeatMap-Distance.pdf",width=8,height=9)
-
-
+ggsave("figures/HeatMap-Distance.pdf",width=10,height=7)
 
 
 
@@ -597,159 +592,150 @@ pd$source = factor(pd$source,levels=c('prioritise_farther','policy_farther'),lab
 
 ggplot(data=pd,aes(y=factor(left_start_deadline),x=factor(right_start_deadline),fill=(1-choice_farther))) +
   geom_raster() +
-  #facet_grid(left_start_distance~right_start_distance) +
   facet_grid(source~goal_type) +
-  #geom_contour(aes(x=left_current_distance_bin,y=right_current_distance_bin,z=right_prioritised),colour="black",binwidth=.1,size=.2) +
-  # scale_x_reverse() +
-  #  scale_y_reverse() +
-  #geom_vline(xintercept=0,size=2.5) +
-  #geom_hline(yintercept=0,size=2.5) +
-  # geom_vline(xintercept=0,size=0.5,color='yellow') +
-  #geom_hline(yintercept=0,size=0.5,color='yellow') +
-  #coord_cartesian(ylim= c(-20,180),xlim=c(-20,180)) +
-  ylab('Left Deadline at Start') +
-  xlab("Right Deadline at Start") +
+  ylab('Left Growing Season Length (Days)') +
+  xlab("Right Growing Season Length (Days)") +
   theme.goal +
   #scale_fill_gradient2(low="blue",high="red",mid="black",midpoint=0.5,na.value='black',limits=c(0,1)) +
   scale_fill_distiller(palette="Spectral",limits=c(0,1)) +
-  labs(fill = "Proportion Prioritizing\nCloser Deadline\n")
+  labs(fill = "Proportion Prioritizing\nCrop/Weed with Shorter\nGrowing Season\n")
 
-ggsave("HeatMap-Distance.pdf",width=8,height=9)
-
-
-
-
-
-#HEAT MAPS OF CHOICE - DEADLINE -----
-
-
-#data=data_bound
-#tile plot - choice
-pd_heat <- data_bound %>%
-  mutate(phase = (day<=pmin(right_start_deadline,left_start_deadline)) +  (day>pmin(right_start_deadline,left_start_deadline))*2) %>%
-  filter(phase==1,expt==2) %>%
-  mutate(left_current_distance_bin = round(left_current_distance/2)*2,
-         right_current_distance_bin = round(right_current_distance/2)*2,
-         left_ToD = left_days_remaining/left_current_distance,
-         right_ToD = right_days_remaining/right_current_distance,
-         left_TAmTR = left_days_remaining - left_current_distance/3,
-         right_TAmTR = right_days_remaining - right_current_distance/3,
-         left_ToD_bin = round(left_ToD,-1),
-         right_ToD_bin = round(right_ToD,-1),
-         left_TAmTR_bin = round(left_TAmTR),
-         right_TAmTR_bin = round(right_TAmTR),
-         stage_bin = factor(ceiling(stage/10),levels=1:3,labels=c('Stages 1-10','Stages 11-20','Stages 21-30'))  ,
-         prioritise_farther_dl = (left_days_remaining < right_days_remaining)*prioritise_right +  (left_days_remaining > right_days_remaining)*(1-prioritise_right),
-         policy_farther_dl = (left_days_remaining < right_days_remaining)*policy +  (left_days_remaining > right_days_remaining)*(1-policy),
-         left_start_deadline_bin = factor(as.numeric(left_start_deadline>=30),levels=0:1,labels=c('Left: Short','Left: Long')),
-         right_start_deadline_bin = factor(as.numeric(right_start_deadline>=30),levels=0:1,labels=c('Right: Short','Right: Long'))) %>%
-  group_by(left_start_deadline_bin,right_start_deadline_bin,goal_type,left_current_distance_bin,right_current_distance_bin) %>%
-  summarise(count = length(stage),
-            right_prioritised = mean(prioritise_right),
-            policy_right = mean(policy),
-            left_current_distance = mean(left_current_distance),
-            right_current_distance = mean(right_current_distance),
-            prioritise_farther_dl = mean(prioritise_farther_dl),
-            policy_farther_dl = mean(policy_farther_dl) ) %>%
-  filter(left_current_distance>-100,right_current_distance>-100) %>%
-  gather(source,choice_farther,prioritise_farther_dl,policy_farther_dl)
-
-pd_heat$source = factor(pd_heat$source,levels=c('prioritise_farther_dl','policy_farther_dl'),labels=c('Observed','Optimal'))
-
-# pd_heat$left_start_deadlineF = factor(pd_heat$left_start_deadline,levels=c(18,20,24,30,40,60,90),
-#                                 labels=c('Left: 18 Days','Left: 20 Days','Left: 24 Days','Left: 30 Days',
-#                                          'Left: 40 Days','Left: 60 Days','Left: 90 Days'))
-# pd_heat$right_start_deadlineF = factor(pd_heat$right_start_deadline,levels=c(18,20,24,30,40,60,90),
-#                                 labels=c('Right: 18 Days','Right: 20 Days','Right: 24 Days','Right: 30 Days',
-#                                          'Right: 40 Days','Right: 60 Days','Right: 90 Days'))
-
-
-ggplot(data=subset(pd_heat,goal_type=='Approach'&source=='Observed'),
-       aes(y=left_current_distance_bin,x=right_current_distance_bin,fill=(1-choice_farther))) +
-  geom_tile() +
-  facet_grid(left_start_deadline_bin~right_start_deadline_bin) +
-  #facet_grid(source~goal_type) +
-  #geom_contour(aes(x=left_current_distance_bin,y=right_current_distance_bin,z=right_prioritised),colour="black",binwidth=.1,size=.2) +
-  scale_x_reverse() +
-  scale_y_reverse() +
-  geom_vline(xintercept=0,size=2.5) +
-  geom_hline(yintercept=0,size=2.5) +
-  geom_vline(xintercept=0,size=0.5,color='yellow') +
-  geom_hline(yintercept=0,size=0.5,color='yellow') +
-  coord_cartesian(ylim= c(-20,100),xlim=c(-20,100)) +
-  ylab('Distance to Left Goal') +
-  xlab("Distance to Right Goal") +
-  theme.goal +
-  scale_fill_gradient2(low="blue",high="red",mid="black",midpoint=0.5,na.value='black') +
-  labs(fill = "Proportion Prioritizing\nShorter Deadline\n")
-
-ggsave("HeatMap-Approach-Observed-Deadline.pdf",width=14,height=12)
+ggsave("figures/HeatMap-Deadline.pdf",width=10,height=7)
 
 
 
 
-ggplot(data=subset(pd_heat,goal_type=='Approach'&source=='Optimal'),
-       aes(y=left_current_distance_bin,x=right_current_distance_bin,fill=choice_right)) +
-  geom_tile() +
-  facet_grid(left_start_deadlineF~right_start_deadlineF) +
-  #facet_grid(source~goal_type) +
-  #geom_contour(aes(x=left_current_distance_bin,y=right_current_distance_bin,z=right_prioritised),colour="black",binwidth=.1,size=.2) +
-  scale_x_reverse() +
-  scale_y_reverse() +
-  geom_vline(xintercept=0,size=2.5) +
-  geom_hline(yintercept=0,size=2.5) +
-  geom_vline(xintercept=0,size=0.5,color='yellow') +
-  geom_hline(yintercept=0,size=0.5,color='yellow') +
-  coord_cartesian(ylim= c(-20,100),xlim=c(-20,100)) +
-  ylab('Distance to Left Goal') +
-  xlab("Distance to Right Goal") +
-  theme.goal +
-  scale_fill_gradient2(low="blue",high="red",mid="black",midpoint=0.5,na.value='black') +
-  labs(fill = "Proportion Prioritizing\nRight Goal\n")
 
-ggsave("HeatMap-Approach-Optimal-Deadline.pdf",width=14,height=12)
-
-ggplot(data=subset(pd_heat,goal_type=='Avoidance'&source=='Observed'),
-       aes(y=left_current_distance_bin,x=right_current_distance_bin,fill=choice_right)) +
-  geom_tile() +
-  facet_grid(left_start_deadlineF~right_start_deadlineF) +
-  #facet_grid(source~goal_type) +
-  #geom_contour(aes(x=left_current_distance_bin,y=right_current_distance_bin,z=right_prioritised),colour="black",binwidth=.1,size=.2) +
-  scale_x_reverse() +
-  scale_y_reverse() +
-  geom_vline(xintercept=0,size=2.5) +
-  geom_hline(yintercept=0,size=2.5) +
-  geom_vline(xintercept=0,size=0.5,color='yellow') +
-  geom_hline(yintercept=0,size=0.5,color='yellow') +
-  coord_cartesian(ylim= c(-20,100),xlim=c(-20,100)) +
-  ylab('Distance to Left Goal') +
-  xlab("Distance to Right Goal") +
-  theme.goal +
-  scale_fill_gradient2(low="blue",high="red",mid="black",midpoint=0.5,na.value='black') +
-  labs(fill = "Proportion Prioritizing\nRight Goal\n")
-
-ggsave("HeatMap-Avoidance-Observed-Deadline.pdf",width=14,height=12)
-
-ggplot(data=subset(pd_heat,goal_type=='Avoidance'&source=='Optimal'),
-       aes(y=left_current_distance_bin,x=right_current_distance_bin,fill=choice_right)) +
-  geom_tile() +
-  facet_grid(left_start_deadlineF~right_start_deadlineF) +
-  #facet_grid(source~goal_type) +
-  #geom_contour(aes(x=left_current_distance_bin,y=right_current_distance_bin,z=right_prioritised),colour="black",binwidth=.1,size=.2) +
-  scale_x_reverse() +
-  scale_y_reverse() +
-  geom_vline(xintercept=0,size=2.5) +
-  geom_hline(yintercept=0,size=2.5) +
-  geom_vline(xintercept=0,size=0.5,color='yellow') +
-  geom_hline(yintercept=0,size=0.5,color='yellow') +
-  coord_cartesian(ylim= c(-20,100),xlim=c(-20,100)) +
-  ylab('Distance to Left Goal') +
-  xlab("Distance to Right Goal") +
-  theme.goal +
-  scale_fill_gradient2(low="blue",high="red",mid="black",midpoint=0.5,na.value='black') +
-  labs(fill = "Proportion Prioritizing\nRight Goal\n")
-
-ggsave("HeatMap-Avoidance-Optimal-Deadline.pdf",width=14,height=12)
+# #HEAT MAPS OF CHOICE - DEADLINE -----
+#
+#
+# #data=data_bound
+# #tile plot - choice
+# pd_heat <- data_bound %>%
+#   mutate(phase = (day<=pmin(right_start_deadline,left_start_deadline)) +  (day>pmin(right_start_deadline,left_start_deadline))*2) %>%
+#   filter(phase==1,expt==2) %>%
+#   mutate(left_current_distance_bin = round(left_current_distance/2)*2,
+#          right_current_distance_bin = round(right_current_distance/2)*2,
+#          left_ToD = left_days_remaining/left_current_distance,
+#          right_ToD = right_days_remaining/right_current_distance,
+#          left_TAmTR = left_days_remaining - left_current_distance/3,
+#          right_TAmTR = right_days_remaining - right_current_distance/3,
+#          left_ToD_bin = round(left_ToD,-1),
+#          right_ToD_bin = round(right_ToD,-1),
+#          left_TAmTR_bin = round(left_TAmTR),
+#          right_TAmTR_bin = round(right_TAmTR),
+#          stage_bin = factor(ceiling(stage/10),levels=1:3,labels=c('Stages 1-10','Stages 11-20','Stages 21-30'))  ,
+#          prioritise_farther_dl = (left_days_remaining < right_days_remaining)*prioritise_right +  (left_days_remaining > right_days_remaining)*(1-prioritise_right),
+#          policy_farther_dl = (left_days_remaining < right_days_remaining)*policy +  (left_days_remaining > right_days_remaining)*(1-policy),
+#          left_start_deadline_bin = factor(as.numeric(left_start_deadline>=30),levels=0:1,labels=c('Left: Short','Left: Long')),
+#          right_start_deadline_bin = factor(as.numeric(right_start_deadline>=30),levels=0:1,labels=c('Right: Short','Right: Long'))) %>%
+#   group_by(left_start_deadline_bin,right_start_deadline_bin,goal_type,left_current_distance_bin,right_current_distance_bin) %>%
+#   summarise(count = length(stage),
+#             right_prioritised = mean(prioritise_right),
+#             policy_right = mean(policy),
+#             left_current_distance = mean(left_current_distance),
+#             right_current_distance = mean(right_current_distance),
+#             prioritise_farther_dl = mean(prioritise_farther_dl),
+#             policy_farther_dl = mean(policy_farther_dl) ) %>%
+#   filter(left_current_distance>-100,right_current_distance>-100) %>%
+#   gather(source,choice_farther,prioritise_farther_dl,policy_farther_dl)
+#
+# pd_heat$source = factor(pd_heat$source,levels=c('prioritise_farther_dl','policy_farther_dl'),labels=c('Observed','Optimal'))
+#
+# # pd_heat$left_start_deadlineF = factor(pd_heat$left_start_deadline,levels=c(18,20,24,30,40,60,90),
+# #                                 labels=c('Left: 18 Days','Left: 20 Days','Left: 24 Days','Left: 30 Days',
+# #                                          'Left: 40 Days','Left: 60 Days','Left: 90 Days'))
+# # pd_heat$right_start_deadlineF = factor(pd_heat$right_start_deadline,levels=c(18,20,24,30,40,60,90),
+# #                                 labels=c('Right: 18 Days','Right: 20 Days','Right: 24 Days','Right: 30 Days',
+# #                                          'Right: 40 Days','Right: 60 Days','Right: 90 Days'))
+#
+#
+# ggplot(data=subset(pd_heat,goal_type=='Approach'&source=='Observed'),
+#        aes(y=left_current_distance_bin,x=right_current_distance_bin,fill=(1-choice_farther))) +
+#   geom_tile() +
+#   facet_grid(left_start_deadline_bin~right_start_deadline_bin) +
+#   #facet_grid(source~goal_type) +
+#   #geom_contour(aes(x=left_current_distance_bin,y=right_current_distance_bin,z=right_prioritised),colour="black",binwidth=.1,size=.2) +
+#   scale_x_reverse() +
+#   scale_y_reverse() +
+#   geom_vline(xintercept=0,size=2.5) +
+#   geom_hline(yintercept=0,size=2.5) +
+#   geom_vline(xintercept=0,size=0.5,color='yellow') +
+#   geom_hline(yintercept=0,size=0.5,color='yellow') +
+#   coord_cartesian(ylim= c(-20,100),xlim=c(-20,100)) +
+#   ylab('Distance to Left Goal') +
+#   xlab("Distance to Right Goal") +
+#   theme.goal +
+#   scale_fill_gradient2(low="blue",high="red",mid="black",midpoint=0.5,na.value='black') +
+#   labs(fill = "Proportion Prioritizing\nShorter Deadline\n")
+#
+# ggsave("HeatMap-Approach-Observed-Deadline.pdf",width=14,height=12)
+#
+#
+#
+#
+# ggplot(data=subset(pd_heat,goal_type=='Approach'&source=='Optimal'),
+#        aes(y=left_current_distance_bin,x=right_current_distance_bin,fill=choice_right)) +
+#   geom_tile() +
+#   facet_grid(left_start_deadlineF~right_start_deadlineF) +
+#   #facet_grid(source~goal_type) +
+#   #geom_contour(aes(x=left_current_distance_bin,y=right_current_distance_bin,z=right_prioritised),colour="black",binwidth=.1,size=.2) +
+#   scale_x_reverse() +
+#   scale_y_reverse() +
+#   geom_vline(xintercept=0,size=2.5) +
+#   geom_hline(yintercept=0,size=2.5) +
+#   geom_vline(xintercept=0,size=0.5,color='yellow') +
+#   geom_hline(yintercept=0,size=0.5,color='yellow') +
+#   coord_cartesian(ylim= c(-20,100),xlim=c(-20,100)) +
+#   ylab('Distance to Left Goal') +
+#   xlab("Distance to Right Goal") +
+#   theme.goal +
+#   scale_fill_gradient2(low="blue",high="red",mid="black",midpoint=0.5,na.value='black') +
+#   labs(fill = "Proportion Prioritizing\nRight Goal\n")
+#
+# ggsave("HeatMap-Approach-Optimal-Deadline.pdf",width=14,height=12)
+#
+# ggplot(data=subset(pd_heat,goal_type=='Avoidance'&source=='Observed'),
+#        aes(y=left_current_distance_bin,x=right_current_distance_bin,fill=choice_right)) +
+#   geom_tile() +
+#   facet_grid(left_start_deadlineF~right_start_deadlineF) +
+#   #facet_grid(source~goal_type) +
+#   #geom_contour(aes(x=left_current_distance_bin,y=right_current_distance_bin,z=right_prioritised),colour="black",binwidth=.1,size=.2) +
+#   scale_x_reverse() +
+#   scale_y_reverse() +
+#   geom_vline(xintercept=0,size=2.5) +
+#   geom_hline(yintercept=0,size=2.5) +
+#   geom_vline(xintercept=0,size=0.5,color='yellow') +
+#   geom_hline(yintercept=0,size=0.5,color='yellow') +
+#   coord_cartesian(ylim= c(-20,100),xlim=c(-20,100)) +
+#   ylab('Distance to Left Goal') +
+#   xlab("Distance to Right Goal") +
+#   theme.goal +
+#   scale_fill_gradient2(low="blue",high="red",mid="black",midpoint=0.5,na.value='black') +
+#   labs(fill = "Proportion Prioritizing\nRight Goal\n")
+#
+# ggsave("HeatMap-Avoidance-Observed-Deadline.pdf",width=14,height=12)
+#
+# ggplot(data=subset(pd_heat,goal_type=='Avoidance'&source=='Optimal'),
+#        aes(y=left_current_distance_bin,x=right_current_distance_bin,fill=choice_right)) +
+#   geom_tile() +
+#   facet_grid(left_start_deadlineF~right_start_deadlineF) +
+#   #facet_grid(source~goal_type) +
+#   #geom_contour(aes(x=left_current_distance_bin,y=right_current_distance_bin,z=right_prioritised),colour="black",binwidth=.1,size=.2) +
+#   scale_x_reverse() +
+#   scale_y_reverse() +
+#   geom_vline(xintercept=0,size=2.5) +
+#   geom_hline(yintercept=0,size=2.5) +
+#   geom_vline(xintercept=0,size=0.5,color='yellow') +
+#   geom_hline(yintercept=0,size=0.5,color='yellow') +
+#   coord_cartesian(ylim= c(-20,100),xlim=c(-20,100)) +
+#   ylab('Distance to Left Goal') +
+#   xlab("Distance to Right Goal") +
+#   theme.goal +
+#   scale_fill_gradient2(low="blue",high="red",mid="black",midpoint=0.5,na.value='black') +
+#   labs(fill = "Proportion Prioritizing\nRight Goal\n")
+#
+# ggsave("HeatMap-Avoidance-Optimal-Deadline.pdf",width=14,height=12)
 
 
 
@@ -757,8 +743,9 @@ ggsave("HeatMap-Avoidance-Optimal-Deadline.pdf",width=14,height=12)
 
 #observed
 #dividing up by quantile
-pd_tmp <- data %>%
-  filter(phase==1,left_current_distance>0,right_current_distance>0,diffCon=='Distance') %>%
+pd_tmp <- data_bound %>%
+  mutate(phase = (day<=pmin(right_start_deadline,left_start_deadline)) +  (day>pmin(right_start_deadline,left_start_deadline))*2) %>%
+  filter(phase==1,left_current_distance>0,right_current_distance>0,expt==1) %>%
   group_by(subject,trial_number,left_start_distance,right_start_distance,goal_type) %>%
   summarise(movement_right = mean(right_start_distance-min(right_current_distance)),
             movement_left = mean(left_start_distance-min(left_current_distance)),
@@ -787,40 +774,174 @@ for(g in gs){
   }
 }
 
-pd_tmp1 = data %>% filter(diffCon=='Distance')
+pd_tmp1 = data_bound %>% filter(expt==1)
 pd_tmp2 = pd_tmp %>% ungroup() %>% select(-goal_type,-left_start_distance,-right_start_distance)
 
 
 pd_obs <- left_join(pd_tmp1,pd_tmp2,by=c('subject','trial_number')) %>%
   filter(movement_group == 2|movement_group == 4|movement_group == 6) %>%
+  mutate(left_p_achieve = pnorm((3*left_days_remaining - left_current_distance) / sqrt(left_days_remaining*3^2)),
+         right_p_achieve = pnorm((3*right_days_remaining - right_current_distance) / sqrt(right_days_remaining*3^2))) %>%
   group_by(left_start_distance,right_start_distance,goal_type,movement_group,stage) %>%
-  summarise(left_current_distance = mean(left_current_distance),
-            right_current_distance = mean(right_current_distance)) %>%
+  summarise(left_p_achieve = mean( left_p_achieve),
+            right_p_achieve = mean(right_p_achieve)) %>%
   mutate(movement_groupF = factor(movement_group,levels=c(2,4,6),labels=c('10-30 percentile','40-60 pecentile','70-90 percentile')))
 
-# levels(pd_obs$movement_groupF) <- c('10-30','40-60','70-90')
 
 ggplot(data=subset(pd_obs),
-       aes(y=left_current_distance,x=right_current_distance,
+       aes(y=left_p_achieve,x=right_p_achieve,
            group=interaction(left_start_distance,right_start_distance),
            colour=interaction(left_start_distance,right_start_distance) )) +
   geom_point(data=subset(pd_obs,stage==1),size=2) +
   geom_path(alpha=0.6) +
   facet_grid(movement_groupF~goal_type) +
-  scale_x_reverse() +
-  scale_y_reverse() +
-  geom_vline(xintercept=0) +
-  geom_hline(yintercept=0) +
-  coord_cartesian(ylim= c(-60,160),xlim=c(-60,160)) +
-  ylab('Distance to Left Goal') +
-  xlab("Distance to Right Goal") +
+  #scale_x_reverse() +
+  #scale_y_reverse() +
+  #geom_vline(xintercept=0) +
+  #geom_hline(yintercept=0) +
+  #coord_cartesian(ylim= c(0.9,1),xlim=c(0.9,1)) +
+  ylab('Rate of Growth Required to Reach Left Goal (cm/day)') +
+  xlab("Rate of Growth Required to Reach Right Goal (cm/day)") +
   theme.goal + theme(legend.position = 'none')
+
+
+ggsave("figures/Trajectory-Distance.pdf",width=7,height=10)
+
+#TRAJECTORY DISTRIBUTIONS - DEADLINE ------
+
+#observed
+#dividing up by quantile
+pd_tmp <- data_bound %>%
+   filter(phase==1,left_current_distance>0,right_current_distance>0,expt==2) %>%
+  mutate(left_days_total_bin =  as.numeric(left_days_total>30) ,#,levels=0:1,labels=c("Left: Short","Left: Long")),
+         right_days_total_bin =  as.numeric(right_days_total>30)) %>% # ,levels=0:1,labels=c("Right: Short","Right: Long"))) %>%
+  group_by(subject,trial_number,left_days_total_bin,right_days_total_bin,goal_type) %>%
+  summarise(movement_right = mean(right_start_distance-min(right_current_distance)),
+            movement_left = mean(left_start_distance-min(left_current_distance)),
+            movement_diff = movement_right-movement_left,
+            prop_right = mean(prioritise_right),
+            movement_group = NaN) #%>%
+  #group_by(goal_type,right_days_total_bin,left_days_total_bin) %>%
+#  mutate()
+
+gs = c('Approach','Avoidance')
+#ds = c(18,20,24,30,40,60,90)
+ds = 0:1
+for(g in gs){
+  for(l_ds in ds){
+    for(r_ds in ds){
+
+      movement_diff = pd_tmp$movement_diff[which((pd_tmp$right_days_total_bin==r_ds)&
+                                                   (pd_tmp$left_days_total_bin==l_ds)&
+                                                   (pd_tmp$goal_type==g))]
+      breaks = quantile(movement_diff,probs=c(0,0.1,0.3,0.4,0.6,0.7,0.9,1))        #seq(0,1,by=.1))
+      breaks[1] = -Inf
+      breaks[length(breaks)] = Inf
+
+      pd_tmp[which((pd_tmp$right_days_total_bin==r_ds)&
+                     (pd_tmp$left_days_total_bin==l_ds)&
+                     (pd_tmp$goal_type==g)),'movement_group'] <- factor(cut(movement_diff,breaks=breaks),labels=1:(length(breaks)-1))
+
+    }
+  }
+}
+
+pd_tmp1 = data_bound %>% filter(expt==2,phase==1)
+pd_tmp2 = pd_tmp %>% ungroup() %>% select(-goal_type) #,-left_days_total_bin,-right_days_total_bin)
+
+
+pd_obs <- left_join(pd_tmp1,pd_tmp2,by=c('subject','trial_number')) %>%
+  filter(movement_group == 2|movement_group == 4|movement_group == 6) %>%
+  mutate(left_days_total_bin = factor(left_days_total_bin,levels=0:1,labels=c("Short","Long")),
+         right_days_total_bin = factor(right_days_total_bin,levels=0:1,labels=c("Short","Long"))) %>%
+  group_by(left_days_total_bin,right_days_total_bin,goal_type,movement_group,stage) %>%
+  summarise(left_current_height = mean(left_current_height),
+            right_current_height = mean(right_current_height)) %>%
+  mutate(movement_groupF = factor(movement_group,levels=c(2,4,6),labels=c('10-30 percentile','40-60 pecentile','70-90 percentile')))
+
+ggsave("figures/Trajectory-Deadline.pdf",width=7,height=10)
+
+#Alternate
+
+pd_tmp <- data_bound %>%
+  filter(phase==1,left_current_distance>0,right_current_distance>0,expt==2) %>%
+  mutate(left_days_total_bin =  as.numeric(left_days_total>30) ,#,levels=0:1,labels=c("Left: Short","Left: Long")),
+         right_days_total_bin =  as.numeric(right_days_total>30)) %>% # ,levels=0:1,labels=c("Right: Short","Right: Long"))) %>%
+  group_by(subject,trial_number,left_days_total_bin,right_days_total_bin,goal_type) %>%
+  summarise(movement_right = mean(right_start_distance-min(right_current_distance)),
+            movement_left = mean(left_start_distance-min(left_current_distance)),
+            movement_diff = movement_right-movement_left,
+            prop_right = mean(prioritise_right),
+            movement_group = NaN) #%>%
+#group_by(goal_type,right_days_total_bin,left_days_total_bin) %>%
+#  mutate()
+
+gs = c('Approach','Avoidance')
+#ds = c(18,20,24,30,40,60,90)
+ds = 0:1
+for(g in gs){
+  for(l_ds in ds){
+    for(r_ds in ds){
+
+      movement_diff = pd_tmp$movement_diff[which((pd_tmp$right_days_total_bin==r_ds)&
+                                                   (pd_tmp$left_days_total_bin==l_ds)&
+                                                   (pd_tmp$goal_type==g))]
+      #breaks = quantile(movement_diff,probs=c(0,0.1,0.3,0.4,0.6,0.7,0.9,1))        #seq(0,1,by=.1))
+      breaks = quantile(movement_diff,probs=seq(0,1,by=0.2))        #seq(0,1,by=.1))
+      breaks[1] = -Inf
+      breaks[length(breaks)] = Inf
+
+      pd_tmp[which((pd_tmp$right_days_total_bin==r_ds)&
+                     (pd_tmp$left_days_total_bin==l_ds)&
+                     (pd_tmp$goal_type==g)),'movement_group'] <- factor(cut(movement_diff,breaks=breaks),labels=1:(length(breaks)-1))
+
+    }
+  }
+}
+
+pd_tmp1 = data_bound %>% filter(expt==2,phase==1)
+pd_tmp2 = pd_tmp %>% ungroup() %>% select(-goal_type) #,-left_days_total_bin,-right_days_total_bin)
+
+
+pd_obs <- left_join(pd_tmp1,pd_tmp2,by=c('subject','trial_number')) %>%
+ # filter(movement_group == 2|movement_group == 4|movement_group == 6) %>%
+  mutate(left_days_total_bin = factor(left_days_total_bin,levels=0:1,labels=c("Left Growing Season: Short","Left Growing Season: Long")),
+         right_days_total_bin = factor(right_days_total_bin,levels=0:1,labels=c("Right Growing Season: Short","Right Growing Season: Long"))) %>%
+  group_by(left_days_total_bin,right_days_total_bin,goal_type,movement_group,stage) %>%
+  summarise(left_current_height = mean(left_current_height),
+            right_current_height = mean(right_current_height)) %>%
+  mutate(movement_groupF = factor(movement_group,levels=c(1,2,3,4,5),labels=c('0-20 percentile','20-40 pecentile','40-60 percentile',
+                                                                              '60-80 pecentile','80-100 percentile')))
+
+
+ggplot(data=subset(pd_obs),
+       aes(y=left_current_height,x=right_current_height,
+           group=movement_groupF,
+           colour=movement_groupF)) +
+  geom_point(data=subset(pd_obs,stage==1),size=2) +
+  geom_path(alpha=0.6) +
+  facet_grid(goal_type + right_days_total_bin~left_days_total_bin) +
+  #scale_x_reverse() +
+  #scale_y_reverse() +
+  geom_vline(xintercept=240) +
+  geom_hline(yintercept=240) +
+  coord_cartesian(ylim= c(140,300),xlim=c(140,300)) +
+  labs(y='Height of Left Crop/Weed',x="Height of Right Crop/Weed",colour="Group") +
+  theme.goal #+ theme(legend.position = 'none')
+
+
+ggsave("figures/Trajectory-Deadline_alt.pdf",width=7,height=10)
+
+
+
 
 #optimal
 
 #simulate optimal
-load("DPOnly_StreamB.Rda")
-full_dpdata30 = full_dpdata %>% filter(left_start_deadline==30,right_start_deadline==30)
+
+#load("DPOnly_StreamB.Rda")
+
+full_dpdata30 = data_bound %>% filter(expt==1)#left_start_deadline==30,right_start_deadline==30)
 
 sim_data = expand.grid(left_start_distance = c(30,45,67.5,90,112.5,135,150),
                        right_start_distance = c(30,45,67.5,90,112.5,135,150),
@@ -840,7 +961,7 @@ right_current_distance = matrix(NaN,nRuns ,30)
 left_current_distance[,1] = sim_data_mat$left_start_distance
 right_current_distance[,1] = sim_data_mat$right_start_distance
 
-bins = unique(full_dpdata$left_current_distance_bin)
+bins = unique(data_bound$left_current_distance_bin)
 total_bins = length(bins)
 
 
@@ -1141,8 +1262,8 @@ ggsave("TrajectoryDistribution_1030_4060_7090_ObsOptPred-Distance-FixedSpatial-D
 
 #observed
 #dividing up by quantile
-pd_tmp <- data %>%
-  filter(phase==1,left_current_distance>0,right_current_distance>0,diffCon=='Deadline') %>%
+pd_tmp <- data_bound %>%
+   filter(phase==1,left_current_distance>0,right_current_distance>0,expt==2) %>%
   group_by(subject,trial_number,left_start_deadline,right_start_deadline,goal_type) %>%
   summarise(movement_right = mean(right_start_distance-min(right_current_distance)),
             movement_left = mean(left_start_distance-min(left_current_distance)),
@@ -1171,7 +1292,7 @@ for(g in gs){
   }
 }
 
-pd_tmp1 = data %>% filter(diffCon=='Deadline',phase==1)
+pd_tmp1 = data_bound %>% filter(expt==2,phase==1)
 pd_tmp2 = pd_tmp %>% ungroup() %>% select(-goal_type,-left_start_deadline,-right_start_deadline)
 
 
@@ -1219,7 +1340,8 @@ right_current_distance = matrix(NaN,nRuns ,90)
 left_current_distance[,1] = 90
 right_current_distance[,1] = 90
 
-bins = unique(full_dpdata$left_current_distance_bin)
+#bins = unique(full_dpdata$left_current_distance_bin)
+bins = unique(data_bound$left_current_distance_bin)
 total_bins = length(bins)
 
 nObs = expand.grid(goal_type = c(0,1),
@@ -1243,16 +1365,16 @@ for(s in 1:89){
                 match(right_current_distance_bin,bins)
 
 
-  sum(left_current_distance_bin!=full_dpdata$left_current_distance_bin[policy_ind])
-  sum(right_current_distance_bin!=full_dpdata$right_current_distance_bin[policy_ind])
-  sum(sim_data_mat$left_start_deadline!=full_dpdata$left_start_deadline[policy_ind])
-  sum(sim_data_mat$right_start_deadline!=full_dpdata$right_start_deadline[policy_ind])
-  sum((sim_data_mat$goal_type+1)!=full_dpdata$frame[policy_ind])
-  sum(s!=full_dpdata$stage[policy_ind])
+  sum(left_current_distance_bin!=data_bound$left_current_distance_bin[policy_ind])
+  sum(right_current_distance_bin!=data_bound$right_current_distance_bin[policy_ind])
+  sum(sim_data_mat$left_start_deadline!=data_bound$left_start_deadline[policy_ind])
+  sum(sim_data_mat$right_start_deadline!=data_bound$right_start_deadline[policy_ind])
+  sum((sim_data_mat$goal_type+1)!=data_bound$frame[policy_ind])
+  sum(s!=data_bound$stage[policy_ind])
 
   trial_terminated = sim_data_mat$stages<s
 
-  policy = 1-full_dpdata$policy[policy_ind]
+  policy = 1-data_bound$policy[policy_ind]
 
   random_choice = (runif(nRuns)>0.5)*1
 
