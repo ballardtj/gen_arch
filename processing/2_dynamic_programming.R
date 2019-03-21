@@ -17,7 +17,7 @@ min(transformed_data$left_current_distance,transformed_data$right_current_distan
 
 
 #Set Parameters
-bin_size = 2 #number of states that are put together in same bin
+bin_size = 5 #number of states that are put together in same bin
 max_distance = 240 # 180 cm away from goal (i.e., height of 0)
 min_distance = -100 # 100 cm above goal (i.e., height of 280)
 states = (max_distance-min_distance)/bin_size + 1 #add 1 for the min and max

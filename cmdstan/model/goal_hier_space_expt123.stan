@@ -35,6 +35,8 @@ functions {
     real b_sg;
     real a_tg;
     real b_tg;
+    real a_stg_tmp;
+    real b_stg_tmp;
     real a_stg;
     real b_stg;
 
@@ -91,11 +93,12 @@ functions {
     //the 3rd columns of data and weights are the same for all subjects.
     alpha_sub = alpha[subj];
     one_m_alpha_sub = 1-alpha_sub;
-    weights[3] = (w3_mean + w3[subj]*w3_sd)*2*one_m_alpha_sub*sqrt(alpha_sub/one_m_alpha_sub);
-
+    weights[3] = (w3_mean + w3[subj]*w3_sd)*2*one_m_alpha_sub*sqrt(alpha_sub / one_m_alpha_sub);
     for(obs in 1:Nobs[subj]){
-      a_stg = 1  / (alpha_sub * a_tod[obs,subj] + one_m_alpha_sub * a_dot[obs,subj]);
-      b_stg = 1  / (alpha_sub * b_tod[obs,subj] + one_m_alpha_sub * b_dot[obs,subj]);
+      a_stg_tmp = alpha_sub * a_tod[obs,subj] + one_m_alpha_sub * a_dot[obs,subj];
+      b_stg_tmp = alpha_sub * b_tod[obs,subj] + one_m_alpha_sub * b_dot[obs,subj];
+      a_stg = inv(a_stg_tmp);
+      b_stg = inv(b_stg_tmp);
       dat[3,obs] = a_stg - b_stg;
     }
 
