@@ -188,7 +188,7 @@ model {
  }
 
   //loop through subjects evaluating likelihood for each one
-  for(subj in 1:Nsubj){
+  for(subj in 1:Nsubj){	
     row_vector[Nobs[subj]] p_a_logit;
 
     alpha[subj] ~ normal(alpha_mean,alpha_sd) T[0.01,0.99];
@@ -200,8 +200,7 @@ model {
                          Nobs,subj,expt,s_sg,s_tg,
                          a_logd,b_logd,a_logt,b_logt,
                          a_dot,b_dot,a_tod,b_tod);
-
-
+	
     y[1:Nobs[subj],subj] ~ bernoulli_logit(p_a_logit);
   }
 }

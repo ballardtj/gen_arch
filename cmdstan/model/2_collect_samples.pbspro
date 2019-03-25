@@ -2,10 +2,12 @@
 
 #PBS -A UQ-SBS-Psy
 
-#PBS -l select=1:ncpus=1:intel=true:mem=20GB,walltime=100:00:00
+#PBS -l select=1:ncpus=24:intel=true:mem=120GB,walltime=150:00:00
 
 #PBS -J 1-8
 
 sh /QRISdata/Q0993/cmdstan/model/3_collect_samples.sh $PBS_ARRAY_INDEX ${RUN}
 
 ## sh cmdstan/model/3_collect_samples.sh $PBS_ARRAY_INDEX ${RUN}
+
+## sh /QRISdata/Q0993/cmdstan/model/3_collect_samples.sh 8 2

@@ -189,17 +189,10 @@ for(source in 1){
       b_t0 = t(b_t0)
     )
 
-    # dataList = list(
-    #   Ntotal = length(Bdata$s) ,
-    #   s = Bdata$s,
-    #   Nsubj = Nsubj,
-    #   a_logt = log(Bdata$a_t),
-    #   b_logt = log(Bdata$b_t),
-    #   y = Bdata$prioritise_right
-    # )
-
-    #dataList$y_opt = Bdata$policy_right
-    #save(dataList,file=paste0("./data/clean/",sources[source],"_",goal_types[frame],'_datalist_tp.Rda'))
+    #Create data for map_rect function
+    dataList$real_data = cbind(a_logd, b_logd, a_logt, b_logt, a_dot , b_dot , a_tod, b_tod)
+    dataList$int_data = cbind(Nobs,Maxobs,y)
+    colnames(dataList$int_data) = NULL
 
     #Save as rdump
     list2env(dataList, .GlobalEnv)

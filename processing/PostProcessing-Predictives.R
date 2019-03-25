@@ -1,6 +1,18 @@
 rm(list=ls())
 library(tidyverse)
 
+
+library(rstan)
+expose_stan_functions("cmdstan/model/goal_hier_space_expt123.stan")
+
+
+
+
+
+
+
+
+
 # setwd("~/Dropbox/Research/Projects/MGP-1517-GOAL/Modelling-7-NormalisedModel")
 
 # SET THEME (REQUIRED) ----------------

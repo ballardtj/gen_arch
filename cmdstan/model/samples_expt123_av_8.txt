@@ -34,16 +34,8 @@ output
   refresh = 100 (Default)
 
 
-Gradient evaluation took 2.33694 seconds
-1000 transitions using 10 leapfrog steps per transition would take 23369.4 seconds.
+Gradient evaluation took 1.84321 seconds
+1000 transitions using 10 leapfrog steps per transition would take 18432.1 seconds.
 Adjust your expectations accordingly!
 
 
-Iteration:     1 / 14000 [  0%]  (Warmup)
-Iteration:   100 / 14000 [  0%]  (Warmup)
-Iteration:   200 / 14000 [  1%]  (Warmup)
-Iteration:   300 / 14000 [  2%]  (Warmup)
-Iteration:   400 / 14000 [  2%]  (Warmup)
-Iteration:   500 / 14000 [  3%]  (Warmup)
-Iteration:   600 / 14000 [  4%]  (Warmup)
-Iteration:   700 / 14000 [  5%]  (Warmup)

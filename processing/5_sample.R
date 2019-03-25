@@ -7,17 +7,35 @@ library(rstan)
 
 #load data
 
-source("data/clean/obs_ap_rdump_expt3.R")
+source("data/clean/obs_ap_rdump_expt123.R")
 
+set.seed(12345)
 
-fit = stan(file="cmdstan/model/goal_hier_space_expt123.stan",
+#Check to see if mpi and non-mpi yield same parameter estimates
+fit_mpi = stan(file="cmdstan/model/goal_hier_space_expt123_mpi.stan",
            chains=1,
-           iter = 1)
+           iter = 10,
+           seed = 12345)
+
+set.seed(12345)
 
 
+fit_nmpi = stan(file="cmdstan/model/goal_hier_space_expt123.stan",
+               chains=1,
+               iter = 10,
+               seed = 12345)
 
 
+smry_mpi = summary(fit_mpi)[[1]]
+smry_nmpi = summary(fit_nmpi)[[1]]
 
+parms = names(smry_nmpi[,1])[1000:1288]
+
+nmpi = smry_nmpi[parms,1]
+
+mpi = smry_mpi[parms,1]
+
+cor(nmpi,mpi)
 
 #start new R session
 .rs.restartR()
