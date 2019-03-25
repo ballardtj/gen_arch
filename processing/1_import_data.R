@@ -7,7 +7,7 @@ require(tidyverse)
 #load the data files from experiments 1, 2, and 3
 raw_data.exp1 = read.table("./data/raw/exp1/parsed_data.txt",header=T,sep=",")
 raw_data.exp2 = read.table("./data/raw/exp2/parsed_data.txt",header=T,sep=",")
-raw_data.exp3 = read.table("./data/raw/exp3/parsed_data.txt",header=T,sep=",") %>% select(-gender_key,-age,-session_key,-birth_month,-child_street,-mothers_name)
+raw_data.exp3 = read.table("./data/raw/exp3/parsed_data_old.txt",header=T,sep=",") %>% select(-gender_key,-age,-session_key,-birth_month,-child_street,-mothers_name)
 
 vars = names(raw_data.exp1)
 
@@ -64,6 +64,7 @@ raw_data.exp4$expt = 4
 
 #NOTE - approximately 55 participants for distance condition are missing last 4 trials because of technical issues in the javascript (slicing error - resolved 12/5/16)
 #NOTE - approximately 39 participants for deadline condition are missing last 4 trials because of technical issues in the javascript (slicing error - resolved 12/5/16)
+#NOTE - 4 participants did not complete expt3 (one did not even start, only provided demographic data so is not in the data frame at all)
 imported_data = bind_rows(raw_data.exp1,raw_data.exp2,raw_data.exp3,raw_data.exp4) %>%
   mutate(subject = as.numeric(as.factor(subject_id)),
          day = stage,
@@ -185,3 +186,20 @@ transformed_data$closer_start_deadline_current_distance[transformed_data$right_d
 
 
 save(transformed_data,file="./data/clean/transformed_data.RData")
+
+
+
+
+#Expt 3 demographics
+
+age = read.table("data/raw/exp3/age.txt",header=T)
+
+range(age$age)
+mean(age$age)
+sd(age$age)
+
+gender = read.table("data/raw/exp3/gender.txt",header=T)
+count(gender,gender) %>% mutate(prop = n/sum(n))
+
+
+

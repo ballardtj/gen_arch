@@ -74,7 +74,7 @@ ggplot(data=pd,aes(y=factor(left_start_height),x=factor(right_start_height),fill
   scale_fill_distiller(palette="Spectral",limits=c(0,1)) +
   labs(fill = "Proportion Prioritizing\nCrop/Weed with Higher\nStarting Height\n")
 
-ggsave("figures/heat_map_expt1.pdf",width=10,height=7)
+ggsave("figures/heat_map_expt1.png",width=10,height=7)
 
 #Exepriment 2
 
@@ -104,7 +104,7 @@ ggplot(data=pd,aes(y=factor(left_start_deadline),x=factor(right_start_deadline),
   scale_fill_distiller(palette="Spectral",limits=c(0,1)) +
   labs(fill = "Proportion Prioritizing\nCrop/Weed with Shorter\nGrowing Season\n")
 
-ggsave("figures/heat_map_expt2.pdf",width=10,height=7)
+ggsave("figures/heat_map_expt2.png",width=10,height=7)
 
 
 #### Exepriment 3 ####
