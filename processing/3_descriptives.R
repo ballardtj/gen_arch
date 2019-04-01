@@ -218,6 +218,48 @@ ggplot( data = pd, aes(y = factor(left_start_deadline),x = factor(right_start_de
 
 ggsave("figures/heat_map_expt3_eq_height.pdf",width = 10,height = 12)
 
+
+#Deadline binned into two groups
+
+pd <- data_bound %>%
+  filter(phase==1,expt==3) %>%
+  mutate(left_start_deadline_bin = as.numeric(left_start_deadline > 2),
+         right_start_deadline_bin = as.numeric(right_start_deadline > 2)) %>%
+  group_by(subject,trial_number,left_start_deadline_bin,right_start_deadline_bin,left_start_height,right_start_height,goal_type) %>%
+  summarise( prioritise_right = mean(prioritise_right),
+             policy_right = mean(policy)) %>%
+  group_by(left_start_deadline_bin,right_start_deadline_bin,left_start_height,right_start_height,goal_type) %>%
+  summarise(  prioritise_right = mean(prioritise_right),
+              policy_right = mean(policy_right) ) %>%
+  gather(source,choice_right,prioritise_right,policy_right) %>%
+  mutate(left_start_deadlineF = factor(left_start_deadline_bin,levels=0:1,labels=c("Left: 1 or 2 Months","Left: 4 or 8 Months")),
+         right_start_deadlineF = factor(right_start_deadline_bin,levels=0:1,labels=c("Right: 1 or 2 Months","Right: 4 or 8 Months")))
+
+#pd$choice_farther[pd$left_start_deadline==pd$right_start_deadline] = NA
+
+pd$source = factor(
+  pd$source,
+  levels = c('prioritise_right', 'policy_right'),
+  labels = c('Observed', 'Achievement Maximizing')
+)
+
+ggplot( data = pd,
+        aes(y = factor(left_start_height),x = factor(right_start_height),fill = choice_right)) +
+  geom_raster() +
+  facet_grid(goal_type + left_start_deadlineF ~ source + right_start_deadlineF ) +
+  ylab('Left Starting Height (cm)') +
+  xlab("Right Starting Height (cm)") +
+  theme.goal +
+  #scale_fill_gradient2(low="blue",high="red",mid="black",midpoint=0.5,na.value='black',limits=c(0,1)) +
+  scale_fill_distiller(palette = "Spectral", limits = c(0, 1)) +
+  labs(fill = "Proportion Prioritizing\nRight-hand Crop/Weed")
+
+ggsave("figures/heat_map_expt3_binned.png",width = 12,height = 10)
+
+
+
+
+
 # summary(glm(prioritise_right ~ right_current_distance + left_current_distance + right_days_remaining + left_days_remaining,data=filter(pd,goal_type=="Avoidance")),family=binomial())
 #
 # summary(glm(prioritise_right ~ right_current_distance + left_current_distance + right_days_remaining + left_days_remaining,data=filter(pd,goal_type=="Approach")),family=binomial())
@@ -634,8 +676,8 @@ pd_tmp2 = pd_tmp %>% ungroup() %>% select(-goal_type,-left_start_height,-right_s
 
 pd_obs <- left_join(data_bound_tmp,pd_tmp2,by=c('subject','trial_number')) %>%
   # filter(movement_group == 2|movement_group == 4|movement_group == 6) %>%
- mutate(left_days_total_bin = factor(left_days_total_bin,levels=0:1,labels=c("Left Growing Season: Short","Left Growing Season: Long")),
-        right_days_total_bin = factor(right_days_total_bin,levels=0:1,labels=c("Right Growing Season: Short","Right Growing Season: Long"))) %>%
+ mutate(left_days_total_bin = factor(left_days_total_bin,levels=0:1,labels=c("Left: 1, 2, or 4 Months","Left: 8 Months")),
+        right_days_total_bin = factor(right_days_total_bin,levels=0:1,labels=c("Right: 1, 2, or 4 Months","Right: 8 Months"))) %>%
   group_by(left_days_total_bin,right_days_total_bin,left_start_height,right_start_height,goal_type,stage) %>%
   summarise(left_current_height = mean(left_current_height),
             right_current_height = mean(right_current_height)) #%>%

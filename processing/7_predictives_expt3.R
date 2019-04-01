@@ -38,7 +38,7 @@ generate_pp=function(fit,dataList,Nsamp,version){
 
       if(version=="hier_space"){
         #observed model run on observed decision points
-        p_a_logit=goal_sub_hier_space(posts$w1_mean[samples[i]],
+        p_a_logit1=goal_sub_hier_space(posts$w1_mean[samples[i]],
                                       posts$w1_sd[samples[i]],
                                       posts$w1[samples[i],],
                                       posts$w2_mean[samples[i]],
@@ -279,8 +279,8 @@ for (source in c('obs')){#},'opt')){
   #ap_dataList=read_rdump(paste0('data/clean/',source,'_ap_rdump.R'))  #Approach
   #av_dataList=read_rdump(paste0('data/clean/',source,'_av_rdump.R'))  #Avoidance
 
-  ap_dataList=read_rdump(paste0('data/clean/',source,'_ap_rdump_expt3.R'))  #Approach
-  av_dataList=read_rdump(paste0('data/clean/',source,'_av_rdump_expt3.R'))  #Avoidance
+  ap_dataList=read_rdump(paste0('data/clean/',source,'_ap_rdump_expt123.R'))  #Approach
+  av_dataList=read_rdump(paste0('data/clean/',source,'_av_rdump_expt123.R'))  #Avoidance
 
   for (structure in c('hier')){
     for (model in c('space')){
@@ -288,7 +288,7 @@ for (source in c('obs')){#},'opt')){
       #Approach
       #load(paste0("data/derived/ap_",source,"_",structure,"_",model,"_fit.RData"))
 
-      load(paste0("data/derived/expt3_ap_fit.RData"))
+      load(paste0("data/derived/expt123_ap_fit.RData"))
 
       ap_pp_data=generate_pp(fit=fit,dataList=ap_dataList,Nsamp=100,version=paste(structure,model,sep='_' ))
       ap_pp_plot= generate_pp_plot(ap_pp_data)
@@ -296,7 +296,7 @@ for (source in c('obs')){#},'opt')){
       #Avoidance
       #load(paste0("data/derived/av_",source,"_",structure,"_",model,"_fit.RData"))
 
-      load(paste0("data/derived/expt3_av_fit.RData"))
+      load(paste0("data/derived/expt123_av_fit.RData"))
       av_pp_data=generate_pp(fit=fit,dataList=av_dataList,Nsamp=100,version=paste(structure,model,sep='_' ))
       av_pp_plot= generate_pp_plot(av_pp_data)
 

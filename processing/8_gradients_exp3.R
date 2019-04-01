@@ -1,4 +1,4 @@
-
+rm(list=ls())
 
 #load packages
 library(rstan)
@@ -91,9 +91,9 @@ for (source in c('obs')){
       for (model in c('space')){
 
        # dataList=read_rdump(paste0('data/clean/',source,'_',frame,'_rdump.R'))
-        dataList=read_rdump(paste0('data/clean/obs_',frame,'_rdump_expt3.R'))
+        dataList=read_rdump(paste0('data/clean/obs_',frame,'_rdump_expt123.R'))
 
-        load(paste0("data/derived/expt3_",frame,"_fit.RData"))
+        load(paste0("data/derived/expt123_",frame,"_fit.RData"))
 
 
         ctr=ctr+1
@@ -178,7 +178,7 @@ sg = left_join(sg2,sg1) %>%
   theme(legend.position = "none")
 
 #count number of positive vs negative gradients
-sg1 %>% mutate(positive = delta >= 0) %>% count(frame,positive)
+sg1 %>% mutate(positive = delta >= 0) %>% count(frame,positive) %>% mutate(prop = n / sum(n))
 
 #Temporal gradient
 tg1=posts %>%
@@ -333,7 +333,7 @@ gradient_fig = arrangeGrob(
 
 grid.arrange(gradient_fig)
 
-ggsave(file=paste0("figures/gradients_expt3.png"),plot=gradient_fig,width=6,height=9)
+ggsave(file=paste0("figures/gradients_expt123.png"),plot=gradient_fig,width=6,height=9)
 
 
 

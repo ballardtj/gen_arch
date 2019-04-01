@@ -168,7 +168,7 @@ for(source in 1){
       s = Bdata$s,
       Nsubj = Nsubj,
       Nobs = Nobs,
-      Maxobs = Maxobs,
+      Max_obs = Maxobs,
       a_logd = t(a_logd),
       b_logd = t(b_logd),
       a_logt = t(a_logt),

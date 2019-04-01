@@ -9,7 +9,7 @@ library(doMC)
 registerDoMC(cores=7)
 
 #load stan function for generating predictions
-expose_stan_functions("model/goal_hier_space.stan")
+expose_stan_functions("model/goal_hier_space_expt123.stan")
 goal_sub_hier_space = goal_sub
 
 # expose_stan_functions("model/goal_fixed_space.stan")
@@ -290,7 +290,7 @@ for (source in c('obs')){#},'opt')){
           left="Proportion Prioritizing Right-hand Goal"
         )
 
-      ggsave(file=paste0("figures/predictives_",source,"_",structure,"_",model,".png"),plot=pp_fig,width=11,height=10)
+      ggsave(file=paste0("figures/predictives_expt12",source,"_",structure,"_",model,".png"),plot=pp_fig,width=11,height=10)
     }
   }
 }
