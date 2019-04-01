@@ -10,3 +10,4 @@ analysis/*html
 analysis/*_cache
 analysis/site_libs
 data/derived/*fit.RData
+data/cmdstan/model/*fit.RData
