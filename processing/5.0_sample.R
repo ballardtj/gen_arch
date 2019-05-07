@@ -12,7 +12,7 @@ source("data/clean/obs_ap_rdump_expt123.R")
 set.seed(12345)
 
 #Check to see if mpi and non-mpi yield same parameter estimates
-fit_mpi = stan(file="cmdstan/model/goal_hier_space_expt123_mpi.stan",
+fit_mpi = stan(file="cmdstan/model/goal_hier_space_expt123_mpi_all6parms.stan",
            chains=1,
            iter = 10,
            seed = 12345)
