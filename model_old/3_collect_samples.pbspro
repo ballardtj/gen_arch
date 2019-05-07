@@ -1,0 +1,9 @@
+#!/bin/bash
+
+#PBS -A UQ-SBS-Psy
+
+#PBS -l select=1:ncpus=1:intel=true:mem=20GB,walltime=100:00:00
+
+#PBS -J 1-8
+
+bash cmdstan/model/4_collect_samples.sh ${FRAME} ${SOURCE} $PBS_ARRAY_INDEX ${STRUCTURE} ${MODEL}
