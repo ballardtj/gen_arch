@@ -258,6 +258,158 @@ ggsave("figures/heat_map_expt3_binned.png",width = 12,height = 10)
 
 
 
+#Vector plot
+
+pd <- data_bound %>%
+  filter(phase==1,expt==2, left_current_distance > 0 , right_current_distance > 0 )   %>%
+  mutate(left_start_deadline_bin = as.numeric(left_start_deadline > 2),
+         right_start_deadline_bin = as.numeric(right_start_deadline > 2),
+         left_current_distance_bin = round(left_current_distance/15)*15,
+         right_current_distance_bin = round(right_current_distance/15)*15) %>%
+   group_by(subject,trial_number,left_start_deadline_bin,right_start_deadline_bin,left_current_distance_bin,right_current_distance_bin,goal_type ) %>%
+  summarise( prioritise_right = mean(prioritise_right),
+             policy_right = mean(policy)) %>%
+  group_by(left_start_deadline_bin,right_start_deadline_bin,left_current_distance_bin,right_current_distance_bin,goal_type) %>%
+  summarise(  prioritise_right = mean(prioritise_right),
+              policy_right = mean(policy_right) ) %>%
+  gather(source,choice_right,prioritise_right,policy_right) %>%
+  mutate(left_start_deadlineF = factor(left_start_deadline_bin,levels=0:1,labels=c("Left: 1 or 2 Months","Left: 4 or 8 Months")),
+         right_start_deadlineF = factor(right_start_deadline_bin,levels=0:1,labels=c("Right: 1 or 2 Months","Right: 4 or 8 Months"))) %>%
+  mutate(xend = right_current_distance_bin - choice_right*6,
+         yend = left_current_distance_bin - (1-choice_right  )*6 )
+
+#pd$choice_farther[pd$left_start_deadline==pd$right_start_deadline] = NA
+
+pd$source = factor(
+  pd$source,
+  levels = c('prioritise_right', 'policy_right'),
+  labels = c('Observed', 'Achievement Maximizing')
+)
+
+ggplot( data = subset(pd , source == "Observed"),
+        aes(y = left_current_distance_bin, x = right_current_distance_bin, fill = choice_right, color=choice_right)) +
+ # geom_raster() +
+  geom_segment(aes(xend=xend,yend=yend),arrow = arrow(length = unit(0.02, "npc")),alpha=1) +
+  facet_grid(goal_type + left_start_deadlineF ~ right_start_deadlineF ) +
+  ylab('Left Distance to Goal (cm)') +
+  xlab("Right Distance to Goal (cm)") +
+  theme.goal +
+  #scale_fill_gradient2(low="blue",high="red",mid="black",midpoint=0.5,na.value='black',limits=c(0,1)) +
+  scale_colour_distiller(palette = "Spectral", limits = c(0, 1)) +
+  labs(fill = "Proportion Prioritizing\nRight-hand Crop/Weed") +
+  scale_x_reverse() +
+  scale_y_reverse() +
+  geom_vline(xintercept=0,size=2.5) +
+  geom_hline(yintercept=0,size=2.5) +
+  geom_vline(xintercept=0,size=0.5,color='yellow') +
+  geom_hline(yintercept=0,size=0.5,color='yellow') +
+  coord_cartesian(ylim= c(-20,100),xlim=c(-20,100))
+
+
+#Vector plot of all three experiments
+
+# pd <- data_bound %>% ungroup() %>%
+#   filter(phase==1, expt == 1,left_current_distance > 0 , right_current_distance > 0 )   %>%
+#   mutate( max_dl = case_when(
+#     expt < 3 ~ 91,
+#     expt >= 3 ~ 9),
+#     a_d = ceiling(right_current_distance) /188, #needs to be 201 if modeling expt 4
+#     b_d = ceiling(left_current_distance) /188,  #as above
+#     a_t = ceiling(right_days_remaining) / max_dl,
+#     b_t = ceiling(left_days_remaining) / max_dl,
+#     right_deadline_bin = case_when(
+#       a_t < 0.25 ~ 1,
+#       a_t>=0.25 & a_t<0.5 ~ 2,
+#       a_t >= 0.5 ~ 3),
+#     left_deadline_bin = case_when(
+#       b_t < 0.25 ~ 1,
+#       b_t>=0.25 & b_t<0.5 ~ 2,
+#       b_t >= 0.5 ~ 3),
+#     left_current_distance_bin = round(b_d*10)/10,
+#     right_current_distance_bin = round(a_d*10)/10) %>%
+#   summarise(min_left_distance = min(left_current_distance),
+#             min_right_distance = min(right_current_distance),
+#             max_left_distance = max(left_current_distance),
+#             max_right_distance = max(right_current_distance)
+#
+#             )
+
+
+pd <- data_bound %>%
+  filter(phase==1,left_current_distance > 0 , right_current_distance > 0 )   %>%
+  mutate( max_dl = case_when(
+            expt == 1 ~ 91,
+            expt == 2 ~ 91,
+            expt >= 3 ~ 9),
+            a_d = ceiling(right_current_distance) /188, #needs to be 201 if modeling expt 4
+            b_d = ceiling(left_current_distance) /188,  #as above
+            a_t = ceiling(right_days_remaining) / max_dl,
+            b_t = ceiling(left_days_remaining) / max_dl,
+            right_deadline_bin = case_when(
+              a_t < 0.25 ~ 1,
+              a_t>=0.25 & a_t<0.5 ~ 2,
+              a_t >= 0.5 ~ 3),
+            left_deadline_bin = case_when(
+              b_t < 0.25 ~ 1,
+              b_t>=0.25 & b_t<0.5 ~ 2,
+              b_t >= 0.5 ~ 3),
+            left_current_distance_bin = round(b_d*10)/10,
+            right_current_distance_bin = round(a_d*10)/10) %>%
+#  group_by(subject,trial_number,left_deadline_bin,right_deadline_bin,left_current_distance_bin,right_current_distance_bin,goal_type ) %>%
+ # summarise( prioritise_right = mean(prioritise_right),
+  #           policy_right = mean(policy)) %>%
+  group_by(left_deadline_bin,right_deadline_bin,left_current_distance_bin,right_current_distance_bin,goal_type) %>%
+  summarise(  n = n(),
+              prioritise_right = mean(prioritise_right),
+              policy_right = mean(policy) ) %>%
+  gather(source,choice_right,prioritise_right,policy_right) %>%
+  mutate(left_start_deadlineF = factor(left_deadline_bin,levels=1:3,labels=c("Left: T < 0.25","Left: 0.25 < T < 0.5","Left: T > 0.5")),
+         right_start_deadlineF = factor(right_deadline_bin,levels=1:3,labels=c("Right: T < 0.25","Right: 0.25 < T < 0.5","Right: T > 0.5"))) %>%
+  mutate(xend = right_current_distance_bin - (goal_type=="Approach")*choice_right*0.1 - (goal_type=="Avoidance")*(1-choice_right)*0.1,
+         yend = left_current_distance_bin - (goal_type=="Approach")*(1-choice_right  )*0.1 - (goal_type=="Avoidance")*choice_right*0.1)
+
+#pd$choice_farther[pd$left_start_deadline==pd$right_start_deadline] = NA
+
+pd$source = factor(
+  pd$source,
+  levels = c('prioritise_right', 'policy_right'),
+  labels = c('Observed', 'Achievement Maximizing')
+)
+
+pd %>%
+  filter(n >= 10,
+         source == "Observed",
+         goal_type == "Approach") %>%
+
+ggplot( aes(y = left_current_distance_bin, x = right_current_distance_bin, fill = choice_right, color=choice_right)) +
+  # geom_raster() +
+  geom_segment(aes(xend=xend,yend=yend),arrow = arrow(length = unit(0.02, "npc")),alpha=1) +
+  facet_grid(left_start_deadlineF ~ right_start_deadlineF ) +
+  ylab('Left Distance to Goal (D)') +
+  xlab("Right Distance to Goal (D)") +
+  theme.goal +
+  #scale_fill_gradient2(low="blue",high="red",mid="black",midpoint=0.5,na.value='black',limits=c(0,1)) +
+  scale_colour_distiller(palette = "Spectral", limits = c(0, 1)) +
+  labs(fill = "Proportion Prioritizing\nRight-hand Crop/Weed") +
+  scale_x_reverse() +
+  scale_y_reverse() +
+  geom_vline(xintercept=0,size=2.5) +
+  geom_hline(yintercept=0,size=2.5) +
+  geom_vline(xintercept=0,size=0.5,color='yellow') +
+  geom_hline(yintercept=0,size=0.5,color='yellow') +
+  theme(legend.position = "none")
+  #coord_cartesian(ylim= c(-20,100),xlim=c(-20,100))
+
+
+
+
+
+
+
+# ggsave("figures/heat_map_expt3_binned.png",width = 12,height = 10)
+
+
+
 
 
 # summary(glm(prioritise_right ~ right_current_distance + left_current_distance + right_days_remaining + left_days_remaining,data=filter(pd,goal_type=="Avoidance")),family=binomial())

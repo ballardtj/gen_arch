@@ -79,6 +79,10 @@ generate_pp=function(fit,dataList,Nsamp){
       pp_data_tmp$b_d0 = dataList$b_d0[1:dataList$Nobs[subj],subj]
       pp_data_tmp$a_t0 = dataList$a_t0[1:dataList$Nobs[subj],subj]
       pp_data_tmp$b_t0 = dataList$b_t0[1:dataList$Nobs[subj],subj]
+      pp_data_tmp$a_d = exp(dataList$a_logd[1:dataList$Nobs[subj],subj])
+      pp_data_tmp$b_d = exp(dataList$b_logd[1:dataList$Nobs[subj],subj])
+      pp_data_tmp$a_t = exp(dataList$a_logt[1:dataList$Nobs[subj],subj])
+      pp_data_tmp$b_t = exp(dataList$b_logt[1:dataList$Nobs[subj],subj])
 
       pp_list[[ctr]]=pp_data_tmp
       #setTxtProgressBar(pb, ctr)
@@ -202,8 +206,8 @@ generate_trial_plot=function(ap_pp_data,av_pp_data){
 
 
 #load datalists
-ap_dataList=read_rdump(paste0('data/clean/obs_ap_rdump_expt123.R'))  #Approach
-av_dataList=read_rdump(paste0('data/clean/obs_av_rdump_expt123.R'))  #Avoidance
+ap_dataList=read_rdump(paste0('cmdstan/model/obs_ap_rdump_expt123.R'))  #Approach
+av_dataList=read_rdump(paste0('cmdstan/model/obs_av_rdump_expt123.R'))  #Avoidance
 
 
 #Approach
@@ -246,71 +250,135 @@ pp_fig = arrangeGrob(
 ggsave(file=paste0("figures/predictives_expt3.png"),plot=pp_fig,width=11,height=10)
 
 
+### VECTOR FIELDS ###
+
+ap_vf = mutate(ap_pp_data,goal_type = "Approach") %>% filter(expt==3)
+av_vf = mutate(av_pp_data,goal_type = "Avoidance") %>% filter(expt==3)
+
+pd = bind_rows(ap_vf,av_vf) %>%
+  #calculate bins for distance and deadline
+  mutate(a_d_bin = round(a_d*188/15)*15,
+         b_d_bin = round(b_d*188/15)*15,
+         a_t0_bin = as.numeric(a_t0 > 2),
+         b_t0_bin = as.numeric(b_t0 > 2)) %>%
+  #Get proportion for each trial
+  group_by(s,expt,a_d_bin,b_d_bin,a_t0_bin,b_t0_bin,sample,goal_type) %>%
+  summarise(y_pred_tr = mean(y_pred),
+            y_obs_tr = mean(y_obs)) %>%
+  #Get proportion for each bin
+  group_by(expt,a_d_bin,b_d_bin,a_t0_bin,b_t0_bin,sample,goal_type) %>%
+  summarise(y_pred_con = mean(y_pred_tr),
+            y_obs_con = mean(y_obs_tr),
+            y_obs_con_se = sd(y_obs_tr)/sqrt(length(y_obs_tr))) %>%
+  #Get posterior
+  group_by(expt,a_d_bin,b_d_bin,a_t0_bin,b_t0_bin,goal_type) %>%
+  summarise(y_pred_mean = mean(y_pred_con),
+            y_pred_hi = quantile(y_pred_con,0.975),
+            y_pred_lo = quantile(y_pred_con,0.025),
+            y_obs_mean = mean(y_obs_con),
+            y_obs_hi = y_obs_mean + mean(y_obs_con_se),
+            y_obs_lo = y_obs_mean - mean(y_obs_con_se),
+            xend_obs = mean(a_d_bin) - y_obs_mean*10,
+            yend_obs = mean(b_d_bin) - (1-y_obs_mean)*10,
+            xend_pred_mean = mean(a_d_bin) - y_pred_mean*10,
+            yend_pred_mean = mean(b_d_bin) - (1-y_pred_mean)*10,
+            xend_pred_lo = mean(a_d_bin) - y_pred_lo*10,
+            yend_pred_lo = mean(b_d_bin) - (1-y_pred_lo)*10,
+            xend_pred_hi = mean(a_d_bin) - y_pred_hi*10,
+            yend_pred_hi = mean(b_d_bin) - (1-y_pred_hi)*10)
+
+pd1 = pd %>% ungroup() %>% mutate(group = 1,polygroup = 1:n())
+pd2 = pd %>% ungroup() %>% mutate(group = 2,polygroup = 1:n())
+pd3 = pd %>% ungroup() %>% mutate(group = 3,polygroup = 1:n())
+
+pd_poly = bind_rows(pd1,pd2,pd3) %>%
+  mutate(poly_x = case_when(
+    group == 1 ~ a_d_bin,
+    group == 2 ~ xend_pred_hi,
+    group == 3 ~ xend_pred_lo
+  ),
+  poly_y = case_when(
+    group == 1 ~ b_d_bin,
+    group == 2 ~ yend_pred_hi,
+    group == 3 ~ yend_pred_lo
+    )
+  )
+
+ggplot( data = pd ,
+        aes(x = a_d_bin, y = b_d_bin)) +
+  # geom_raster() +
+  facet_grid(goal_type + b_t0_bin ~ a_t0_bin ) +
+
+  geom_polygon(data=pd_poly,aes(x=poly_x,y=poly_y,group=polygroup),fill="skyblue") +
+ ##geom_point(size=0.5,col="red",aes(x=xend_pred_lo,y=yend_pred_hi)) +
+  geom_segment(aes(xend=xend_pred_mean,yend=yend_pred_mean),arrow = arrow(length = unit(0.02, "npc")),alpha=1,col="blue") +
+  geom_segment(aes(xend=xend_obs,yend=yend_obs),arrow = arrow(length = unit(0.02, "npc")),alpha=1,col="red") +
 
 
-# Observed Decisions
-#
-# ```{r observed_fits, eval=FALSE, fig.align="center", fig.height=12, fig.width=10, include=FALSE}
-# #Approach
-# #setwd("..")
-# dataList=read_rdump('data/clean/obs_ap_rdump.R')
-#
-# load("data/derived/ap_obs_fit.RData")
-# pp_data=generate_pp(fit=fit,dataList=dataList,Nsamp=10,source="obs")
-# ap_obs_pp_plot= generate_pp_plot(pp_data)
-#
-#
-# #Avoidance
-# dataList=read_rdump('data/clean/obs_av_rdump.R')
-#
-# load("data/derived/av_obs_fit.RData")
-# pp_data=generate_pp(fit=fit,dataList=dataList,Nsamp=10,source="obs")
-# av_obs_pp_plot= generate_pp_plot(pp_data)
-#
-# #Posterior predictives
-# grid.arrange(
-#   arrangeGrob(ap_obs_pp_plot[[1]] + theme(axis.text.x = element_text(size=6)) ,
-#               top="Distance Experiment, Approach Condition"),
-#   arrangeGrob(av_obs_pp_plot[[1]]  + theme(axis.text.x = element_text(size=6)) ,
-#               top="Distance Experiment, Avoidance Condition"),
-#   arrangeGrob(ap_obs_pp_plot[[2]]  + theme(axis.text.x = element_text(size=6)) ,
-#               top="Deadline Experiment, Approach Condition"),
-#   arrangeGrob(av_obs_pp_plot[[2]]  + theme(axis.text.x = element_text(size=6)) ,
-#               top="Deadline Experiment, Avoidance Condition"),
-#   nrow=4,height=12, width=10
-# )
-# ```
-#
-# # Optimal Decisions
-#
-# ```{r optimal_fits, eval=FALSE, fig.align="center", fig.height=12, fig.width=10, include=FALSE}
-#
-# #Approach
-# #setwd("..")
-# dataList=read_rdump('data/clean/opt_ap_rdump.R')
-#
-# load("data/derived/ap_opt_fit.RData")
-# pp_data=generate_pp(fit=fit,dataList=dataList,Nsamp=100,source="opt")
-# ap_opt_pp_plot= generate_pp_plot(pp_data)
-#
-#
-# #Avoidance
-# dataList=read_rdump('data/clean/opt_av_rdump.R')
-#
-# load("data/derived/av_opt_fit.RData")
-# pp_data=generate_pp(fit=fit,dataList=dataList,Nsamp=100,source="opt")
-# av_opt_pp_plot= generate_pp_plot(pp_data)
-#
-# #Posterior predictives
-# grid.arrange(
-#   arrangeGrob(ap_opt_pp_plot[[1]] + theme(axis.text.x = element_text(size=6)) ,
-#               top="Distance Experiment, Approach Condition"),
-#   arrangeGrob(av_opt_pp_plot[[1]]  + theme(axis.text.x = element_text(size=6)) ,
-#               top="Distance Experiment, Avoidance Condition"),
-#   arrangeGrob(ap_opt_pp_plot[[2]]  + theme(axis.text.x = element_text(size=6)) ,
-#               top="Deadline Experiment, Approach Condition"),
-#   arrangeGrob(av_opt_pp_plot[[2]]  + theme(axis.text.x = element_text(size=6)) ,
-#               top="Deadline Experiment, Avoidance Condition"),
-#   nrow=4
-# )
-# ```
+  ylab('Left Starting Height (cm)') +
+  xlab("Right Starting Height (cm)") +
+ # theme.goal +
+  #scale_fill_gradient2(low="blue",high="red",mid="black",midpoint=0.5,na.value='black',limits=c(0,1)) +
+  scale_colour_distiller(palette = "Spectral", limits = c(0, 1)) +
+  labs(fill = "Proportion Prioritizing\nRight-hand Crop/Weed") +
+  scale_x_reverse() +
+  scale_y_reverse() +
+  geom_vline(xintercept=0,size=2.5) +
+  geom_hline(yintercept=0,size=2.5) +
+  geom_vline(xintercept=0,size=0.5,color='yellow') +
+  geom_hline(yintercept=0,size=0.5,color='yellow') +
+  coord_cartesian(ylim= c(-20,100),xlim=c(-20,100))
+
+
+#Implement theme from discriptives
+#Covert to 1 0 scale
+#Labels for facets
+
+
+pd <- data_bound %>%
+  filter(phase==1,expt==3, left_current_distance > 0 , right_current_distance > 0 )   %>%
+  mutate(left_start_deadline_bin = as.numeric(left_start_deadline > 2),
+         right_start_deadline_bin = as.numeric(right_start_deadline > 2),
+         left_current_distance_bin = round(left_current_distance/10)*10,
+         right_current_distance_bin = round(right_current_distance/10)*10) %>%
+  group_by(subject,trial_number,left_start_deadline_bin,right_start_deadline_bin,left_current_distance_bin,right_current_distance_bin,goal_type ) %>%
+  summarise( prioritise_right = mean(prioritise_right),
+             policy_right = mean(policy)) %>%
+  group_by(left_start_deadline_bin,right_start_deadline_bin,left_current_distance_bin,right_current_distance_bin,goal_type) %>%
+  summarise(  prioritise_right = mean(prioritise_right),
+              policy_right = mean(policy_right) ) %>%
+  gather(source,choice_right,prioritise_right,policy_right) %>%
+  mutate(left_start_deadlineF = factor(left_start_deadline_bin,levels=0:1,labels=c("Left: 1 or 2 Months","Left: 4 or 8 Months")),
+         right_start_deadlineF = factor(right_start_deadline_bin,levels=0:1,labels=c("Right: 1 or 2 Months","Right: 4 or 8 Months"))) %>%
+  mutate(xend = right_current_distance_bin - choice_right*6,
+         yend = left_current_distance_bin - (1-choice_right  )*6 )
+
+#pd$choice_farther[pd$left_start_deadline==pd$right_start_deadline] = NA
+
+pd$source = factor(
+  pd$source,
+  levels = c('prioritise_right', 'policy_right'),
+  labels = c('Observed', 'Achievement Maximizing')
+)
+
+ggplot( data = subset(pd , source == "Achievement Maximizing"),
+        aes(y = left_current_distance_bin, x = right_current_distance_bin, fill = choice_right, color=choice_right)) +
+  # geom_raster() +
+  geom_segment(aes(xend=xend,yend=yend),arrow = arrow(length = unit(0.02, "npc")),alpha=1) +
+  facet_grid(goal_type + left_start_deadlineF ~ source + right_start_deadlineF ) +
+  ylab('Left Starting Height (cm)') +
+  xlab("Right Starting Height (cm)") +
+  theme.goal +
+  #scale_fill_gradient2(low="blue",high="red",mid="black",midpoint=0.5,na.value='black',limits=c(0,1)) +
+  scale_colour_distiller(palette = "Spectral", limits = c(0, 1)) +
+  labs(fill = "Proportion Prioritizing\nRight-hand Crop/Weed") +
+  scale_x_reverse() +
+  scale_y_reverse() +
+  geom_vline(xintercept=0,size=2.5) +
+  geom_hline(yintercept=0,size=2.5) +
+  geom_vline(xintercept=0,size=0.5,color='yellow') +
+  geom_hline(yintercept=0,size=0.5,color='yellow') +
+  coord_cartesian(ylim= c(-20,100),xlim=c(-20,100))
+
+
+

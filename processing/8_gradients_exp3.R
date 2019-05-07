@@ -335,7 +335,149 @@ grid.arrange(gradient_fig)
 
 ggsave(file=paste0("figures/gradients_expt123.png"),plot=gradient_fig,width=6,height=9)
 
+# Vector plot of gradient components
 
+theme.goal <- theme(strip.text.x = element_text(size=12,face="bold",colour="black",family="Times"),
+                    strip.text.y = element_text(size=12, face="bold","black",family="Times"),
+                    strip.background = element_rect(colour="black", fill="gray"),
+                    plot.background = element_rect(fill = "transparent"),
+                    #plot.border= element_rect(fill = "transparent"),
+                    panel.border = element_rect(color="black", linetype="solid",fill=NA),
+                    panel.background = element_rect(fill = "transparent"),
+                    panel.grid.major = element_blank(),
+                    panel.grid.minor = element_blank(),
+                    axis.text.x = element_text(size=12,colour="black",family="Times"),
+                    axis.text.y = element_text(size=12,colour="black",family="Times"),
+                    axis.title.x = element_text(size=18,colour="black",face="bold",family="Times",vjust=-0.5),
+                    axis.title.y = element_text(size=18,colour="black",face="bold",family="Times",vjust=1),
+                    #axis.ticks.length = unit(-0.2,"cm"),
+                    legend.title=element_text(size=16,face="bold",family="Times"),
+                    legend.text=element_text(size=14,family="Times"),
+                    legend.key=element_rect(color='transparent',fill='white' ),
+                    #legend.title=element_text(size=10,face="bold",family="Times"),
+                    legend.title.align = 0.5,
+                    #legend.text=element_text(size=6,family="Times"),
+                    legend.text.align = 0.5,
+                    #legend.key=element_rect(color='white',fill='white'),
+                    plot.title = element_text(size=18,face="bold",family="Times",vjust=1))#,
+# legend.key = element_rect(fill = "transparent", colour = "transparent"))
+
+
+
+sim = expand.grid(a_d = seq(0.125,0.875,by=0.15),
+                  b_d = seq(0.125,0.875,by=0.15),
+                  a_t = seq(0.1,0.9,by=0.8),
+                  b_t = seq(0.1,0.9,by=0.8),
+                  frame=c('ap','av'))
+
+means=posts %>%
+  filter(source=="obs",model=="space",structure=="hier",!is.na(parameter)) %>%
+  group_by(parameter,frame,subject) %>%
+  summarise(value = mean(value)) %>%
+  group_by(parameter,frame) %>%
+  summarise(value = mean(value))  %>%
+  spread(key=parameter,value=value)
+
+scale = 0.02
+
+gradients = left_join(sim,means,by="frame") %>%
+  mutate( frame = factor(frame,levels=c('ap','av'),labels=c('Approach','Avoidance')),
+          max = 2*(1-alpha)*sqrt(alpha/(1-alpha)),
+          a_sg = (delta>=0)*w1*a_d^delta + (delta<0)*w1*(1-a_d^-delta),
+          a_tg = (tau>=0)*w2*a_t^tau + (tau<0)*w2*(1-a_t^-tau),
+          b_sg = (delta>=0)*w1*b_d^delta + (delta<0)*w1*(1-b_d^-delta),
+          b_tg = (tau>=0)*w2*b_t^tau + (tau<0)*w2*(1-b_t^-tau),
+          a_stg = w3*max / (alpha*a_t/a_d + (1-alpha)*a_d/a_t ) ,
+          b_stg = w3*max / (alpha*b_t/b_d + (1-alpha)*b_d/b_t ) ,
+          a_g = a_sg + a_tg + a_stg,
+          b_g = b_sg + b_tg + b_stg) %>%
+  gather(key,value,a_sg:b_g) %>%
+  separate(key,into=c('goal','gradient')) %>%
+  spread(key=goal,value=value) %>%
+  mutate(xend = a_d - (frame=="Approach")*a*scale + (frame=="Avoidance")*a*scale,
+         yend = b_d - (frame=="Approach")*b*scale + (frame=="Avoidance")*b*scale,
+         a_tF = factor(a_t,levels=c(0.1,0.9),labels=c("Left: T = 0.1","Left: T = 0.9")),
+         b_tF = factor(b_t,levels=c(0.1,0.9),labels=c("Right: T = 0.1","Right: T = 0.9")),
+         gradient = factor(gradient,levels=c('sg','tg','stg'),labels=c('Spatial','Temporal','Spatiotemporal')))
+
+filter(gradients,frame=="Avoidance",gradient!="g") %>%
+ggplot( aes(y = b_d, x = a_d ,group=factor(gradient),colour=as.factor(gradient))) +
+  # geom_raster() +
+  geom_segment(aes(xend=xend,yend=yend),arrow = arrow(length = unit(0.02, "npc")),alpha=0.8) +
+  facet_grid(b_tF~ a_tF ) +
+  ylab('Left Distance to Goal (D)') +
+  xlab("Right Distance to Goal (D)") +
+  #theme.goal +
+  #scale_fill_gradient2(low="blue",high="red",mid="black",midpoint=0.5,na.value='black',limits=c(0,1)) +
+  #scale_colour_distiller(palette = "Spectral", limits = c(0, 1)) +
+  labs(color = "Gradient") +
+  scale_x_reverse() +
+  scale_y_reverse() +
+  geom_vline(xintercept=0,size=2.5) +
+  geom_hline(yintercept=0,size=2.5) +
+  geom_vline(xintercept=0,size=0.5,color='yellow') +
+  geom_hline(yintercept=0,size=0.5,color='yellow') +
+  theme.goal +
+  theme(legend.position = "bottom")
+
+#Mixture modelling of parameters
+
+install.packages('mixAK')
+library('mixAK')
+
+data("PBC910", package = "mixAK")
+
+plotProfiles(PBC910)
+
+mod <- GLMM_MCMC(y = PBC910[, c("lbili", "platelet", "spiders")], #data frame with observed values
+                 dist = c("gaussian", "poisson(log)", "binomial(logit)"), #assumed distributions and link functions
+                 id = PBC910[, "id"], #id variable
+
+                 x = list(lbili = "empty",     # mean structure of each variable, which is a list of fixed effects that predict each variable ('empty' if none)
+                          platelet = "empty",
+                          spiders = PBC910[, "month"]),
+
+                 z = list(lbili = PBC910[, "month"], #random effects (except intercept term)
+                          platelet = PBC910[, "month"],
+                          spiders = "empty"),
+
+                 random.intercept = rep(TRUE, 3), #logical argument for random intercept
+                 prior.b = list(Kmax = 2),        #maximum number of clusters
+                 nMCMC = c(burn = 100, keep = 1000, thin = 10, info = 100),
+                 parallel = FALSE)
+
+subject_means = posts %>%
+  filter(source=="obs",model=="space",structure=="hier",!is.na(parameter)) %>%
+  group_by(parameter,frame,subject) %>%
+  summarise(value = mean(value)) %>%
+  spread(key=parameter,value=value) %>%
+  filter(frame=="ap") %>%
+  ungroup() %>%
+  select(subject,w3,alpha)
+
+#%>%
+  #filter(!is.na(w1),!is.na(w2))
+
+
+mod <- GLMM_MCMC(y = as.data.frame(subject_means[,2:3]), #data frame with observed values
+                 dist = c("gaussian", "gaussian"), #assumed distributions and link functions
+                 id = subject_means$subject, #id variable
+
+                 x = list(w3 = "empty",     # mean structure of each variable, which is a list of fixed effects that predict each variable ('empty' if none)
+                          alpha = "empty"),
+
+                 z = list(w3 = "empty",     #random effects (except intercept term)
+                          alpha = "empty"),
+
+                 random.intercept = rep(FALSE, 2), #logical argument for random intercept
+                 prior.b = list(Kmax = 3),        #maximum number of clusters
+                 nMCMC = c(burn = 100, keep = 1000, thin = 10, info = 100),
+                 parallel = FALSE,
+                 PED = FALSE)
+
+#Model is estimating but fails when computing the deviance!
+
+GLMM_MCMC(y=as.matrix(subject_means[,2:7]))
 
 
 
