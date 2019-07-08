@@ -400,7 +400,7 @@ gradients = left_join(sim,means,by="frame") %>%
          b_tF = factor(b_t,levels=c(0.1,0.9),labels=c("Right: T = 0.1","Right: T = 0.9")),
          gradient = factor(gradient,levels=c('sg','tg','stg'),labels=c('Spatial','Temporal','Spatiotemporal')))
 
-filter(gradients,frame=="Avoidance",gradient!="g") %>%
+filter(gradients,frame=="Approach",gradient!="g") %>%
 ggplot( aes(y = b_d, x = a_d ,group=factor(gradient),colour=as.factor(gradient))) +
   # geom_raster() +
   geom_segment(aes(xend=xend,yend=yend),arrow = arrow(length = unit(0.02, "npc")),alpha=0.8) +
@@ -419,6 +419,192 @@ ggplot( aes(y = b_d, x = a_d ,group=factor(gradient),colour=as.factor(gradient))
   geom_hline(yintercept=0,size=0.5,color='yellow') +
   theme.goal +
   theme(legend.position = "bottom")
+
+
+#Individual differences in gradient components
+sim = expand.grid(a_d = seq(0.125,0.875,by=0.15),
+                  b_d = seq(0.125,0.875,by=0.15),
+                  a_t = c(0.1,0.9,seq(0.125,0.875,by=0.15)),
+                  b_t = c(0.1,0.9,seq(0.125,0.875,by=0.15)),
+                  frame=c('ap','av'),
+                  subject = unique(posts$subject))
+
+sub_means=posts %>%
+  filter(source=="obs",model=="space",structure=="hier",!is.na(parameter)) %>%
+  group_by(parameter,frame,subject) %>%
+  summarise(value = mean(value)) %>%
+  spread(key=parameter,value=value)
+
+
+scale = 0.02
+
+gradients = left_join(sim,sub_means,by=c("frame","subject")) %>%
+  mutate( frame = factor(frame,levels=c('ap','av'),labels=c('Approach','Avoidance')),
+          max = 2*(1-alpha)*sqrt(alpha/(1-alpha)),
+          a_sg = (delta>=0)*w1*a_d^delta + (delta<0)*w1*(1-a_d^-delta),
+          a_tg = (tau>=0)*w2*a_t^tau + (tau<0)*w2*(1-a_t^-tau),
+          b_sg = (delta>=0)*w1*b_d^delta + (delta<0)*w1*(1-b_d^-delta),
+          b_tg = (tau>=0)*w2*b_t^tau + (tau<0)*w2*(1-b_t^-tau),
+          a_stg = w3*max / (alpha*a_t/a_d + (1-alpha)*a_d/a_t ) ,
+          b_stg = w3*max / (alpha*b_t/b_d + (1-alpha)*b_d/b_t ) ,
+          a_g = a_sg + a_tg + a_stg,
+          b_g = b_sg + b_tg + b_stg) %>%
+  gather(key,value,a_sg:b_g) %>%
+  separate(key,into=c('goal','gradient')) %>%
+  spread(key=goal,value=value) %>%
+  mutate(expt = case_when(
+    is.na(w2) ~ 1,
+    is.na(w1) ~ 2,
+    !is.na(w1) & !is.na(w2) ~ 3
+  )) %>%
+  mutate(xend = a_d - (frame=="Approach")*a*scale + (frame=="Avoidance")*a*scale,
+         yend = b_d - (frame=="Approach")*b*scale + (frame=="Avoidance")*b*scale,
+         xend_t = a_t - (frame=="Approach")*a*scale + (frame=="Avoidance")*a*scale,
+         yend_t = b_t - (frame=="Approach")*b*scale + (frame=="Avoidance")*b*scale,
+         a_tF = factor(a_t,levels=c(0.1,0.9),labels=c("Left: T = 0.1","Left: T = 0.9")),
+         b_tF = factor(b_t,levels=c(0.1,0.9),labels=c("Right: T = 0.1","Right: T = 0.9")),
+         gradient = factor(gradient,levels=c('sg','tg','stg'),labels=c('Spatial','Temporal','Spatiotemporal'))) #%>%
+#  # group_by(a_tF,b_tF,a_d,b_d,gradient,frame) %>%
+# #  summarise(xend_025 = quantile(xend,0.025,na.rm=T),
+#             xend_5 =   quantile(xend,0.5,na.rm=T),
+#             xend_975 = quantile(xend,0.975,na.rm=T),
+#             yend_025 = quantile(yend,0.025,na.rm=T),
+#             yend_5 =   quantile(yend,0.5,na.rm=T),
+#             yend_975 = quantile(yend,0.975,na.rm=T))
+
+#Spatial
+filter(gradients,a_t==0.1,b_t==0.1,gradient=="Spatial") %>%
+  ggplot( aes(y = b_d, x = a_d )) +# ,group=factor(gradient),colour=as.factor(gradient))) +
+  # geom_raster() +
+  #  geom_point() +
+  geom_segment(aes(xend=xend,yend=yend),arrow = arrow(length = unit(0.01, "npc")),alpha=0.075,size=0.5) +
+  facet_grid(.~ frame ) +
+  ylab('Left Distance to Goal (D)') +
+  xlab("Right Distance to Goal (D)") +
+  #theme.goal +
+  #scale_fill_gradient2(low="blue",high="red",mid="black",midpoint=0.5,na.value='black',limits=c(0,1)) +
+  #scale_colour_distiller(palette = "Spectral", limits = c(0, 1)) +
+  labs(color = "Gradient") +
+  scale_x_reverse() +
+  scale_y_reverse() +
+  geom_vline(xintercept=0,size=2.5) +
+  geom_hline(yintercept=0,size=2.5) +
+  geom_vline(xintercept=0,size=0.5,color='yellow') +
+  geom_hline(yintercept=0,size=0.5,color='yellow') +
+  theme.goal +
+  theme(legend.position = "bottom")
+
+#Temporal
+filter(gradients,a_d==0.125,b_d==0.125,a_t!=0.1,a_t!=0.9,b_t!=0.1,b_t!=0.9,gradient=="Temporal") %>%
+  ggplot( aes(y = b_t, x = a_t )) +# ,group=factor(gradient),colour=as.factor(gradient))) +
+  # geom_raster() +
+  #  geom_point() +
+  geom_segment(aes(xend=xend_t,yend=yend_t),arrow = arrow(length = unit(0.01, "npc")),alpha=0.075,size=0.5) +
+  facet_grid(.~ frame ) +
+  ylab('Left Time to Deadline (T)') +
+  xlab("Right Time to Deadline (T)") +
+  #theme.goal +
+  #scale_fill_gradient2(low="blue",high="red",mid="black",midpoint=0.5,na.value='black',limits=c(0,1)) +
+  #scale_colour_distiller(palette = "Spectral", limits = c(0, 1)) +
+  labs(color = "Gradient") +
+  scale_x_reverse() +
+  scale_y_reverse() +
+  geom_vline(xintercept=0,size=2.5) +
+  geom_hline(yintercept=0,size=2.5) +
+  geom_vline(xintercept=0,size=0.5,color='yellow') +
+  geom_hline(yintercept=0,size=0.5,color='yellow') +
+  theme.goal +
+  theme(legend.position = "bottom")
+
+
+#Spatiotemporal
+filter(gradients,!is.na(a_tF),!is.na(b_tF),gradient=="Spatiotemporal",frame=="Avoidance") %>%
+  ggplot( aes(y = b_d, x = a_d )) +
+  # geom_raster() +
+#  geom_point() +
+  geom_segment(aes(xend=xend,yend=yend),arrow = arrow(length = unit(0.01, "npc")),alpha=0.075,size=0.5) +
+  facet_grid(b_tF~ a_tF ) +
+  ylab('Left Distance to Goal (D)') +
+  xlab("Right Distance to Goal (D)") +
+  #theme.goal +
+  #scale_fill_gradient2(low="blue",high="red",mid="black",midpoint=0.5,na.value='black',limits=c(0,1)) +
+  #scale_colour_distiller(palette = "Spectral", limits = c(0, 1)) +
+  labs(color = "Gradient") +
+  scale_x_reverse() +
+  scale_y_reverse() +
+  geom_vline(xintercept=0,size=2.5) +
+  geom_hline(yintercept=0,size=2.5) +
+  geom_vline(xintercept=0,size=0.5,color='yellow') +
+  geom_hline(yintercept=0,size=0.5,color='yellow') +
+  theme.goal +
+  theme(legend.position = "bottom")
+
+#Overall
+
+filter(gradients,!is.na(a_tF),!is.na(b_tF),is.na(gradient),frame=="Avoidance") %>%
+  ggplot( aes(y = b_d, x = a_d )) +
+  # geom_raster() +
+  #  geom_point() +
+  geom_segment(aes(xend=xend,yend=yend),arrow = arrow(length = unit(0.01, "npc")),alpha=0.075,size=0.5) +
+  facet_grid(b_tF~ a_tF ) +
+  ylab('Left Distance to Goal (D)') +
+  xlab("Right Distance to Goal (D)") +
+  #theme.goal +
+  #scale_fill_gradient2(low="blue",high="red",mid="black",midpoint=0.5,na.value='black',limits=c(0,1)) +
+  #scale_colour_distiller(palette = "Spectral", limits = c(0, 1)) +
+  labs(color = "Gradient") +
+  scale_x_reverse() +
+  scale_y_reverse() +
+  geom_vline(xintercept=0,size=2.5) +
+  geom_hline(yintercept=0,size=2.5) +
+  geom_vline(xintercept=0,size=0.5,color='yellow') +
+  geom_hline(yintercept=0,size=0.5,color='yellow') +
+  theme.goal +
+  theme(legend.position = "bottom")
+
+
+
+
+
+
+
+
+
+#Scatterplots of participant parms
+library(GGally)
+
+pd1 = posts %>%
+  filter(frame=="av") %>%
+  group_by(subject,parameter) %>%
+  summarise(estimate = mean(value)) %>%
+  ungroup() %>%
+  spread(key=parameter,value=estimate) %>%
+  select(-subject) %>%
+  ggpairs(upper=list(continuous="density"))
+
+#alpha by experiment
+
+posts %>%
+  filter(frame=="ap") %>%
+  group_by(subject,parameter) %>%
+  summarise(estimate = mean(value)) %>%
+  ungroup() %>%
+  spread(key=parameter,value=estimate) %>%
+  mutate(expt = case_when(
+    is.na(w2) ~ 1,
+    is.na(w1) ~ 2,
+    !is.na(w1) & !is.na(w2) ~ 3
+  )) %>%
+  gather(key=parameter,value=estimate,alpha:w3) %>%
+  ggplot(aes(group=factor(expt),colour=factor(expt))) +
+  geom_density(aes(x=estimate),alpha=0.3) +
+  facet_wrap(~parameter,scale="free") +
+  coord_cartesian(xlim=)
+
+  select(-subject)
+
+pd1
+
 
 #Mixture modelling of parameters
 
