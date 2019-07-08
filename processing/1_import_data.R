@@ -64,8 +64,8 @@ raw_data.exp4$expt = 4
 
 #NOTE - approximately 55 participants for distance condition are missing last 4 trials because of technical issues in the javascript (slicing error - resolved 12/5/16)
 #NOTE - approximately 39 participants for deadline condition are missing last 4 trials because of technical issues in the javascript (slicing error - resolved 12/5/16)
-#NOTE - 4 participants did not complete expt3 (one did not even start, only provided demographic data so is not in the data frame at all)
-imported_data = bind_rows(raw_data.exp1,raw_data.exp2,raw_data.exp3,raw_data.exp4) %>%
+#NOTE - 3 participants did not complete expt3 (one did not even start, only provided demographic data so is not in the data frame at all)
+imported_data_tmp = bind_rows(raw_data.exp1,raw_data.exp2,raw_data.exp3,raw_data.exp4) %>%
   mutate(subject = as.numeric(as.factor(subject_id)),
          day = stage,
          goal_type = factor(goal_type,levels=1:3,labels=c("Approach","Avoidance","ApAv")),
@@ -131,7 +131,9 @@ imported_data = bind_rows(raw_data.exp1,raw_data.exp2,raw_data.exp3,raw_data.exp
   mutate(maxtrial=max(trial_number),
          complete = (expt<3)*(maxtrial==52|maxtrial==56) +
                     (expt==3)*(maxtrial==240) +
-                    (expt==4)*(maxtrial==256)) %>%
+                    (expt==4)*(maxtrial==256))
+
+imported_data = imported_data_tmp %>%
   filter(complete==1) %>%
   unique(by=c("expt","subject","trial_number","day")) #This is to remove duplicates observations for subject 76 that were caused by program
 #Note that there is one participant who's final trial is 53. Not sure why they weren't excluded from initial analyses, but we delete them here  (e.g., complete trial 56)
@@ -187,10 +189,37 @@ transformed_data$closer_start_deadline_current_distance[transformed_data$right_d
 
 save(transformed_data,file="./data/clean/transformed_data.RData")
 
+### DEMOGRAPHIC DETAILS ###
 
+#AGE AND GENDER
 
+#Expt 1
 
-#Expt 3 demographics
+age = read.table("data/raw/exp1/age.txt",header=T)
+
+range(age$age)
+mean(age$age)
+sd(age$age)
+
+gender = read.table("data/raw/exp1/gender.txt",header=T)
+count(gender,gender) %>% mutate(prop = n/sum(n))
+
+length(gender$gender) #full sample size (number of participants who completed first question)
+
+#Expt 2
+
+age = read.table("data/raw/exp2/age.txt",header=T)
+
+range(age$age)
+mean(age$age)
+sd(age$age)
+
+gender = read.table("data/raw/exp2/gender.txt",header=T)
+count(gender,gender) %>% mutate(prop = n/sum(n))
+
+length(gender$gender) #full sample size (number of participants who completed first question)
+
+#Expt 3
 
 age = read.table("data/raw/exp3/age.txt",header=T)
 
@@ -201,5 +230,18 @@ sd(age$age)
 gender = read.table("data/raw/exp3/gender.txt",header=T)
 count(gender,gender) %>% mutate(prop = n/sum(n))
 
+length(gender$gender)
+
+#NUMBER WHO COMPLETED EXPERIMENT
+
+#Sample size
+
+imported_data %>%
+  filter(expt<4) %>%
+  summarise(expt=head(expt,1),complete=head(complete,1)) %>%
+  group_by(expt) %>%
+  summarise(n_complete = sum(complete))
+
+#Note that some participants only provided age and gender data.
 
 
