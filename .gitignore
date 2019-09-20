@@ -5,9 +5,11 @@
 .Rapp.history
 .DS_Store
 analysis/figure
+processing/*csv
 analysis/*png
 analysis/*html
 analysis/*_cache
 analysis/site_libs
 data/derived/*fit.RData
+data/derived/*fit_old.RData
 data/cmdstan/model/*fit.RData
