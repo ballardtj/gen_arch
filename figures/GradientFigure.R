@@ -12,7 +12,7 @@ w2 = c(0,0,1,0,0,0)
 w3 = c(0,0,0,1,1,1)
 delta = c(-0.5,0.5,0,0,0,0)
 tau = c(0,0,-0.5,0,0,0)
-alpha = c(0.5,0.5,0.5,0.001,0.999,0.5)
+alpha = c(0.5,0.5,0.5,0.008,0.992,0.5)
 
 #create data frame - outer loop is frame, middle loop is distance, inner loop is time
 levs= seq(0.01,0.99,by=0.01)
@@ -26,7 +26,7 @@ pd<-expand.grid(perspective = 1:6,distance =levs,time=levs) %>%
 
 
 pd$perspective_factor = factor(pd$perspective,1:6,c('Proximity Perspctive','Discrepancy Perspective',' ',
-                                                    'Expectancy Perspective','Difficulty Perspective','Non-Monotonic Perspective'))
+                                                    'Expectancy Perspective','Difficulty Perspective','Achievability Perspective'))
 pd$distance_factor = factor(pd$distance,levels=0:(length(levs)))
 pd$time_factor = factor(pd$time,levels=0:(length(levs)))
 
@@ -100,10 +100,25 @@ p = arrangeGrob(t1,t2,
                          plotList[[4]] + theme(legend.position="none"),plotList[[5]] + theme(legend.position="none"),plotList[[6]] + theme(legend.position="none"),
                          mylegend,nrow=5,layout_matrix=plot.layout,heights=c(.1,1,.15,1,.3),widths=c(1,1,1),respect=T)
 
+grid.arrange(p)
+
 ggsave(file="figures/hypothetical_gradients.pdf",plot=p,width=8,height=6)
 
 
 #Create legend.
 #Make sure figures are as close together as possible
+
+
+alpha = 0.4
+theta = 1
+expand.grid( a = seq(0.1,0.9,by=0.01),
+             b = seq(0.1,0.9,by=0.01)) %>%
+  mutate( val_a = a^alpha,
+             val_b = b^alpha,
+             p = 1/(1+exp(-theta*(val_a-val_b)))) %>%
+  ggplot(aes(x=a,y=p,group=b,colour=b)) +
+  geom_line() + coord_cartesian(ylim=c(0,1))
+
+
 
 

@@ -199,7 +199,7 @@ data_bound$policy = (round(data_bound$ev_left,equivilance)<round(data_bound$ev_r
 #   (round(dpdata$ev_left,equivilance)==round(dpdata$ev_right,equivilance))*0.5
 
 #save data file with optimal decisions
-save(data_bound,file="./data/clean/dp_data_expt3.RData")
+save(data_bound,file="data/clean/dp_data_expt3.RData")
 
 #option to save just the full dynamic programing results for every bin (the file is approximately 500MB)
 #save(full_dpdata,file="./data/clean/DPOnly.Rda")

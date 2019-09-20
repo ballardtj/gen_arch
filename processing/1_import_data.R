@@ -5,110 +5,42 @@ rm(list=ls(all=T))
 require(tidyverse)
 
 #load the data files from experiments 1, 2, and 3
-raw_data.exp1 = read.table("./data/raw/exp1/parsed_data.txt",header=T,sep=",")
-raw_data.exp2 = read.table("./data/raw/exp2/parsed_data.txt",header=T,sep=",")
-raw_data.exp3 = read.table("./data/raw/exp3/parsed_data_old.txt",header=T,sep=",") %>% select(-gender_key,-age,-session_key,-birth_month,-child_street,-mothers_name)
+raw_data.exp1 = read.table("data/raw/exp1/parsed_data.txt",header=T,sep=",")
+raw_data.exp2 = read.table("data/raw/exp2/parsed_data.txt",header=T,sep=",")
+raw_data.exp3 = read.table("data/raw/exp3/parsed_data.txt",header=T,sep=",") %>% select(-gender_key,-age,-session_key,-birth_month,-child_street,-mothers_name)
 
 vars = names(raw_data.exp1)
 
 raw_data.exp1$expt = 1
 raw_data.exp2$expt = 2
+raw_data.exp2$subject_id = raw_data.exp2$subject_id + 1e10
 raw_data.exp3$expt = 3
-
-#merge subject data files from experiment 4
-
-files = list.files(path = "data/raw/exp4", pattern = '.csv')
-nSubj = length(files)
-
-datalist = list()
-dataset.ctr=0
-for(subject in 1:nSubj){
-  raw_dat = read.csv(paste0("data/raw/exp4/",files[subject]))
-  behav_dat <- raw_dat %>% filter(trial_type=='plant-game') %>%
-    mutate(goal_type = 3,
-           subject_id = as.numeric(gsub(".csv","",files[subject])),
-           left_goal_type = case_when(
-             experimental_crop_side == "Right" ~ "Fixed",
-             experimental_crop_side == "Left" ~ "Experimental"
-            ),
-           right_goal_type = case_when(
-             experimental_crop_side == "Right" ~ "Experimental",
-             experimental_crop_side == "Left" ~ "Fixed"
-           )
-    )
-  for(trial in 1:dim(behav_dat)[1]){
-    dataset.ctr=dataset.ctr+1
-
-    n_obs_in_trial =  length(as.numeric(strsplit(as.character(behav_dat[trial,"left_current_height"]),",")[[1]] ) )
-
-    trial_dat <- data.frame(matrix(ncol = length(vars), nrow = n_obs_in_trial  ))
-    colnames(trial_dat) <- vars
-
-    for(var in vars){
-      if(var == "mouse_click"){var = "mouse_clicked"}
-
-      value_1 = behav_dat[trial,var]
-      value_2 = strsplit( as.character(value_1),"," )[[1]]
-
-      if(any(!is.na(as.numeric(value_2)))){
-        value_2 = as.numeric(value_2)
-      }
-      trial_dat[var] = value_2
-    }
-    datalist[[dataset.ctr]] <- trial_dat
-  }
-}
-
-raw_data.exp4 <- bind_rows(datalist)
-raw_data.exp4$expt = 4
+raw_data.exp3$subject_id = raw_data.exp3$subject_id + 2e10
 
 #NOTE - approximately 55 participants for distance condition are missing last 4 trials because of technical issues in the javascript (slicing error - resolved 12/5/16)
 #NOTE - approximately 39 participants for deadline condition are missing last 4 trials because of technical issues in the javascript (slicing error - resolved 12/5/16)
 #NOTE - 3 participants did not complete expt3 (one did not even start, only provided demographic data so is not in the data frame at all)
-imported_data_tmp = bind_rows(raw_data.exp1,raw_data.exp2,raw_data.exp3,raw_data.exp4) %>%
+imported_data_tmp = bind_rows(raw_data.exp1,raw_data.exp2,raw_data.exp3) %>%
   mutate(subject = as.numeric(as.factor(subject_id)),
          day = stage,
          goal_type = factor(goal_type,levels=1:3,labels=c("Approach","Avoidance","ApAv")),
-         #for expt 4, the plant denoted as "right" plant is always the approach (even though in reality, the approach side was randomised)
-         left_plant_type = case_when(
-           expt < 4 ~ left_crop_type,
-           expt == 4 ~ fixed_crop_type
-          ),
-         right_plant_type = case_when(
-           expt < 4 ~ right_crop_type,
-           expt == 4 ~ experimental_crop_type
-          ),
+         left_plant_type = left_crop_type,
+         right_plant_type = right_crop_type,
          left_start_height = case_when(
-           expt < 4 & experimental_crop_side=='Left' ~ experimental_start_height,
-           expt < 4 & experimental_crop_side=='Right' ~ fixed_start_height,
-           expt == 4 ~ fixed_start_height
-          ),
+             experimental_crop_side=='Left' ~ experimental_start_height,
+             experimental_crop_side=='Right' ~ fixed_start_height
+         ),
          right_start_height = case_when(
-           expt < 4 & experimental_crop_side=='Right' ~ experimental_start_height,
-           expt < 4 & experimental_crop_side=='Left' ~ fixed_start_height,
-           expt == 4 ~ experimental_start_height
+           experimental_crop_side=='Right' ~ experimental_start_height,
+           experimental_crop_side=='Left' ~ fixed_start_height
          ),
-         left_current_height_tmp = case_when(
-           expt < 4  ~ left_current_height,
-           expt == 4 & experimental_crop_side=='Right' ~ left_current_height,
-           expt == 4 & experimental_crop_side=='Left' ~ right_current_height
-         ),
-         right_current_height_tmp = case_when(
-           expt < 4 ~ right_current_height,
-           expt == 4 & experimental_crop_side=='Right' ~ right_current_height,
-           expt == 4 & experimental_crop_side=='Left' ~ left_current_height
-         ),
-         left_current_height = left_current_height_tmp,
-         right_current_height = right_current_height_tmp,
          left_days_total = case_when(
-           expt < 4 & experimental_crop_side=='Left' ~ experimental_weeks_total,
-           expt < 4 & experimental_crop_side=='Right' ~ fixed_weeks_total,
-           expt == 4 ~ fixed_weeks_total
+           experimental_crop_side=='Left' ~ experimental_weeks_total,
+           experimental_crop_side=='Right' ~ fixed_weeks_total
          ),
          right_days_total = case_when(
-           expt < 4 & experimental_crop_side=='Right' ~ experimental_weeks_total,
-           expt < 4 & experimental_crop_side=='Left' ~ fixed_weeks_total,
-           expt == 4 ~ experimental_weeks_total
+           experimental_crop_side=='Right' ~ experimental_weeks_total,
+           experimental_crop_side=='Left' ~ fixed_weeks_total
          ),
          left_days_remaining_tmp = case_when(
            expt < 4  ~ left_weeks_remaining,
@@ -187,7 +119,7 @@ transformed_data$farther_start_deadline_current_distance[transformed_data$right_
 transformed_data$closer_start_deadline_current_distance[transformed_data$right_days_remaining==transformed_data$left_days_remaining] <- NaN
 
 
-save(transformed_data,file="./data/clean/transformed_data.RData")
+save(transformed_data,file="data/clean/transformed_data.RData")
 
 ### DEMOGRAPHIC DETAILS ###
 
@@ -230,11 +162,9 @@ sd(age$age)
 gender = read.table("data/raw/exp3/gender.txt",header=T)
 count(gender,gender) %>% mutate(prop = n/sum(n))
 
-length(gender$gender)
+length(gender$gender) #full sample size (number of participants who completed first question)
 
 #NUMBER WHO COMPLETED EXPERIMENT
-
-#Sample size
 
 imported_data %>%
   filter(expt<4) %>%

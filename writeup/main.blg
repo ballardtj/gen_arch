@@ -1,0 +1,76 @@
+This is BibTeX, Version 0.99d (TeX Live 2016)
+Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
+The top-level auxiliary file: main.aux
+The style file: apacite.bst
+Reallocated glb_str_ptr (elt_size=4) to 20 items from 10.
+Reallocated global_strs (elt_size=20001) to 20 items from 10.
+Reallocated glb_str_end (elt_size=4) to 20 items from 10.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated wiz_functions (elt_size=4) to 6000 items from 3000.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated wiz_functions (elt_size=4) to 9000 items from 6000.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Database file #1: library.bib
+Repeated entry---line 16278 of file library.bib
+ : @article{Westbrook2013
+ :                       ,
+I'm skipping whatever remains of this entry
+Repeated entry---line 18181 of file library.bib
+ : @article{Botvinick2009
+ :                       ,
+I'm skipping whatever remains of this entry
+Repeated entry---line 18681 of file library.bib
+ : @book{Atkinson1970
+ :                   ,
+I'm skipping whatever remains of this entry
+Repeated entry---line 19157 of file library.bib
+ : @book{Locke1990
+ :                ,
+I'm skipping whatever remains of this entry
+Warning--I didn't find a database entry for "Ballard2017"
+Warning--I didn't find a database entry for "Wager2003"
+Warning--I didn't find a database entry for "Rutherford2011"
+apacite.bst [2013/07/21 v6.03 APA bibliography style]
+You've used 101 entries,
+            6951 wiz_defined-function locations,
+            2029 strings with 29694 characters,
+and the built_in function-call counts, 196159 in all, are:
+= -- 24014
+> -- 1603
+< -- 9650
++ -- 10087
+- -- 202
+* -- 12990
+:= -- 36146
+add.period$ -- 403
+call.type$ -- 101
+change.case$ -- 1735
+chr.to.int$ -- 0
+cite$ -- 202
+duplicate$ -- 5436
+empty$ -- 7644
+format.name$ -- 2734
+if$ -- 36948
+int.to.chr$ -- 0
+int.to.str$ -- 303
+missing$ -- 0
+newline$ -- 2712
+num.names$ -- 808
+pop$ -- 2768
+preamble$ -- 1
+purify$ -- 422
+quote$ -- 0
+skip$ -- 12598
+stack$ -- 0
+substring$ -- 10966
+swap$ -- 3087
+text.length$ -- 220
+text.prefix$ -- 0
+top$ -- 1
+type$ -- 8080
+warning$ -- 0
+while$ -- 922
+width$ -- 0
+write$ -- 3376
+(There were 4 error messages)

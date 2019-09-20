@@ -9,7 +9,7 @@ library(tidyverse)
 # registerDoMC()
 
 #Load Stream B Data
-load("./data/clean/transformed_data.RData")
+load("data/clean/transformed_data.RData")
 
 transformed_data = filter(transformed_data,trial_kind=="experimental",expt<3)
 max(transformed_data$left_current_distance,transformed_data$right_current_distance)
@@ -17,7 +17,7 @@ min(transformed_data$left_current_distance,transformed_data$right_current_distan
 
 
 #Set Parameters
-bin_size = 2 #number of states that are put together in same bin
+bin_size = 5 #number of states that are put together in same bin
 max_distance = 240 # 180 cm away from goal (i.e., height of 0)
 min_distance = -100 # 100 cm above goal (i.e., height of 280)
 states = (max_distance-min_distance)/bin_size + 1 #add 1 for the min and max
@@ -199,7 +199,7 @@ dpdata$policy = (round(dpdata$ev_left,equivilance)>round(dpdata$ev_right,equivil
   (round(dpdata$ev_left,equivilance)==round(dpdata$ev_right,equivilance))*0.5
 
 #save data file with optimal decisions
-save(data_bound,file="./data/clean/dp_data.Rda")
+save(data_bound,file="data/clean/dp_data_expt12.RData")
 
 #option to save just the full dynamic programing results for every bin (the file is approximately 500MB)
 #save(full_dpdata,file="./data/clean/DPOnly.Rda")
