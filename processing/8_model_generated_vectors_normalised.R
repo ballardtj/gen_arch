@@ -29,6 +29,59 @@ theme.goal <- theme(strip.text.x = element_text(size=12,face="bold",colour="blac
                     legend.text.align = 0.5,
                     plot.title = element_text(size=24,face="bold",family="Times",hjust=0.5))
 
+### Functions ###
+
+#plots the mean gradidents (collapsed across subjects)
+plot_mean_gradients = function(data,goal_type_to_plot){
+
+  #filter goal type condition
+  filter(data,goal_type==goal_type_to_plot) %>%
+    #summarise gradients across individuals
+    group_by(gradient,a_d,b_d,a_tF,b_tF,.draw) %>%
+    summarise(xend = mean(xend,na.rm=T),
+              yend = mean(yend,na.rm=T)) %>%
+    #now summarise across samples by removing .draw as a grouping variable
+    group_by(gradient,a_d,b_d,a_tF,b_tF) %>%
+    summarise(xend = mean(xend),
+              yend = mean(yend)) %>%
+    #now plot
+    ggplot( aes(y = b_d, x = a_d ,group=factor(gradient),colour=as.factor(gradient))) +
+    # geom_raster() +
+    geom_segment(aes(xend=xend,yend=yend),arrow = arrow(length = unit(0.02, "npc")),alpha=0.8) +
+    facet_grid(b_tF~ a_tF ) +
+    ylab('Left Distance to Goal (D)') +
+    xlab("Right Distance to Goal (D)") +
+    #theme.goal +
+    #scale_fill_gradient2(low="blue",high="red",mid="black",midpoint=0.5,na.value='black',limits=c(0,1)) +
+    #scale_colour_distiller(palette = "Spectral", limits = c(0, 1)) +
+    labs(color = "Gradient") +
+    scale_x_reverse() +
+    scale_y_reverse() +
+    #geom_vline(xintercept=0,size=2.5) +
+    #geom_hline(yintercept=0,size=2.5) +
+    geom_vline(xintercept=0,size=0.5,linetype='longdash') +
+    geom_hline(yintercept=0,size=0.5,linetype='longdash') +
+    theme.goal +
+    theme(legend.position = "bottom") +
+    ggtitle(goal_type_to_plot)
+
+}
+
+#function to extract legend from ggplot
+g_legend<-function(a.gplot){
+  tmp <- ggplot_gtable(ggplot_build(a.gplot))
+  leg <- which(sapply(tmp$grobs, function(x) x$name) == "guide-box")
+  legend <- tmp$grobs[[leg]]
+  return(legend)}
+
+#Emulate ggplot colour palette
+gg_color_hue <- function(n) {
+  hues = seq(15, 375, length = n + 1)
+  hcl(h = hues, l = 65, c = 100)[1:n]
+}
+
+
+
 #load posteriors
 load("data/derived/unnormalised_posteriors.RData")
 
@@ -50,6 +103,18 @@ posts %>%
   data.frame()
 
 
+#calculate normalised parameters
+posts_norm_tmp = posts %>%
+  spread(key=parameter,value=value) %>%
+  mutate(w1_0 = replace_na(w1,0),
+         w2_0 = replace_na(w2,0)) %>%
+  mutate(s = w1_0 + w2_0 + w3,
+         w1 = w1/s,
+         w2 = w2/s,
+         w3 = w3/s) %>%
+  filter(source=="obs")
+
+
 #create four different sets of plots
 #1) across experiments
 #2) experiment 1
@@ -58,42 +123,28 @@ posts %>%
 
 for(i in 1:4){
 
-  #calculate normalised parameters
-  posts_norm_tmp = posts %>%
-    spread(key=parameter,value=value) %>%
-    mutate(w1_0 = replace_na(w1,0),
-           w2_0 = replace_na(w2,0)) %>%
-    mutate(s = w1_0 + w2_0 + w3,
-           w1 = w1/s,
-           w2 = w2/s,
-           w3 = w3/s) %>%
-    filter(source=="obs")
 
   if(i == 1){
     posts_norm = posts_norm_tmp %>%
-      select(subject,.draw,goal_type,alpha,delta,tau,w1,w2,w3,s) %>%
-      gather(key=parameter,value=value,alpha:s)
+      select(subject,.draw,goal_type,alpha,delta,tau,w1,w2,w3,s)
     label = ""
   }
   if(i == 2){
     posts_norm = posts_norm_tmp %>%
       filter(is.na(w2)) %>%
-      select(subject,.draw,goal_type,alpha,delta,tau,w1,w2,w3,s) %>%
-      gather(key=parameter,value=value,alpha:s)
+      select(subject,.draw,goal_type,alpha,delta,tau,w1,w2,w3,s)
     label = "_expt1"
   }
   if(i == 3){
     posts_norm = posts_norm_tmp %>%
       filter(is.na(w1)) %>%
-      select(subject,.draw,goal_type,alpha,delta,tau,w1,w2,w3,s) %>%
-      gather(key=parameter,value=value,alpha:s)
+      select(subject,.draw,goal_type,alpha,delta,tau,w1,w2,w3,s)
     label = "_expt2"
   }
   if(i == 4){
     posts_norm = posts_norm_tmp %>%
       filter(!is.na(w1) & !is.na(w2)) %>%
-      select(subject,.draw,goal_type,alpha,delta,tau,w1,w2,w3,s) %>%
-      gather(key=parameter,value=value,alpha:s)
+      select(subject,.draw,goal_type,alpha,delta,tau,w1,w2,w3,s)
     label = "_expt3"
   }
 
@@ -107,23 +158,15 @@ for(i in 1:4){
                     b_d = seq(0.125,0.875,by=0.15),
                     a_t = seq(0.1,0.9,by=0.8),
                     b_t = seq(0.1,0.9,by=0.8),
-                    goal_type=c('ap','av'))
-
-  # calculate mean parameter value for each frame condition
-  means=posts_norm %>%
-    #start by calculating mean of posterior for each subject
-    group_by(parameter,goal_type,subject) %>%
-    summarise(value = mean(value)) %>%
-    #then compuate mean parameter across subjects
-    group_by(parameter,goal_type) %>%
-    summarise(value = mean(value,na.rm=T))  %>%
-    spread(key=parameter,value=value)
+                    goal_type=c('ap','av'),
+                    subject=unique(posts_norm$subject),
+                    .draw=unique(posts_norm$.draw))
 
   # set size of vector in figure
   scale = 0.2
 
-  # compute position of vectors for each D x T combination based on gradients
-  gradients = left_join(sim,means,by="goal_type") %>%
+  # compute position of vectors for each D x T combination for each sample based on gradients
+  gradients = left_join(sim,posts_norm,by=c("subject","goal_type",".draw")) %>%
     #compute level of gradient for each combination and sum across gradients
     mutate( goal_type = factor(goal_type,levels=c('ap','av'),labels=c('Approach','Avoidance')),
             max = 2*(1-alpha)*sqrt(alpha/(1-alpha)),
@@ -132,50 +175,18 @@ for(i in 1:4){
             b_sg = (delta>=0)*w1*b_d^delta + (delta<0)*w1*(1-b_d^-delta),
             b_tg = (tau>=0)*w2*b_t^tau + (tau<0)*w2*(1-b_t^-tau),
             a_stg = w3*max / (alpha*a_t/a_d + (1-alpha)*a_d/a_t ) ,
-            b_stg = w3*max / (alpha*b_t/b_d + (1-alpha)*b_d/b_t ) ,
-            a_g = a_sg + a_tg + a_stg,
-            b_g = b_sg + b_tg + b_stg) %>%
-    gather(key,value,a_sg:b_g) %>%
+            b_stg = w3*max / (alpha*b_t/b_d + (1-alpha)*b_d/b_t )) %>%
+    gather(key,value,a_sg:b_stg) %>%
     separate(key,into=c('goal','gradient')) %>%
     spread(key=goal,value=value) %>%
     #compute position of vector based on gradient level
     mutate(xend = a_d - (goal_type=="Approach")*a*scale + (goal_type=="Avoidance")*a*scale,
            yend = b_d - (goal_type=="Approach")*b*scale + (goal_type=="Avoidance")*b*scale,
+           xend_t = a_t - (goal_type=="Approach")*a*scale + (goal_type=="Avoidance")*a*scale, #for plots of IDs in TG
+           yend_t = b_t - (goal_type=="Approach")*b*scale + (goal_type=="Avoidance")*b*scale,
            a_tF = factor(a_t,levels=c(0.1,0.9),labels=c("Left: T = 0.1","Left: T = 0.9")),
            b_tF = factor(b_t,levels=c(0.1,0.9),labels=c("Right: T = 0.1","Right: T = 0.9")),
            gradient = factor(gradient,levels=c('sg','tg','stg'),labels=c('Spatial','Temporal','Spatiotemporal')))
-
-  plot_mean_gradients = function(data,goal_type_to_plot){
-
-    filter(data,goal_type==goal_type_to_plot,gradient!="g") %>%
-      ggplot( aes(y = b_d, x = a_d ,group=factor(gradient),colour=as.factor(gradient))) +
-      # geom_raster() +
-      geom_segment(aes(xend=xend,yend=yend),arrow = arrow(length = unit(0.02, "npc")),alpha=0.8) +
-      facet_grid(b_tF~ a_tF ) +
-      ylab('Left Distance to Goal (D)') +
-      xlab("Right Distance to Goal (D)") +
-      #theme.goal +
-      #scale_fill_gradient2(low="blue",high="red",mid="black",midpoint=0.5,na.value='black',limits=c(0,1)) +
-      #scale_colour_distiller(palette = "Spectral", limits = c(0, 1)) +
-      labs(color = "Gradient") +
-      scale_x_reverse() +
-      scale_y_reverse() +
-      #geom_vline(xintercept=0,size=2.5) +
-      #geom_hline(yintercept=0,size=2.5) +
-      geom_vline(xintercept=0,size=0.5,linetype='longdash') +
-      geom_hline(yintercept=0,size=0.5,linetype='longdash') +
-      theme.goal +
-      theme(legend.position = "bottom") +
-      ggtitle(goal_type_to_plot)
-
-  }
-
-  #function to extract legend from ggplot
-  g_legend<-function(a.gplot){
-    tmp <- ggplot_gtable(ggplot_build(a.gplot))
-    leg <- which(sapply(tmp$grobs, function(x) x$name) == "guide-box")
-    legend <- tmp$grobs[[leg]]
-    return(legend)}
 
   ap_plot = plot_mean_gradients(data=gradients,goal_type_to_plot="Approach")
   av_plot = plot_mean_gradients(data=gradients,goal_type_to_plot="Avoidance")
@@ -197,78 +208,27 @@ for(i in 1:4){
   ### INDIVIDUAL DIFFERENCES IN GRADIENT COMPONENT ACROSS EXPERIMENTS ###
   #######################################################################
 
-
-  #simulate different combination of D x T for each subject
-  sim = expand.grid(a_d = seq(0.125,0.875,by=0.15),
-                    b_d = seq(0.125,0.875,by=0.15),
-                    a_t = c(0.1,0.9,seq(0.125,0.875,by=0.15)),
-                    b_t = c(0.1,0.9,seq(0.125,0.875,by=0.15)),
-                    goal_type=c('ap','av'),
-                    subject = unique(posts$subject))
-
-  #compute the mean of each parameter for each subject
-  sub_means=posts_norm %>%
-    group_by(parameter,goal_type,subject) %>%
-    summarise(value = mean(value)) %>%
-    spread(key=parameter,value=value)
-
   #set scale of vector size
-  scale = 0.1
-
-  #function to emulate the ggplot colour pallette
-  gg_color_hue <- function(n) {
-    hues = seq(15, 375, length = n + 1)
-    hcl(h = hues, l = 65, c = 100)[1:n]
-  }
-
-  # compute position of vectors for each D x T combination based on gradients
-  gradients = left_join(sim,sub_means,by=c("goal_type","subject")) %>%
-    #compute level of gradient for each combination and sum across gradients
-    mutate( goal_type = factor(goal_type,levels=c('ap','av'),labels=c('Approach','Avoidance')),
-            max = 2*(1-alpha)*sqrt(alpha/(1-alpha)),
-            a_sg = (delta>=0)*w1*a_d^delta + (delta<0)*w1*(1-a_d^-delta),
-            a_tg = (tau>=0)*w2*a_t^tau + (tau<0)*w2*(1-a_t^-tau),
-            b_sg = (delta>=0)*w1*b_d^delta + (delta<0)*w1*(1-b_d^-delta),
-            b_tg = (tau>=0)*w2*b_t^tau + (tau<0)*w2*(1-b_t^-tau),
-            a_stg = w3*max / (alpha*a_t/a_d + (1-alpha)*a_d/a_t ) ,
-            b_stg = w3*max / (alpha*b_t/b_d + (1-alpha)*b_d/b_t ) ,
-            a_g = a_sg + a_tg + a_stg,
-            b_g = b_sg + b_tg + b_stg) %>%
-    gather(key,value,a_sg:b_g) %>%
-    separate(key,into=c('goal','gradient')) %>%
-    spread(key=goal,value=value) %>%
-    #create variable indicating the experiment
-    mutate(expt = case_when(
-      is.na(w2) ~ 1,
-      is.na(w1) ~ 2,
-      !is.na(w1) & !is.na(w2) ~ 3
-    )) %>%
-    #compute position of vector based on gradient level
-    mutate(xend = a_d - (goal_type=="Approach")*a*scale + (goal_type=="Avoidance")*a*scale,
-           yend = b_d - (goal_type=="Approach")*b*scale + (goal_type=="Avoidance")*b*scale,
-           xend_t = a_t - (goal_type=="Approach")*a*scale + (goal_type=="Avoidance")*a*scale,
-           yend_t = b_t - (goal_type=="Approach")*b*scale + (goal_type=="Avoidance")*b*scale,
-           a_tF = factor(a_t,levels=c(0.1,0.9),labels=c("Left: T = 0.1","Left: T = 0.9")),
-           b_tF = factor(b_t,levels=c(0.1,0.9),labels=c("Right: T = 0.1","Right: T = 0.9")),
-           gradient = factor(gradient,levels=c('sg','tg','stg'),labels=c('Spatial','Temporal','Spatiotemporal')))
+  scale = 0.15
 
   #Spatial
   spatial_id_plot = filter(gradients,a_t==0.1,b_t==0.1,gradient=="Spatial") %>%
-    ggplot( aes(y = b_d, x = a_d)) +# ,group=factor(gradient),colour=as.factor(gradient))) +
-    # geom_raster() +
-    #  geom_point() +
+    #compute position of vector based on gradient level and updated scale
+    mutate(xend = a_d - (goal_type=="Approach")*a*scale + (goal_type=="Avoidance")*a*scale,
+           yend = b_d - (goal_type=="Approach")*b*scale + (goal_type=="Avoidance")*b*scale) %>%
+    #summarise gradients across samples
+    group_by(subject,goal_type,a_d,b_d) %>%
+    summarise(xend = mean(xend,na.rm=T),
+              yend = mean(yend,na.rm=T)) %>%
+    #plot
+    ggplot( aes(y = b_d, x = a_d)) +
     geom_segment(aes(xend=xend,yend=yend),arrow = arrow(length = unit(0.01, "npc")),alpha=0.075,size=0.5,color=gg_color_hue(3)[1]) +
     facet_grid(.~ goal_type ) +
     ylab('Left Distance to Goal (D)') +
     xlab("Right Distance to Goal (D)") +
-    #theme.goal +
-    #scale_fill_gradient2(low="blue",high="red",mid="black",midpoint=0.5,na.value='black',limits=c(0,1)) +
-    #scale_colour_distiller(palette = "Spectral", limits = c(0, 1)) +
     labs(color = "Gradient") +
     scale_x_reverse() +
     scale_y_reverse() +
-    #geom_vline(xintercept=0,size=2.5) +
-    #geom_hline(yintercept=0,size=2.5) +
     geom_vline(xintercept=0,size=0.5,linetype='longdash') +
     geom_hline(yintercept=0,size=0.5,linetype='longdash') +
     theme.goal +
@@ -278,22 +238,34 @@ for(i in 1:4){
 
 
   #Temporal
-  temporal_id_plot = filter(gradients,a_d==0.125,b_d==0.125,a_t!=0.1,a_t!=0.9,b_t!=0.1,b_t!=0.9,gradient=="Temporal") %>%
-    ggplot( aes(y = b_t, x = a_t ))  +# ,group=factor(gradient),colour=as.factor(gradient))) +
-    # geom_raster() +
-    #  geom_point() +
+
+  #need to sim different values of t for plot of IDs of TG
+  sim_t = expand.grid(a_t = seq(0.125,0.875,by=0.15),
+                      b_t = seq(0.125,0.875,by=0.15),
+                      goal_type=c('ap','av'),
+                      subject=unique(posts_norm$subject),
+                      .draw=unique(posts_norm$.draw))
+  # compute position of vectors for each D x T combination for each sample based on gradients
+  temporal_id_plot = left_join(sim_t,posts_norm,by=c("subject","goal_type",".draw")) %>%
+    #compute level of gradient for each combination and sum across gradients
+    mutate( goal_type = factor(goal_type,levels=c('ap','av'),labels=c('Approach','Avoidance')),
+            a = (tau>=0)*w2*a_t^tau + (tau<0)*w2*(1-a_t^-tau),
+            b = (tau>=0)*w2*b_t^tau + (tau<0)*w2*(1-b_t^-tau)) %>%
+    #compute position of vector based on gradient level
+    mutate(xend_t = a_t - (goal_type=="Approach")*a*scale + (goal_type=="Avoidance")*a*scale, #for plots of IDs in TG
+           yend_t = b_t - (goal_type=="Approach")*b*scale + (goal_type=="Avoidance")*b*scale) %>%
+    #summarise gradients across samples
+    group_by(subject,goal_type,a_t,b_t) %>%
+    summarise(xend_t = mean(xend_t,na.rm=T),
+              yend_t = mean(yend_t,na.rm=T)) %>%
+    ggplot( aes(y = b_t, x = a_t ))  +
     geom_segment(aes(xend=xend_t,yend=yend_t),arrow = arrow(length = unit(0.01, "npc")),alpha=0.075,size=0.5,color=gg_color_hue(3)[2]) +
     facet_grid(.~ goal_type ) +
     ylab('Left Time to Deadline (T)') +
     xlab("Right Time to Deadline (T)") +
-    #theme.goal +
-    #scale_fill_gradient2(low="blue",high="red",mid="black",midpoint=0.5,na.value='black',limits=c(0,1)) +
-    #scale_colour_distiller(palette = "Spectral", limits = c(0, 1)) +
     labs(color = "Gradient") +
     scale_x_reverse() +
     scale_y_reverse() +
-    #geom_vline(xintercept=0,size=2.5) +
-    #geom_hline(yintercept=0,size=2.5) +
     geom_vline(xintercept=0,size=0.5,linetype='longdash') +
     geom_hline(yintercept=0,size=0.5,linetype='longdash') +
     theme.goal +
@@ -304,21 +276,22 @@ for(i in 1:4){
 
   #Spatiotemporal
   spatiotemporal_ap_id_plot = filter(gradients,!is.na(a_tF),!is.na(b_tF),gradient=="Spatiotemporal",goal_type=="Approach") %>%
+    #compute position of vector based on gradient level and updated scale
+    mutate(xend = a_d - (goal_type=="Approach")*a*scale + (goal_type=="Avoidance")*a*scale,
+           yend = b_d - (goal_type=="Approach")*b*scale + (goal_type=="Avoidance")*b*scale) %>%
+    #summarise gradients across samples
+    group_by(gradient,subject,goal_type,a_d,b_d,a_tF,b_tF) %>%
+    summarise(xend = mean(xend,na.rm=T),
+              yend = mean(yend,na.rm=T)) %>%
+    #plot
     ggplot( aes(y = b_d, x = a_d )) +
-    # geom_raster() +
-    #  geom_point() +
     geom_segment(aes(xend=xend,yend=yend),arrow = arrow(length = unit(0.01, "npc")),alpha=0.075,size=0.5,color=gg_color_hue(3)[3]) +
     facet_grid(b_tF~ a_tF ) +
     ylab('Left Distance to Goal (D)') +
     xlab("Right Distance to Goal (D)") +
-    #theme.goal +
-    #scale_fill_gradient2(low="blue",high="red",mid="black",midpoint=0.5,na.value='black',limits=c(0,1)) +
-    #scale_colour_distiller(palette = "Spectral", limits = c(0, 1)) +
     labs(color = "Gradient") +
     scale_x_reverse() +
     scale_y_reverse() +
-    #geom_vline(xintercept=0,size=2.5) +
-    #geom_hline(yintercept=0,size=2.5) +
     geom_vline(xintercept=0,size=0.5,linetype='longdash') +
     geom_hline(yintercept=0,size=0.5,linetype='longdash') +
     theme.goal +
@@ -327,21 +300,21 @@ for(i in 1:4){
     coord_cartesian(xlim=c(-0.1,1),ylim=c(-0.1,1))
 
   spatiotemporal_av_id_plot = filter(gradients,!is.na(a_tF),!is.na(b_tF),gradient=="Spatiotemporal",goal_type=="Avoidance") %>%
+    #compute position of vector based on gradient level and updated scale
+    mutate(xend = a_d - (goal_type=="Approach")*a*scale + (goal_type=="Avoidance")*a*scale,
+           yend = b_d - (goal_type=="Approach")*b*scale + (goal_type=="Avoidance")*b*scale) %>%
+    #summarise gradients across samples
+    group_by(gradient,subject,goal_type,a_d,b_d,a_tF,b_tF) %>%
+    summarise(xend = mean(xend,na.rm=T),
+              yend = mean(yend,na.rm=T)) %>%
     ggplot( aes(y = b_d, x = a_d )) +
-    # geom_raster() +
-    #  geom_point() +
     geom_segment(aes(xend=xend,yend=yend),arrow = arrow(length = unit(0.01, "npc")),alpha=0.075,size=0.5,color=gg_color_hue(3)[3]) +
     facet_grid(b_tF~ a_tF ) +
     ylab('Left Distance to Goal (D)') +
     xlab("Right Distance to Goal (D)") +
-    #theme.goal +
-    #scale_fill_gradient2(low="blue",high="red",mid="black",midpoint=0.5,na.value='black',limits=c(0,1)) +
-    #scale_colour_distiller(palette = "Spectral", limits = c(0, 1)) +
     labs(color = "Gradient") +
     scale_x_reverse() +
     scale_y_reverse() +
-    #geom_vline(xintercept=0,size=2.5) +
-    #geom_hline(yintercept=0,size=2.5) +
     geom_vline(xintercept=0,size=0.5,linetype='longdash') +
     geom_hline(yintercept=0,size=0.5,linetype='longdash') +
     theme.goal +

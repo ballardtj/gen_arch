@@ -32,6 +32,15 @@ theme.goal <- theme(strip.text.x = element_text(size=12,face="bold",colour="blac
                     legend.text.align = 0.5,
                     plot.title = element_text(size=24,face="bold",family="Times",hjust=0.5))
 
+### FUNCTIONS ###
+
+#Emulate ggplot colour palette
+gg_color_hue <- function(n) {
+  hues = seq(15, 375, length = n + 1)
+  hcl(h = hues, l = 65, c = 100)[1:n]
+}
+
+
 
 #calculate normalised parameters
 posts_norm_tmp = posts %>%
@@ -143,12 +152,6 @@ mean_surface = ggplot(data=gradients,aes(x=d,y=t)) +
   theme(legend.position = 'bottom',legend.text = element_text(size=8))
 
 #### Individual Gradients ####
-
-#Emulate ggplot colour palette
-gg_color_hue <- function(n) {
-  hues = seq(15, 375, length = n + 1)
-  hcl(h = hues, l = 65, c = 100)[1:n]
-}
 
 #Spatial gradient
 sg1 = posts_norm %>%
