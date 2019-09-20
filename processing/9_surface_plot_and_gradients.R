@@ -65,8 +65,7 @@ for(i in 1:4){
 
   if(i == 1){
     posts_norm = posts_norm_tmp %>%
-      select(subject,.draw,goal_type,alpha,delta,tau,w1,w2,w3,s) %>%
-      gather(key=parameter,value=value,alpha:s)
+      select(subject,.draw,goal_type,alpha,delta,tau,w1,w2,w3,s)
     label = ""
     print("Combined")
   }
@@ -108,42 +107,62 @@ means=posts_norm %>%
 ### MEAN SURFACES ###
 
 # generate data for different combinations of D and T
-sim = expand.grid(d = seq(0.01,0.99,by=0.01),
-                  t = seq(0.01,0.99,by=0.01),
-                  goal_type=c('ap','av'))
+# sim = expand.grid(d = seq(0.01,0.99,by=0.01),
+#                   t = seq(0.01,0.99,by=0.01),
+#                   goal_type=c('ap','av'),
+#                   subject=unique(posts_norm$subject),
+#                   .draw=unique(posts_norm$.draw))
 
 
-means=posts_norm %>%
-  #start by calculating mean of posterior for each subject
-  group_by(parameter,goal_type,subject) %>%
-  summarise(value = mean(value)) %>%
-  spread(key=parameter,value=value)
 
-### MEAN SURFACES ###
-
+# means=posts_norm %>%
+#   #start by calculating mean of posterior for each subject
+#   group_by(parameter,goal_type,subject) %>%
+#   summarise(value = mean(value)) %>%
+#   spread(key=parameter,value=value)
+#
+# ### MEAN SURFACES ###
+#
 # generate data for different combinations of D and T
 sim = expand.grid(d = seq(0.01,0.99,by=0.01),
                   t = seq(0.01,0.99,by=0.01),
-                  goal_type=c('ap','av'))
+                  ap = NA,
+                  av = NA)
 
-#calculate strength of gradint and each combination of D and T
-gradients = left_join(sim,means) %>%
-  mutate(w1 = replace_na(w1,0),
-         w2 = replace_na(w2,0),
-         delta = replace_na(delta,0),
-         tau = replace_na(tau,0),
-         sg = (delta>=0)*w1*d^delta + (delta<0)*w1*(1-d^-delta),
-         tg = (tau>=0)*w2*t^tau + (tau<0)*w2*(1-t^-tau),
-         max = 2*(1-alpha)*sqrt(alpha/(1-alpha)),
-         stg = w3*max / (alpha*t/d + (1-alpha)*d/t ) ,
-         g = sg + tg + stg,
-         goal_type = factor(goal_type,levels=c('ap','av'),labels=c('Approach','Avoidance')))
 
+posts_norm = posts_norm %>%
+  mutate(max = 2*(1-alpha)*sqrt(alpha/(1-alpha)))
+
+#loop through different points in the surface, because it requires too much memory to calculate mean for all points simultaneously
+for(i in 1:nrow(sim)){
+  print(i)
+
+  sg = (posts_norm$delta>=0)*posts_norm$w1*sim$d[i]^posts_norm$delta + (posts_norm$delta<0)*posts_norm$w1*(1-sim$d[i]^-posts_norm$delta)
+  tg = (posts_norm$tau>=0)*posts_norm$w2*sim$t[i]^posts_norm$tau + (posts_norm$tau<0)*posts_norm$w2*(1-sim$t[i]^-posts_norm$tau)
+  stg = posts_norm$w3*posts_norm$max / (posts_norm$alpha*sim$t[i]/sim$d[i] + (1-posts_norm$alpha)*sim$d[i]/sim$t[i] )
+  posts_norm$g = replace_na(sg,0) + replace_na(tg,0) + stg
+
+  means = posts_norm %>%
+    #summarise across subjects for each draw
+    group_by(goal_type,.draw) %>%
+    summarise(g = mean(g,na.rm=T)) %>%
+    #summarise across draws
+    group_by(goal_type) %>%
+    summarise(g = mean(g))
+
+  sim$ap[i] = means$g[1]
+  sim$av[i] = means$g[2]
+
+}
+
+gradients = sim %>%
+ gather(key=goal_type,value=g,ap:av) %>%
+ mutate(goal_type = factor(goal_type,levels=c('ap','av'),labels=c('Approach','Avoidance')))
 
 mean_surface = ggplot(data=gradients,aes(x=d,y=t)) +
   geom_raster(aes(fill=g)) +
-  geom_contour(aes(z=g),colour='gray50',binwidth=0.05) +
-  scale_fill_distiller(palette="Spectral",breaks=seq(0,1.25,0.25),limits=c(0,1.25)) +
+  geom_contour(aes(z=g),colour='gray50') +
+  scale_fill_distiller(palette="Spectral",breaks=seq(0,0.75,0.25),limits=c(0,0.78)) +
   facet_grid(~goal_type) +
   scale_x_continuous(breaks=seq(0.1,0.9,by=0.2),expand=c(0.01,0.01)) +
   scale_y_continuous(breaks=seq(0.1,0.9,by=0.2),expand=c(0.01,0.01)) +
