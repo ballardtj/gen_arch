@@ -2,6 +2,7 @@
 .Rhistory
 .RData
 .Ruserdata
+.snapshots
 .Rapp.history
 .DS_Store
 analysis/figure
