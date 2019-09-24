@@ -86,6 +86,8 @@ gg_color_hue <- function(n) {
 load("data/derived/unnormalised_posteriors.RData")
 
 #Get values of scaling parameter (theta)
+
+#for each individual across experiments
 posts %>%
   spread(key=parameter,value=value) %>%
   mutate(w1_0 = replace_na(w1,0),
@@ -95,12 +97,79 @@ posts %>%
          w2 = w2/s,
          w3 = w3/s) %>%
   filter(source=="obs") %>%
+  select(subject,.draw,goal_type,s) %>%
+  spread(key=goal_type,value=s) %>%
+  mutate(diff = ap-av) %>%
+  gather(key=goal_type,value=s,ap:diff) %>%
   group_by(subject,goal_type) %>%
-  summarise(mean_theta = mean(s)) %>%
+  summarise(theta_m = mean(s),
+            theta_lo = quantile(s,0.025),
+            theta_hi = quantile(s,0.975)) %>%
   group_by(goal_type) %>%
-  summarise(lower = quantile(mean_theta,0.025),
-            upper = quantile(mean_theta,0.975)) %>%
-  data.frame()
+  mutate(order = rank(theta_m)) %>%
+  arrange(goal_type,order) %>%
+  ggplot(aes(x=theta_m,y=order)) +
+  geom_line() +
+  geom_errorbarh(aes(xmin=theta_lo,xmax=theta_hi)) +
+  facet_grid(.~goal_type)
+
+
+#Distribution not dramatically different across experiments (except lower thetas in E2 in Avoidance)
+posts %>%
+  spread(key=parameter,value=value) %>%
+  mutate(expt = case_when(
+    is.na(w2) ~ 1,
+    is.na(w1) ~ 2,
+    !is.na(w1) & !is.na(w2) ~ 3),
+         w1_0 = replace_na(w1,0),
+         w2_0 = replace_na(w2,0)) %>%
+  mutate(s = w1_0 + w2_0 + w3,
+         w1 = w1/s,
+         w2 = w2/s,
+         w3 = w3/s) %>%
+  filter(source=="obs") %>%
+  select(expt,subject,.draw,goal_type,s) %>%
+  spread(key=goal_type,value=s) %>%
+  mutate(diff = ap-av) %>%
+  gather(key=goal_type,value=s,ap:diff) %>%
+  group_by(subject,goal_type,expt) %>%
+  summarise(theta_m = mean(s),
+            theta_lo = quantile(s,0.025),
+            theta_hi = quantile(s,0.975)) %>%
+  group_by(goal_type,expt) %>%
+  mutate(order = rank(theta_m)) %>%
+  arrange(goal_type,order) %>%
+  ggplot(aes(x=theta_m,y=order)) +
+  geom_line() +
+  geom_errorbarh(aes(xmin=theta_lo,xmax=theta_hi)) +
+  facet_grid(expt~goal_type)
+
+
+#mean theta and mean difference on theta in each condition
+posts %>%
+  spread(key=parameter,value=value) %>%
+  mutate(w1_0 = replace_na(w1,0),
+         w2_0 = replace_na(w2,0)) %>%
+  mutate(s = w1_0 + w2_0 + w3,
+         w1 = w1/s,
+         w2 = w2/s,
+         w3 = w3/s) %>%
+  filter(source=="obs") %>%
+  select(subject,.draw,goal_type,s) %>%
+  spread(key=goal_type,value=s) %>%
+  mutate(diff = ap-av) %>%
+  gather(key=goal_type,value=s,ap:diff) %>%
+  #calculate average theta for each sample across p's
+  group_by(goal_type,.draw) %>%
+  summarise(theta = mean(s)) %>%
+  #summarise distribution of average theta
+  group_by(goal_type) %>%
+  summarise(theta_m = mean(theta),
+              theta_lo = quantile(theta,0.025),
+              theta_hi = quantile(theta,0.975))
+
+
+
 
 
 #calculate normalised parameters
