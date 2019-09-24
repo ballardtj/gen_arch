@@ -6,6 +6,9 @@ library(tidyverse)
 library(tidybayes)
 library(gridExtra)
 library(grid)
+library(foreach)
+library(doMC)
+registerDoMC(cores=7)
 
 #load posteriors
 load("data/derived/unnormalised_posteriors.RData")
@@ -72,56 +75,26 @@ for(i in 1:4){
   if(i == 2){
     posts_norm = posts_norm_tmp %>%
       filter(is.na(w2)) %>%
-      select(subject,.draw,goal_type,alpha,delta,tau,w1,w2,w3,s) %>%
-      gather(key=parameter,value=value,alpha:s)
+      select(subject,.draw,goal_type,alpha,delta,tau,w1,w2,w3,s)
     label = "_expt1"
     print("Experiment 1")
   }
   if(i == 3){
     posts_norm = posts_norm_tmp %>%
       filter(is.na(w1)) %>%
-      select(subject,.draw,goal_type,alpha,delta,tau,w1,w2,w3,s) %>%
-      gather(key=parameter,value=value,alpha:s)
+      select(subject,.draw,goal_type,alpha,delta,tau,w1,w2,w3,s)
     label = "_expt2"
     print("Experiment 2")
   }
   if(i == 4){
     posts_norm = posts_norm_tmp %>%
       filter(!is.na(w1) & !is.na(w2)) %>%
-      select(subject,.draw,goal_type,alpha,delta,tau,w1,w2,w3,s) %>%
-      gather(key=parameter,value=value,alpha:s)
+      select(subject,.draw,goal_type,alpha,delta,tau,w1,w2,w3,s)
     label = "_expt3"
     print("Experiment 3")
   }
 
-# calculate mean parameter value for each frame condition
-means=posts_norm %>%
-  #start by calculating mean of posterior for each subject
-  group_by(parameter,goal_type,subject) %>%
-  summarise(value = mean(value)) %>%
-  #then compuate mean parameter across subjects
-  group_by(parameter,goal_type) %>%
-  summarise(value = mean(value,na.rm=T))  %>%
-  spread(key=parameter,value=value)
-
 ### MEAN SURFACES ###
-
-# generate data for different combinations of D and T
-# sim = expand.grid(d = seq(0.01,0.99,by=0.01),
-#                   t = seq(0.01,0.99,by=0.01),
-#                   goal_type=c('ap','av'),
-#                   subject=unique(posts_norm$subject),
-#                   .draw=unique(posts_norm$.draw))
-
-
-
-# means=posts_norm %>%
-#   #start by calculating mean of posterior for each subject
-#   group_by(parameter,goal_type,subject) %>%
-#   summarise(value = mean(value)) %>%
-#   spread(key=parameter,value=value)
-#
-# ### MEAN SURFACES ###
 #
 # generate data for different combinations of D and T
 sim = expand.grid(d = seq(0.01,0.99,by=0.01),
@@ -129,17 +102,15 @@ sim = expand.grid(d = seq(0.01,0.99,by=0.01),
                   ap = NA,
                   av = NA)
 
-
 posts_norm = posts_norm %>%
   mutate(max = 2*(1-alpha)*sqrt(alpha/(1-alpha)))
 
 #loop through different points in the surface, because it requires too much memory to calculate mean for all points simultaneously
-for(i in 1:nrow(sim)){
-  print(i)
+surface_data <- foreach(j = 1:nrow(sim),.combine='rbind') %dopar% {
 
-  sg = (posts_norm$delta>=0)*posts_norm$w1*sim$d[i]^posts_norm$delta + (posts_norm$delta<0)*posts_norm$w1*(1-sim$d[i]^-posts_norm$delta)
-  tg = (posts_norm$tau>=0)*posts_norm$w2*sim$t[i]^posts_norm$tau + (posts_norm$tau<0)*posts_norm$w2*(1-sim$t[i]^-posts_norm$tau)
-  stg = posts_norm$w3*posts_norm$max / (posts_norm$alpha*sim$t[i]/sim$d[i] + (1-posts_norm$alpha)*sim$d[i]/sim$t[i] )
+  sg = (posts_norm$delta>=0)*posts_norm$w1*sim$d[j]^posts_norm$delta + (posts_norm$delta<0)*posts_norm$w1*(1-sim$d[j]^-posts_norm$delta)
+  tg = (posts_norm$tau>=0)*posts_norm$w2*sim$t[j]^posts_norm$tau + (posts_norm$tau<0)*posts_norm$w2*(1-sim$t[j]^-posts_norm$tau)
+  stg = posts_norm$w3*posts_norm$max / (posts_norm$alpha*sim$t[j]/sim$d[j] + (1-posts_norm$alpha)*sim$d[j]/sim$t[j] )
   posts_norm$g = replace_na(sg,0) + replace_na(tg,0) + stg
 
   means = posts_norm %>%
@@ -150,12 +121,14 @@ for(i in 1:nrow(sim)){
     group_by(goal_type) %>%
     summarise(g = mean(g))
 
-  sim$ap[i] = means$g[1]
-  sim$av[i] = means$g[2]
+  surface_data = sim[which(sim$d==sim$d[j] & sim$t==sim$t[j]),]
+  surface_data$ap = means$g[1]
+  surface_data$av = means$g[2]
 
+  return(surface_data)
 }
 
-gradients = sim %>%
+gradients = surface_data %>%
  gather(key=goal_type,value=g,ap:av) %>%
  mutate(goal_type = factor(goal_type,levels=c('ap','av'),labels=c('Approach','Avoidance')))
 
@@ -174,22 +147,27 @@ mean_surface = ggplot(data=gradients,aes(x=d,y=t)) +
 
 #Spatial gradient
 sg1 = posts_norm %>%
-  filter(parameter %in% c('w1','delta'),!is.na(parameter)) %>%
-  group_by(parameter,goal_type,subject) %>%
-  summarise(value = mean(value)) %>%
-  spread(key=parameter,value=value) %>%
-  select(goal_type,subject,delta,w1)
+  select(subject,.draw,goal_type,w1,delta) %>%
+  filter(!is.na(w1))
 
 sg2 = expand.grid(goal_type = unique(sg1$goal_type),
             subject = unique(sg1$subject),
+            .draw = unique(sg1$.draw),
             d = seq(0.01,0.99,by=0.01))
 
 #Create plot
-sg = left_join(sg2,sg1) %>%
+sg3 = left_join(sg2,sg1) %>%
   mutate(goal_type = factor(goal_type,levels=c('ap','av'),labels=c("Approach","Avoidance")),
-         sg = (delta>=0)*w1*d^delta + (delta<0)*w1*(1-d^-delta),
-         direction = factor(as.numeric(delta>=0),levels=c(1,0),labels=c('Positive','Negative'))) %>%
-  ggplot() +
+         sg = (delta>=0)*w1*d^delta + (delta<0)*w1*(1-d^-delta)) %>%
+  #summarise across draws
+  group_by(goal_type,subject,d) %>%
+  summarise(sg = mean(sg)) %>%
+  #identify max and min of gradient
+  group_by(goal_type,subject) %>%
+  mutate(decreasing = head(sg,1) > tail(sg,1),
+         direction = factor(as.numeric(decreasing),levels=c(0,1),labels=c('Positive','Negative')))
+
+sg = ggplot(sg3) +
   geom_line(aes(x=d,y=sg,group=subject,colour=direction),alpha=0.2) +
   facet_grid(.~goal_type) + labs(x='Distance to Goal (D)',y='Spatial Gradient',colour="Direction") +
   scale_color_manual(values=gg_color_hue(3)[c(3,1)]) +
@@ -198,25 +176,34 @@ sg = left_join(sg2,sg1) %>%
   theme(legend.position = "none") + theme.goal
 
 #count number of positive vs negative gradients
-print( sg1 %>% mutate(positive = delta >= 0) %>% count(goal_type,positive) %>% mutate(prop = n / sum(n)) )
+print( sg3 %>%
+  summarise(positive = !decreasing[1]) %>%
+  count(goal_type,positive) %>%
+  mutate(prop = n / sum(n)) )
 
 #Temporal gradient
-tg1=posts_norm %>%
-  filter(parameter %in% c('w2','tau'),!is.na(parameter)) %>%
-  group_by(parameter,goal_type,subject) %>%
-  summarise(value = mean(value)) %>%
-  spread(key=parameter,value=value) %>%
-  select(goal_type,subject,tau,w2)
+tg1 = posts_norm %>%
+  select(subject,.draw,goal_type,w2,tau) %>%
+  filter(!is.na(w2))
 
 tg2 = expand.grid(goal_type = unique(tg1$goal_type),
                   subject = unique(tg1$subject),
+                  .draw = unique(tg1$.draw),
                   t = seq(0.01,0.99,by=0.01))
 
-tg = left_join(tg2,tg1) %>%
+#Create plot
+tg3 = left_join(tg2,tg1) %>%
   mutate(goal_type = factor(goal_type,levels=c('ap','av'),labels=c("Approach","Avoidance")),
-         tg = (tau>=0)*w2*t^tau + (tau<0)*w2*(1-t^-tau),
-         direction = factor(as.numeric(tau>=0),levels=c(1,0),labels=c('Positive','Negative'))) %>%
-  ggplot() +
+         tg = (tau>=0)*w2*t^tau + (tau<0)*w2*(1-t^-tau)) %>%
+  #summarise across draws
+  group_by(goal_type,subject,t) %>%
+  summarise(tg = mean(tg)) %>%
+  #identify max and min of gradient
+  group_by(goal_type,subject) %>%
+  mutate(decreasing = head(tg,1) > tail(tg,1),
+         direction = factor(as.numeric(decreasing),levels=c(0,1),labels=c('Positive','Negative')))
+
+tg = ggplot(tg3) +
   geom_line(aes(x=t,y=tg,group=subject,colour=direction),alpha=0.2) +
   facet_grid(.~goal_type) + labs(x='Time to Deadline (T)',y='Temporal Gradient',colour="Direction") +
   scale_color_manual(values=gg_color_hue(3)[1]) +
@@ -278,14 +265,11 @@ tg = left_join(tg2,tg1) %>%
 #alpha < 0.1 is decreasing in this range, alpha > 0.9 is increasing
 
 stg1=posts_norm %>%
-  filter(parameter %in% c('w3','alpha'),!is.na(parameter)) %>%
-  group_by(parameter,goal_type,subject) %>%
-  summarise(value = mean(value)) %>%
-  spread(key=parameter,value=value) %>%
-  select(goal_type,subject,alpha,w3)
+  select(subject,.draw,goal_type,w3,alpha,max)
 
 stg2 = expand.grid(goal_type = unique(stg1$goal_type),
                    subject = unique(stg1$subject),
+                   .draw = unique(stg1$.draw),
                    d = seq(0.05,0.95,by=0.05),
                    t = seq(0.05,0.95,by=0.05))
 
@@ -294,11 +278,13 @@ stg3 = left_join(stg2,stg1) %>%
          dot = d/t,
          max = 2*(1-alpha)*sqrt(alpha/(1-alpha)),
          stg = w3*max / (alpha/dot + (1-alpha)*dot)) %>%
-  group_by(subject,goal_type) %>%
+  #summarise across draws
+  group_by(subject,goal_type,d,t) %>%
+  summarise(stg = mean(stg),
+            dot = mean(dot),
+            alpha = mean(alpha)) %>%
   arrange(subject,goal_type,d,t) %>%
   mutate(max_stg = max(stg),
-         # is_max_stg = stg==max_stg,
-         # dot_at_max_stg = sum(is_max_stg * dot) / sum(is_max_stg),
          direction_tmp = case_when(
            alpha < 0.1 ~ 1,
            alpha > 0.9 ~ 2,
@@ -374,10 +360,7 @@ ggsave(file=paste0("figures/overall_motivation",label,".png"),plot=gradient_fig,
 
 ### INDIVIDUAL SURFACES ###
 
-sim = expand.grid(d = seq(0.01,0.99,by=0.01),
-                  t = seq(0.01,0.99,by=0.01),
-                  goal_type=c('ap','av'),
-                  subject = unique(posts_norm_tmp$subject))
+
 
 sub_means=posts_norm_tmp %>%
   select(subject,.draw,goal_type,alpha,delta,tau,w1,w2,w3,s) %>%
@@ -398,18 +381,48 @@ gradients = left_join(sim,sub_means,by=c("goal_type","subject")) %>%
           max = 2*(1-alpha)*sqrt(alpha/(1-alpha)),
           stg = w3*max / (alpha*t/d + (1-alpha)*d/t ) ,
           g = sg + tg + stg) %>%
-  #create variable indicating the experiment
+
+
+posts_norm_expt = posts_norm %>%
   mutate(expt = case_when(
     is.na(w2) ~ 1,
     is.na(w1) ~ 2,
-    !is.na(w1) & !is.na(w2) ~ 3
-  ))
+    !is.na(w1) & !is.na(w2) ~ 3),
+         goal_type = factor(goal_type,levels=c('ap','av'),labels=c('Approach','Avoidance')))
+
 
 for(expt_to_plot in 1:3){
-  for(goal_type_to_plot in c('Approach','Avoidance')){
+  for(goal_type_to_plot in c('Approach','Avoiadance')){
 
-sub_surfaces = gradients %>%
-  filter(expt == expt_to_plot,goal_type==goal_type_to_plot) %>%
+    posts_norm_tmp = filter(posts_norm_expt,expt==expt_to_plot,goal_type==goal_type_to_plot)
+
+    sim = expand.grid(d = seq(0.01,0.99,by=0.01),
+                      t = seq(0.01,0.99,by=0.01),
+                      goal_type=goal_type_to_plot)
+
+    #loop through different points in the surface, because it requires too much memory to calculate mean for all points simultaneously
+    sub_surface_data <- foreach(j = 1:nrow(sim),.combine='rbind') %dopar% {
+
+      sg = (posts_norm_tmp$delta>=0)*posts_norm_tmp$w1*sim$d[j]^posts_norm_tmp$delta + (posts_norm_tmp$delta<0)*posts_norm_tmp$w1*(1-sim$d[j]^-posts_norm_tmp$delta)
+      tg = (posts_norm_tmp$tau>=0)*posts_norm_tmp$w2*sim$t[j]^posts_norm_tmp$tau + (posts_norm_tmp$tau<0)*posts_norm_tmp$w2*(1-sim$t[j]^-posts_norm_tmp$tau)
+      stg = posts_norm_tmp$w3*posts_norm_tmp$max / (posts_norm_tmp$alpha*sim$t[j]/sim$d[j] + (1-posts_norm_tmp$alpha)*sim$d[j]/sim$t[j] )
+      posts_norm_tmp$g = replace_na(sg,0) + replace_na(tg,0) + stg
+
+      means = posts_norm_tmp %>%
+        #summarise across draws for each subject
+        group_by(subject) %>%
+        summarise(g = mean(g))
+
+      sub_surface_data = expand.grid(d = sim$d[j],
+                                     t = sim$t[j],
+                                     subject = unique(posts_norm_tmp$subject))
+      sub_surface_data$g = means$g
+
+      return(surface_data)
+    }
+
+
+  sub_surfaces = sub_surface_data
   ggplot(aes(x=d,y=t)) +
   facet_wrap(~subject) +
   geom_raster(aes(fill=g)) +
