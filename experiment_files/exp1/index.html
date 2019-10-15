@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+
+    <title>Farm Game</title>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="js/jsPsych/jspsych.js"></script>
+    <script src="js/jsPsych/plugins/jspsych-text.js"></script>
+    <script src="js/jsPsych/plugins/jspsych-single-stim.js"></script>
+    <script src="js/jsPsych/plugins/jspsych-survey-text.js"></script>
+    <script src="js/jsPsych/plugins/jspsych-plant-game-tri-apav.js"></script>
+    <link href="js/jsPsych/css/jspsych.css" rel="stylesheet" type="text/css"></link>
+    <script src="js/exp.js" type="text/javascript"></script>
+     <!--<script src="http://code.jquery.com/jquery-latest.min.js" type="text/javascript"></script>-->
+
+    <style>
+        canvas {
+            padding-left: 0;
+            padding-right: 0;
+            margin-left: auto;
+            margin-right: auto;
+            display: block;
+            width: 800px;
+        }
+    </style>
+  </head>
+  <body>
+
+  </body>
+<script>
+
+//subject number
+var subject = Math.floor((Math.random() * 10000000) + 1);
+
+/* define welcome message block */
+    var information_screen = {
+      type: "text",
+      text: "<p><b><center>DECISION MAKING DURING VIRTUAL CROP GROWING</center></b></p>\
+             <p>This research program is being carried out by Professor Andrew Neal and Timothy Ballard from the School of Psychology at The University of Queensland, \
+             in collaboration with researchers from Ohio University, the University of Minnesota, and their students. We are carrying out a project \
+             designed to understand the motivational and cognitive factors that influence performance on complex tasks. The study will take approximately 1 hour. \
+             The experimental task is a farm simulation game, which requires you to make decisions about which crops to fertilise in order to ensure your crops \
+             grow to certain height by the end of the growing season.  At each stage of the experiment, you will be told what to do. </p> \
+             <p>Please be aware that participation in this study is entirely voluntary. If you do decide to take part, then you remain free at any time to withdraw \
+             from the study, without prejudice and without the need to provide reason or justification. Should you choose to withdraw, then records of your participation \
+             will be deleted, unless otherwise agreed. Upon completion of the research, the collected information concerning your responses on the task will be stored \
+             confidentially. These data will be used to produce research reports, in the form of theses and/or scientific papers, and may be released to other researchers \
+             in a de-identified and collated form. No names or identification information will be used in any report written about the study. The data may also be made \
+             publically available in accordance with ‘open data’ policies implemented by certain publishers. If these data are made publically available, they will be anonymous. </p>\
+            <p>At the end of the session, you will be given the opportunity to provide any comments you wish about the experiment. You will also be given the experimenter’s \
+            contact details so you can ask any questions, request more information about the experiment, or request access to a summary of the results.</p> \
+            <p>This study adheres to the guidelines of the ethical review process of The University of Queensland. Whilst you are free to discuss your participation in this \
+            study with project staff (Prof Andrew Neal, p: 3300 8630, e: andrew@psy.uq.edu.au; Timothy Ballard, p: 3346 9506, e: t.ballard@uq.edu.au), if you would like to \
+            speak to an officer of the University not involved in the study, \
+            you may contact the Ethics Officer on 07 3365 3924.</p> \
+             <p>Thank you for your participation in this study.</p> \
+             <p><b>Press any key to continue.</b></p>"
+    };
+
+    var consent_screen = {
+      type: "text",
+      text: "<b><center>Consent Form</center></b>\
+             <p>I (the participant) have read the information provided concerning this study. I agree to participate in this activity, \
+             realising that I may withdraw at any time without reason and without prejudice.</p> \
+             <p>I understand that all information provided will be stored confidentially, and that the data may be released to \
+             other researchers in a de-identified and collated form. I also understand that the data may be made publicly available \
+             in de-identified form. I have been advised as to what data are being collected, what the purpose is, and what will be done \
+             with the data upon completion of the research.</p>\
+             <p>I agree that research data gathered as part of the study may be published provided that neither my name, \
+             nor other identifying information, is used. </p> \
+              <p><b>Please indicate whether or not you are willing to participate in the study.  If you choose to participate in this study, press any key to continue.</b></p> "
+    };
+
+    var completion_code_pre = {
+      type: "text",
+      text: "<b><center>IMPORTANT!</center></b>\
+             <p>At the end of the study, you will be given a unique completion code. We ask that you email this completion code to the experimenter after finishing the experiment.\
+              The experimenter's email address and the completion code will be presented to you after the study is complete.</p>\
+              <p><b>Press any key to continue.</b></p>"
+    };
+
+    var pretask_instruction_1 = {
+      type: "text",
+      text: "<b><center>You will now be presented with a instructions on how to perform the task.\
+      <p>Press any key to continue.</p></center></b>"
+    };
+
+    var pretask_instruction_2 = {
+      type: "text",
+      text: "<b><center>Your Farm</center></b>\
+            <p>On your farm, you can grow four different types of crops. These crops include <b><span style='color: blue;'>wheat</span></b>, \
+            <b><span style='color: green;'>corn</span></b>, \
+            <b><span style='color: #FF8C00;'>rice</span></b>, and\
+            <b><span style='color: red;'>barley</span></b>. However, you only have enough space in your fields to grow two crops at a time.</p>\
+            <p><b>Press any key to continue.</b></p>"
+    };
+
+var pretask_instruction_3 = {
+  type: "single-stim",
+  stimuli: ['js/img/Slide01.jpg'],
+  choices: [],
+  prompt: "<center>For example, you may be asked to manage <b><span style='color: green;'>corn</span></b> and <b><span style='color: red;'>barley</span></b> crops.\
+  <p><b>Press any key to continue.</b></p></center>"
+}
+
+var pretask_instruction_4 = {
+  type: "single-stim",
+  stimuli: ['js/img/Slide02.jpg'],
+  choices: [],
+  prompt: "<center>In this example, your goal for the <b><span style='color: green;'>corn</span></b> is to grow it to a height of at least <b>180 cm</b>.\
+          Your goal for the <b><span style='color: red;'>barley</span></b>  is also to grow it to a height of at least <b>180 cm</b>.\
+          <p><b>Press any key to continue.</b></p></center>"
+}
+
+var pretask_instruction_5 = {
+  type: "single-stim",
+  stimuli: ['js/img/Slide03.jpg'],
+  choices: [],
+  prompt: "<center>In this example, your <b><span style='color: green;'>corn</span></b> is currently <b>90 cm</b>, and your <b><span style='color: red;'>barley</span></b>\
+   is <b>150</b> cm.\
+  <p><b>Press any key to continue.</b></p></center>"
+}
+
+var pretask_instruction_6 = {
+  type: "single-stim",
+  stimuli: ['js/img/Slide04.jpg'],
+  choices: [],
+  prompt: "<center>In this example, the growing season for your <b><span style='color: green;'>corn</span></b> crop is 30 weeks.\
+  So you have 30 weeks to achieve your <b><span style='color: green;'>corn</span></b> goal.\
+  The growing season for your <b><span style='color: red;'>barley</span></b> crop is 10 weeks.\
+  So you have 10 weeks to achieve your <b><span style='color: red;'>barley</span></b> goal.\
+  <p><b>Press any key to continue.</b></p></center>"
+}
+
+var pretask_instruction_7a = {
+      type: "text",
+      text: "<b>Your Job</b>\
+             <p>Your job is to fertilise your crops so that they reach their target height by the end of the growing season.\
+              If a crop reaches its target height, it can be harvested and sold at the market. If it does not reach its target height, it cannot be harvested. </p>\
+              <p>The most important part of your job is deciding which fertiliser to use. The are multiple fertisers to choose from, but only one can be used in a given week.\
+              Therefore, in each week of the growing season, you have an important decision to make.</p> \
+              <p><b>Press any key to continue.</b></p>"
+}
+
+var pretask_instruction_7b = {
+    type: "single-stim",
+    stimuli: ['js/img/Slide05.jpg'],
+    choices: [],
+    prompt: "<center><p>Each week, you'll have three fertisers to choose from. The graphs at the bottom of the screen \
+    show the estimated amount that each crop will grow when each fertiliser is used.\
+    <p><b>Press any key to continue.</b></p></center>"
+}
+
+
+    //If you decide to irrigate a crop, that crop <b>on average</b> will grow <b>6 cm</b> in that week.\
+    //However, this is only the average amount. Sometimes, the crop will grow by more than 6 cm when it is irrigated.\
+    //Other times, the crop will grow by less than 6 cm. You can see the average amount that each crop will grow in the weeks\
+    //when it is irrigated by looking at the graphs next to each crop.</p> \
+    //<p>The crop that you decide NOT to irrigate, will <b>on average</b> not grow at all.\
+    //However, once again, this is only the average. Sometimes, the crop will grow. Other times, the height of the crop will decrease.</p>\
+
+
+
+//var pretask_instruction_8 = {
+//  type: "single-stim",
+//  stimuli: ['js/img/Slide06.jpg'],
+//  choices: [],
+//  prompt: "<center>Here is an example of a decision you will have to make in a given week. The decision is whether to irrigate your\
+//  <span style='color: green;'>corn</span> or your <span style='color: red;'>barley</span>.\
+//  <p><b>Press any key to continue.</b></p></center>"
+//}
+
+var pretask_instruction_9a = {
+  type: "single-stim",
+  stimuli: ['js/img/Slide07.jpg'],
+  choices: [],
+  prompt: "<center>You can select Fertiliser 1 by pressing the 's' key.\
+  If you select Fertiliser 1, the growth estimate for your <b><span style='color: green;'>corn</span></b> crop is <b>6 cm</b>,\
+  and the growth estimate for your <b><span style='color: red;'>barley</span></b> crop is <b>0 cm</b>.\
+  However, these are only <b>estimates</b>. There is no gaurantee that a crop will grow by the estimated amount.\
+  In any given week, a crop may grow by more or less than the estimated amount for that fertiliser. \
+  Sometimes a crop can even lose height!\
+  <p><b>Press any key to continue.</b></p></center>"
+}
+
+var pretask_instruction_9b = {
+  type: "single-stim",
+  stimuli: ['js/img/Slide08.jpg'],
+  choices: [],
+  prompt: "<center>You can select Fertiliser 2 by pressing the 'g' key. \
+  If you select Fertiliser 2, the growth estimate for your <b><span style='color: green;'>corn</span></b> crop is <b>3 cm</b>,\
+  and the growth estimate for your <b><span style='color: red;'>barley</span></b> crop is also <b>3 cm</b>. Remember however, that these are only <b>estimates<b/>.\
+  <p><b>Press any key to continue.</b></p></center>"
+}
+
+var pretask_instruction_9c = {
+  type: "single-stim",
+  stimuli: ['js/img/Slide09.jpg'],
+  choices: [],
+  prompt: "<center>You can select Fertiliser 3 by pressing the 'k' key.\
+  If you select Fertiliser 3, the growth estimate for your <b><span style='color: green;'>corn</span></b> crop is <b>0 cm</b>,\
+  and the growth estimate for your <b><span style='color: red;'>barley</span></b>crop is <b>6 cm</b>.\
+  <p><b>Press any key to continue.</b></p></center>"
+}
+
+var pretask_instruction_10a = {
+  type: "single-stim",
+  stimuli: ['js/img/Slide10.jpg'],
+  choices: [],
+  prompt: "<center>As you work toward your goals, your goal status will be shown above each crop. \
+  The X's indicate that the current height of your crop is below the goal. In this example, the height\
+  of both your <b><span style='color: green;'>corn</span></b> and <b><span style='color: red;'>barley</span></b> are below the height that you need to reach. \
+  <p><b>Press any key to continue.</b></p></center>"
+}
+
+var pretask_instruction_10b = {
+  type: "single-stim",
+  stimuli: ['js/img/Slide11.jpg'],
+  choices: [],
+  prompt: "<center><p>When the height of one of the crops reaches the goal, a checkmark will appear. The checkmark\
+  indicates that your current height for that crop is equal to or more than the goal. If the height of your crop is equal to or more than\
+  the goal at the end of the growing season, you achieve the goal!</p>\
+  <p>However, remember that crops can sometimes lose height. Therefore, even when the height of your crop surpasses the goal,\
+   you may still need to give it some attention to make sure it does not fall back below the goal. You won't achieve the goal if the height of the crop is below\
+   the goal at the end of the growing season, even if that crop reached the goal previously in that growing season.</p>\
+  <p><b>Press any key to continue.</b></p></center>"
+}
+
+
+var goal_achievement_pretask = {
+    type: "text",
+    text: "<p>Do your best to achieve as many goals as you can. However, be aware that there can be trade-offs between the goals.\
+     Focusing on one crop may decrease the likelihood of attaining the goal for the other crop. In some cases, it will be possible to achieve more \
+     than one goal. However, other times you may be faced with goals that are extremely difficult to achieve. In these situations, you need to make \
+     careful decisions, so that you give yourself the best chance of reaching the goals that are achievable. <b>Ultimately, achieving one goal \
+     is better than achieving no goals.</b></p>\
+     <p><center>Press any key to continue.</center></p>"
+  };
+
+  
+//PreTask Comprehension Questions
+
+var comprehension_intro = {
+    type: "text",
+    text: "<p><center>You will now be asked a series of questions about the task</center></p>\
+     <p><center>Press any key to continue.</center></p>"
+  };
+
+//Specify levels of manupulation. Here we assume that the fixed goal is whichever is easier (starts off closer or has a longer deadline)
+
+var practice_factors = {
+  trial_id: [19, 19 ,  16, 16, 7 ,   7],
+  goal_type: [1, 2  ,   1,  2, 1, 2]
+}
+ 
+//set parameters
+var experimental_levels = {
+  easy_distance: [30,30,30  ,30, 30   ,30, 30,45,45  ,45,45   ,45 , 45,67.5,67.5, 67.5, 67.5, 67.5,90, 90  , 90, 90,112.5,112.5,112.5,135,135,150],
+  hard_distance: [30,45,67.5,90,112.5,135,150,45,67.5,90,112.5,135,150,67.5,90  ,112.5,135  ,150  ,90,112.5,135,150,112.5,135  ,150  ,135,150,150]
+};
+
+//4 blocks
+var blocks = 4; //number of blocks
+
+var experimental_parameters = {
+  trial_id: [],
+  goal_type: []
+}
+
+//assign goal type level for all trials
+var goal_type_index = [1,2];
+var goal_type_order = [1,2];
+var trial_id_index = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28];
+var trial_id_order1 = trial_id_index;
+var trial_id_order2 = trial_id_index;
+
+function shuffle(array) {
+            var currentIndex = array.length,
+                temporaryValue, randomIndex;
+
+
+
+            // While there remain elements to shuffle...
+            while (0 !== currentIndex) {
+
+                // Pick a remaining element...
+                randomIndex = Math.floor(Math.random() * currentIndex);
+                currentIndex -= 1;
+
+                // And swap it with the current element.
+                temporaryValue = array[currentIndex];
+                array[currentIndex] = array[randomIndex];
+                array[randomIndex] = temporaryValue;
+            }
+
+
+
+            return array;
+        }
+
+ shuffle(goal_type_order);
+ shuffle(trial_id_order1);
+ shuffle(trial_id_order2);
+
+if(goal_type_order[0]===1){
+  experimental_parameters.goal_type = [1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+                                       2,2,2,2,2,2,2,2,2,2,2,2,2,2,
+                                       1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+                                       2,2,2,2,2,2,2,2,2,2,2,2,2,2];
+}
+
+if(goal_type_order[0]===2){
+  experimental_parameters.goal_type = [2,2,2,2,2,2,2,2,2,2,2,2,2,2,
+                                       1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+                                       2,2,2,2,2,2,2,2,2,2,2,2,2,2,
+                                       1,1,1,1,1,1,1,1,1,1,1,1,1,1];
+}
+
+ experimental_parameters.trial_id = experimental_parameters.trial_id.concat( trial_id_order1.slice(0,14),
+                                                                             trial_id_order2.slice(0,14),
+                                                                             trial_id_order1.slice(14,28),                 
+                                                                             trial_id_order2.slice(14,28));
+
+
+
+
+
+// var experimental_factors = {
+//   trial_id:  [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28],
+//   goal_type: [1,2] //1 = approach, 2 = avoidance
+// };
+
+
+
+// for(var i = 0; i < blocks; i++){
+//   var block = jsPsych.randomization.factorial(experimental_factors,1,true);
+  
+//   experimental_parameters.trial_id = experimental_parameters.trial_id.concat(block.trial_id);
+//   experimental_parameters.goal_type = experimental_parameters.goal_type.concat(block.goal_type);
+// }
+
+var trialsPerBlock = 14;//experimental_parameters.variance_condition.length/blocks;
+
+//array with starting trial numbers of each block
+var blockStart = [];
+for(var i = 0; i < blocks; i++ ){
+  blockStart = blockStart.concat(i*trialsPerBlock);
+}
+
+var start_follow_up_survey = {
+  type: "text",
+  text: "<p>The experiment is almost complete! We ask that you now complete a brief survey about your experience with the task. Please follow the link below to begin the survey.</p>\
+           <p><a href='https://uqpsych.qualtrics.com/SE/?SID=SV_3JFz8DfErscs6Ox'>Start Survey</a></p>",
+  cont_key: '.'         
+}
+
+
+var gender_question = {
+      type: "text",
+      text: "Which best describes your gender? \
+      <p> Man (press 'm') </p> \
+      <p> Woman (press 'w') </p> \
+      <p> Other (press 'o') </p> ",
+      cont_key: ['m', 'w', 'o']
+    };
+
+var age_question = {
+      type: "survey-text",
+      questions: [["How old are you?"]]
+    };
+
+var debrief_screen = {  
+      type: "text",
+      text: "<p><b><center>PARTICIPANT DEBRIEFING SCREEN</center></b></p>\
+            <p><b><center>How well can you multi-task?</center></b></p>\
+             <p>Thank you for participating in our study! This debrief will provide some background information about the study.\
+              The purpose of this study was to examine how individuals prioritise goals in a multi-tasking environment, \
+              and how prioritisation is influenced by how far the goal is from being achieved, and how long you have to achieve it.</p> \
+              <p>Due to the complex nature of the workplace, people are frequently put in situations where they must prioritise one task over another.\
+             One example of this is a farmer having to manage different crops during the growing season. Another example is a doctor attempting to maximise the\
+             effectiveness of a treatment, whilst minimising a patient's pain. Because effective decision making is important for maximising performance,\
+             we need to understand how people make these types of decisions.<p> \
+             <p>Two factors that are known to influence decision making are how far the goal is from being achieved, and how long one has to achieve it.\
+             Previous research has found that when people are simultaneously managing multiple goals, they tend to prioritise goals that are farther from being achieved.\
+             Research also has suggested that deadlines influence prioritisation, however the effects of deadline are less clear.</p>\
+            <p>In this experiment, we manipulated how far each goal was from being achieved by varying the starting heights of the crops. \
+            We manipulated deadline by varying the number of weeks in the growing season. Together the starting height of the crop \
+            and the length of the growing season determined how difficult the height goal was to achieve. We predicted that people would be more likely \
+            to prioritise goals that were moderately difficult compared to goals that were easier to achieve (e.g. goals that had high starting heights \
+              or long growing seasons) and goals that were harder to achieve (e.g. goals that had low starting heights or short growing seasons).</p>\
+            <p>Readings and References<p>\
+            <p>Schmidt, A. M., & DeShon, R. P. (2007). What to do? The effects of discrepancies, incentives, and time on dynamic goal prioritization. Journal of Applied Psychology, \
+            92(4), 928-941. doi:10.1037/0021-9010.92.4.928</p>\
+            <p>Schmidt, A. M., & Dolis, C. M. (2009). Something’s got to give: The effects of dual-goal difficulty, goal progress, and expectancies on resource allocation. \
+            Journal of Applied Psychology, 94(3), 678-691. doi:10.1037/a0014945</p>\
+            <p>Steel, P., & Konig, C. (2006). Integrating theories of motivation. The Academy of Management Review, 31(4), 889-913. doi:10.5465/AMR.2006.22527462</p>\
+            <p><b>Press any key to continue.</b></p>"
+
+};
+
+var feedback_question = {
+      type: "survey-text",
+      questions: [["We would like your feedback on this task. Did you experience any technical difficulties whilst performing the task? For example, \
+      were there any instances in which the information presented on the screen was incorrect or inaccurate?"]]
+    };
+
+var other_concerns_question = {
+      type: "survey-text",
+      questions: [["Do you have any other comments or concerns about this task that you would like to report to the experimenter?"]]
+    };
+
+
+var completion_code = Math.floor((Math.random() * 100000) + 1);
+
+var completion_code_text = "The experiment is now complete! Please email the following completion code to a.zhousanyu@uq.edu.au. \
+      <p>Completion code: " + completion_code + "SA1</p>";
+
+  var completion_code_post = {
+      type: "text",
+      text: completion_code_text,
+      cont_key: 'q'
+    };  
+
+    /* create experiment definition array */
+    var experiment = [];
+    
+    // experiment.push(information_screen);
+    // experiment.push(consent_screen);
+    // experiment.push(completion_code_pre);
+    experiment.push(gender_question);
+    experiment.push(age_question);
+    // experiment.push(pretask_instruction_1);
+    // experiment.push(pretask_instruction_2);
+    // experiment.push(pretask_instruction_3);
+    // experiment.push(pretask_instruction_4);
+    // experiment.push(pretask_instruction_5);
+    // experiment.push(pretask_instruction_6);
+    // experiment.push(pretask_instruction_7a);
+    // experiment.push(pretask_instruction_7b);
+    // //experiment.push(pretask_instruction_8);
+    // experiment.push(pretask_instruction_9a);
+    // experiment.push(pretask_instruction_9b);
+    // experiment.push(pretask_instruction_9c);
+    // experiment.push(pretask_instruction_10a);
+    // experiment.push(pretask_instruction_10b);
+    // experiment.push(goal_achievement_pretask);
+
+    //Set up practice trials
+    for(var i = 0; i < practice_factors.trial_id.length; i++){
+      if (i === 0) {
+        var pre_practice_trial_instruction = {
+          type: 'text',
+          text: "<center>You will now complete six practice trials. Press the 'v' key to begin the first practice trial.</center>",
+          cont_key: 'v'
+        }
+      }
+      if (i > 0) {
+        var pre_practice_trial_instruction = {
+          type: 'text',
+          text: "<center>Press the 'v' key to begin the next practice trial.</center>",
+          cont_key: 'v'
+
+        }
+      }
+      experiment.push(pre_practice_trial_instruction);
+
+       var practice_trial = {
+        type: 'plant-game',
+        goal_type: practice_factors.goal_type[i],
+        experimental_deadline: 30,
+        experimental_distance: experimental_levels.hard_distance[practice_factors.trial_id[i]-1],
+        experimental_goal: 240,
+        fixed_deadline: 30,
+        fixed_distance: experimental_levels.easy_distance[practice_factors.trial_id[i]-1],
+        fixed_goal: 240,
+        mean_growth_experimental_if_prioritized: 6 - (practice_factors.goal_type[i]-1)*6 ,
+        sd_growth_experimental_if_prioritized: 3,
+        mean_growth_experimental_if_balanced: 3,
+        sd_growth_experimental_if_balanced: 3,
+        mean_growth_experimental_if_not_prioritized: 0 + (practice_factors.goal_type[i]-1)*6,
+        sd_growth_experimental_if_not_prioritized: 3,
+        mean_growth_fixed_if_prioritized: 6 - (practice_factors.goal_type[i]-1)*6,
+        sd_growth_fixed_if_prioritized: 3,
+        mean_growth_fixed_if_balanced: 3,
+        sd_growth_fixed_if_balanced: 3,
+        mean_growth_fixed_if_not_prioritized: 0 + (practice_factors.goal_type[i]-1)*6,
+        sd_growth_fixed_if_not_prioritized: 3,
+        practice: true,
+        trial_number: i+1
+      }
+      experiment.push(practice_trial);
+    }
+
+    //Set up experimental trials
+    for(var i = 0; i < experimental_parameters.trial_id.length; i++){
+      if (i === 0) {
+        var pre_trial_instruction = {
+          type: 'text',
+          text: "<center>You have now completed all practice trials and are ready to begin the experiment. Press the 'v' key to continue.",
+          cont_key: 'v'
+        }
+        experiment.push(pre_trial_instruction);
+      }
+      if (i > 0 && $.inArray(i, blockStart)==-1) {
+        var pre_trial_instruction = {
+          type: 'text',
+          text: "<center>Press the 'v' key to begin the next trial.</center>",
+          cont_key: 'v'
+        }
+      }
+      if ( $.inArray(i, blockStart)>-1 ) {
+        // var blockStartText = "<p>You have now completed Block " + $.inArray(i, blockStart)+1 + " of " + blockStart.length+1 + ". Feel free to take a short break before beginning the next block. \
+        //   However, <b>do not</b> close this window.</p>\
+        //   <p>When you are ready to continue, remember to do your best to achieve as many goals as you can. However, keep in mind that there can be trade-offs between the goals.\
+        //   Focusing on one crop may decrease the likelihood of attaining the goal for the other crop. In some cases, it will be possible to achieve more \
+        //   than one goal. However, other times you may be faced with goals that are extremely difficult to achieve. In these situations, you need to make \
+        //   careful decisions, so that you give yourself the best chance of reaching the goals that are achievable. <b>Ultimately, achieving one goal \
+        //   is better than achieving no goals.</b></p>\
+        //   <center><p>Press any key to begin the next trial.</p></center>";
+
+       var currentBlock = $.inArray(i, blockStart)+1;
+       var finalBlock = blockStart.length;
+       if( experimental_parameters.goal_type[i]===1){ 
+          var blockStartText = "<p>You are about to begin Block " + currentBlock + " of " + finalBlock + ". In this block, <b>you will be managing crops</b>. \
+          Remember, when managing crops, <b>your goal is to ensure the crop is 240 cm or TALLER at the end of the trial</b>. Do your best to achieve as many goals as you can. \
+          Achieving two goals is better than achieving one goal, but acheiving one goal is better than achieving no goals.</p>\
+          <center><p>Press the 'v' key to begin the next trial.</p></center>";
+
+          var pre_trial_instruction = {
+            type: "single-stim",
+            stimuli: ['js/img/treasureChestGold.png'],
+            choices: [],
+            prompt: blockStartText,
+            cont_key: 'v'
+          }
+        }
+
+        if( experimental_parameters.goal_type[i]===2){ 
+          var blockStartText = "<p>You are about to begin Block " + currentBlock + " of " + finalBlock + ". In this block, <b>you will be managing weeds</b>. \
+          Remember, when managing weeds, <b>your goal is to ensure the weed is SHORTER than 240 cm at the end of the trial</b>. Do your best to achieve as many goals as you can. \
+          Achieving two goals is better than achieving one goal, but acheiving one goal is better than achieving no goals.</p>\
+          <center><p>Press the 'v' key to begin the next trial.</p></center>";
+
+          var pre_trial_instruction = {
+            type: "single-stim",
+            stimuli: ['js/img/skull copy_red.png'],
+            choices: [],
+            prompt: blockStartText,
+            cont_key: 'v'
+          }
+        }
+
+
+      }
+      experiment.push(pre_trial_instruction);
+
+
+      var trial = {
+        type: 'plant-game',
+        goal_type: experimental_parameters.goal_type[i],
+        experimental_deadline: 30,
+        experimental_distance: experimental_levels.hard_distance[experimental_parameters.trial_id[i]-1],
+        experimental_goal: 240,
+        fixed_deadline: 30,
+        fixed_distance: experimental_levels.easy_distance[experimental_parameters.trial_id[i]-1],
+        fixed_goal: 240,
+        mean_growth_experimental_if_prioritized: 6 - (experimental_parameters.goal_type[i]-1)*6 ,
+        sd_growth_experimental_if_prioritized: 3,
+        mean_growth_experimental_if_balanced: 3,
+        sd_growth_experimental_if_balanced: 3,
+        mean_growth_experimental_if_not_prioritized: 0 + (experimental_parameters.goal_type[i]-1)*6,
+        sd_growth_experimental_if_not_prioritized: 3,
+        mean_growth_fixed_if_prioritized: 6 - (experimental_parameters.goal_type[i]-1)*6,
+        sd_growth_fixed_if_prioritized: 3,
+        mean_growth_fixed_if_balanced: 3,
+        sd_growth_fixed_if_balanced: 3,
+        mean_growth_fixed_if_not_prioritized: 0 + (experimental_parameters.goal_type[i]-1)*6,
+        sd_growth_fixed_if_not_prioritized: 3,
+        practice: false,
+        trial_number: i+1
+      }
+      experiment.push(trial);
+    }
+
+    experiment.push(start_follow_up_survey);
+    //experiment.push(debrief_screen);
+    //experiment.push(feedback_question);
+    //experiment.push(other_concerns_question);
+    //experiment.push(completion_code_post);
+
+    //preload trial instruction images
+    var images = ['js/img/Slide01.jpg', 'js/img/Slide02.jpg', 'js/img/Slide03.jpg', 'js/img/Slide04.jpg', 
+    'js/img/Slide05.jpg','js/img/Slide06.jpg', 'js/img/Slide07.jpg', 'js/img/Slide08.jpg',
+     'js/img/Slide09.jpg', 'js/img/Slide10.jpg', 'js/img/Slide11.jpg','js/img/treasureChestGold.png','js/img/skull copy_red.png'];
+
+    jsPsych.preloadImages(images,function(){ 
+      startExperiment(); 
+    });
+
+    function startExperiment(){
+    
+    /* start the experiment */
+    jsPsych.init({
+      experiment_structure: experiment,
+      on_data_update: function(data){
+                if (data.trial_type=="plant-game"){
+                    data.subject_id =  subject; 
+                }
+                $.post('submit',  {"content": JSON.stringify(data)});
+            },
+      //on_trial_finish: function() {
+      //  jsPsych.data.displayData();
+      //}
+    });
+
+  }
+
+
+</script>
+</html>
